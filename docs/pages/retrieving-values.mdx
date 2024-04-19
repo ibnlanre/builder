@@ -1,0 +1,37 @@
+---
+
+title: createBuilder - Constructing values
+description: Constructing builder values
+
+---
+
+# Retrieving values
+
+The root is the starting point of the `builder` object. It is effectively the register, which is passed to the `createBuilder` function. The root is the first argument of the `createBuilder` function.
+
+```typescript copy
+const builder = createBuilder({
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+}, "root", "branch");
+```
+
+## Root branch
+
+Retrieving the root branch using the `use` function returns the register itself, while retrieving the root branch using the `get` function returns the key for the root branch. This is a different behavior from the other branches, which instead, generates a key from the nested keys of the register. The following code snippet demonstrates what the root branch looks like:
+
+```typescript copy
+builder.use(); // register
+builder.get(); // ["root", "branch"]
+```
+
+## Nested values
+
+As a consequence of the `use` function returning the register, it is possible to retrieve the nested values of the register. The following code snippet demonstrates how to retrieve the nested values of the register:
+
+```typescript copy
+builder.use().foo.baz(12); // "/bazaar/12"
+builder.use().foo.bar; // 10
+```

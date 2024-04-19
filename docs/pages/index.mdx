@@ -1,0 +1,65 @@
+---
+
+title: builder - Constructing keys
+description: Creates a builder object for defining keys and values.
+
+---
+import { Tabs } from 'nextra/components'
+
+# Introduction
+
+The `@ibnlanre/builder` library is a package designed to streamline dynamic key generation, thus addressing the complex issue of query tagging and cache invalidation. By chaining the branches of a register into an array of keys, it eliminates the need for manual construction of keys. This is achieved through a `builder` object, created using the `createBuilder` function. This object contains methods for retrieving the value of a key, making it easier to locate and reuse keys.
+
+The `@ibnlanre/builder` package is a lightweight package that is easy to use, and can be used in any JavaScript or TypeScript project. It is designed to be flexible and can be used in a variety of scenarios, such as caching, routing, query tagging, and storing data.
+
+## Installation
+
+To install the `@ibnlanre/builder` package, you can use either `npm` or `yarn`. The following code snippets demonstrate how to install the package using either of the package managers:
+
+<Tabs items={['NPM', 'Yarn']}>
+  <Tabs.Tab>
+    ```typescript copy
+    npm install @ibnlanre/builder
+    ```
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+    ```typescript copy
+    yarn add @ibnlanre/builder
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Importing the module
+
+`createBuilder` is exported as a named export from the `@ibnlanre/builder` package. The following code snippet demonstrates how to import the `createBuilder` function:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+```
+
+## Creating a builder
+
+The `builder` object is created using the `createBuilder` function. The `createBuilder` function is a factory function that accepts a register and an optional list of prefixes as arguments, and returns a `builder` object. The resulting `builder` object is a tree-like structure, having the root as the starting point, and the branches as the keys.
+
+The following code snippet demonstrates how to use the `createBuilder` function:
+
+```typescript copy
+const register = {
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+};
+
+const no_prefix_builder = createBuilder(register);
+```
+
+## Builder with prefixes
+
+If the builder is created with prefixes, the keys array would be prefixed with the prefixes, followed by the keys accessed in the register. The prefixes serve as an identifier for each `builder` object created. Although there is no limit to the number of prefixes that can be used, it is advised to use a maximum of three prefixes. The following code snippet demonstrates how to use the `createBuilder` function with prefixes:
+
+```typescript copy
+const builder = createBuilder(register, ["root", "branch"]);
+```
+

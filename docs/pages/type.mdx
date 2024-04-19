@@ -1,0 +1,69 @@
+---
+
+title: createBuilder - type
+description: Get the type of object passed to the builder
+
+---
+
+# createBuilder type
+
+To get the type of object passed to the builder, or the type of a nested property, use the `typeof` operator with the `.typeof` property of the builder. This is useful for type checking the object passed to the builder, or for type checking the return value of a nested property.
+
+## Type Checking with `typeof`
+
+Although the actual value of `builder.typeof` is `undefined`, the type of `builder.typeof` is the type of the object passed to the builder. To get the value, you can use either the `use` or `get` method.
+
+```typescript copy
+const builder = createBuilder({
+  name: "John",
+  age: 42,
+});
+
+// Note that the actual value of builder.typeof is undefined.
+type StoreType = typeof builder.typeof;
+//   ^? { name: string; age: number; }
+
+// Ease of use accessing the type of nested properties.
+type NameType = typeof builder.typeof.name;
+//   ^? string
+```
+
+## Utility Types
+
+You can also use the `ReturnType` and `Parameters` utility types to get the return type of a function, or the parameter type of a function.
+
+```typescript copy
+const builder = createBuilder({
+  getHeight: () => Math.random() + 150,
+  setSize: async (height: number, width: number) => {
+    // ...
+  },
+});
+
+// Use the ReturnType utility to get the return type of a function.
+type Height = ReturnType<typeof builder.typeof.getHeight>
+//   ^? number
+
+// Use the Parameter utility to get the parameter type of a function.
+type Width = Parameters<typeof builder.typeof.setSize>[1]
+//   ^? number
+```
+
+## Using Type Assertions
+
+```typescript copy
+const builder = createBuilder({
+  address: {} as {
+    street: string;
+    city: string;
+    country: string;
+    house: number;
+  },
+});
+
+// Using `as` to assert the type of a property.
+type Address = typeof builder.typeof.address.house
+//   ^? number
+```
+
+You can find more utility types in the [TypeScript documentation](https://www.typescriptlang.org/docs/handbook/utility-types.html).
