@@ -1,65 +1,24 @@
 ---
 
-title: builder - Constructing keys
-description: Creates a builder object for defining keys and values.
+title: builder - Introduction
+description: Introduction to the @ibnlanre/builder package.
 
 ---
-import { Tabs } from 'nextra/components'
 
-# Introduction
+# @ibnlanre/builder
 
-The `@ibnlanre/builder` library is a package designed to streamline dynamic key generation, thus addressing the complex issue of query tagging and cache invalidation. By chaining the branches of a register into an array of keys, it eliminates the need for manual construction of keys. This is achieved through a `builder` object, created using the `createBuilder` function. This object contains methods for retrieving the value of a key, making it easier to locate and reuse keys.
+<blockquote className="nx-text-2xl nx-leading-tight nx-mt-8 nx-border-gray-300 nx-text-justify nx-italic nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">Builder has made <strong>sooo</strong> much sense, not just for its house keeping, but for its simplicity of use, as well as, efficiency. Honestly can't have it any other way.<br /><small>— [Prosper Jaja](https://linkedin.com/in/prosper-jaja-3076aa264)</small></blockquote>
 
-The `@ibnlanre/builder` package is a lightweight package that is easy to use, and can be used in any JavaScript or TypeScript project. It is designed to be flexible and can be used in a variety of scenarios, such as caching, routing, query tagging, and storing data.
+The `@ibnlanre/builder` library is a package designed to streamline dynamic key generation, thus addressing the complex issue of cache key management and invalidation. By chaining the branches of a register into an array of keys, it eliminates the need for manual construction of keys. This is achieved through a `builder` object, created using the `createBuilder` function. This object contains methods for retrieving the value of a key, making it easier to locate and reuse keys.
 
-## Installation
+<blockquote className="nx-text-2xl nx-leading-tight nx-tracking-wide nx-mt-8 nx-border-gray-300 nx-text-justify nx-italic nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">I like builder. It is really nice! It's <strong>lightweight</strong> and robust.<br />Builder is 11k gzipped. That's very very light!<br /><small>— [Hemense Lan](https://linkedin.com/in/hemense-lan)</small></blockquote>
 
-To install the `@ibnlanre/builder` package, you can use either `npm` or `yarn`. The following code snippets demonstrate how to install the package using either of the package managers:
+The `@ibnlanre/builder` package is designed to be lightweight and easy to use, and can be integrated into any project with minimal effort. It's user-friendly and versatile, and can be incorporated into any JavaScript or TypeScript project. The principle behind the package is the generation of keys dynamically, which implies that keys can be used in a variety of scenarios, depending on the requirements of the project.
 
-<Tabs items={['NPM', 'Yarn']}>
-  <Tabs.Tab>
-    ```typescript copy
-    npm install @ibnlanre/builder
-    ```
-  </Tabs.Tab>
+## Motivation
 
-  <Tabs.Tab>
-    ```typescript copy
-    yarn add @ibnlanre/builder
-    ```
-  </Tabs.Tab>
-</Tabs>
+The `@ibnlanre/builder` package was created to address the issue of thinking about and managing keys in a data structure. It simplifies the process of key creation and management by providing a consistent and reliable way to generate keys dynamically. This makes it easier to work with key-based data structures, and shifts the focus from key deliberation to key usage.
 
-## Importing the module
+It is suitable for **large teams** working on complex projects, as it ensures that keys are generated consistently and that values are easily accessible. It automatically synchronizes changes to keys and values, reducing the risk of errors and inconsistencies. It also encourages collocating related keys and values, making it easier to organize and maintain the data structure. By enabling the encapsulation of common functionality into accessible values, it promotes code reuse and improves overall code quality. 
 
-`createBuilder` is exported as a named export from the `@ibnlanre/builder` package. The following code snippet demonstrates how to import the `createBuilder` function:
-
-```typescript copy
-import { createBuilder } from '@ibnlanre/builder';
-```
-
-## Creating a builder
-
-The `builder` object is created using the `createBuilder` function. The `createBuilder` function is a factory function that accepts a register and an optional list of prefixes as arguments, and returns a `builder` object. The resulting `builder` object is a tree-like structure, having the root as the starting point, and the branches as the keys.
-
-The following code snippet demonstrates how to use the `createBuilder` function:
-
-```typescript copy
-const register = {
-  foo: {
-    baz: (id: number) => `/bazaar/${id}`,
-    bar: 10,
-  },
-};
-
-const no_prefix_builder = createBuilder(register);
-```
-
-## Builder with prefixes
-
-If the builder is created with prefixes, the keys array would be prefixed with the prefixes, followed by the keys accessed in the register. The prefixes serve as an identifier for each `builder` object created. Although there is no limit to the number of prefixes that can be used, it is advised to use a maximum of three prefixes. The following code snippet demonstrates how to use the `createBuilder` function with prefixes:
-
-```typescript copy
-const builder = createBuilder(register, ["root", "branch"]);
-```
-
+It is also suitable for **small teams** and **individual developers** working on smaller projects, seeking a type-safe and efficient way to work with keys. It is an invaluable tool for developers who want to focus on building features rather than managing keys, in an organized fashion.

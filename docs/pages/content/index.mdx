@@ -1,6 +1,6 @@
 ---
 
-title: createBuilder - Constructing keys
+title: builder - Constructing keys
 description: Learn how to construct keys using the builder object.
 
 ---
@@ -40,15 +40,15 @@ builder.foo.baz.get(); // ["root", "branch", "foo", "baz"]
 builder.foo.baz.get("test"); // ["root", "branch", "foo", "baz", "test"]
 ```
 
-## Transforming the key using .join
+## Transforming the key
 
-Because the `key` returned from calling the `use` or `get` function is an array of strings, it is possible to transform the key using the `join` method. The `join` method is a function that concatenates the strings in the array, using a separator.
+Because the `key` returned from calling the `use` or `get` function is an array of strings, it is possible to transform the key using any array method. One of such methods is the `join` method. The `join` method is a function that concatenates the value in an array into a single string, using a separator.
 
 The following code snippet demonstrates how to use the `join` functions:
 
 ```typescript copy
 builder.foo.baz.get().join("."); // "root.branch.foo.baz"
 
-// notice the `slice` function is used to remove the first two elements of the array.
+// notice the `slice` function is used to extract the first two elements of the array.
 builder.foo.baz.use(11).slice(2).join("/"); // "foo/baz/11"
 ```

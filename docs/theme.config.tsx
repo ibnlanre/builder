@@ -35,6 +35,7 @@ const config: DocsThemeConfig = {
       </span>
     </div>
   ),
+  logoLink: "/",
   primaryHue: {
     dark: 78,
     light: 0,

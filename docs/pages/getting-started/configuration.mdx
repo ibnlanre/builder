@@ -1,0 +1,43 @@
+---
+
+title: builder - Configuration
+description: Configuration guide for the @ibnlanre/builder package.
+
+---
+
+# Configuration
+
+To use the `@ibnlanre/builder` package, you need to create a `builder` object from a register. A register is a plain object that contains the keys and values that you want to access. The register can contain nested objects, functions, or values. It is passed as an argument to the `createBuilder` function, which returns a `builder` object. The `builder` object provides methods for key generation and value retrieval from the register. This guide explains how to create a `builder` object and use it to access keys and values from the register. 
+
+The following code snippet demonstrates how to import the `createBuilder` function:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+```
+
+## Creating a builder
+
+The `createBuilder` function is a factory function that accepts a register and an optional list of prefixes as arguments, and returns a `builder` object. The resulting `builder` object is a tree-like structure, having the root of the register as its starting point, and the branches as its keys. `createBuilder` is exported as a named export from the `@ibnlanre/builder` package.
+
+The following code snippet demonstrates how to create a `builder` object using the `createBuilder` function:
+
+```typescript copy
+const register = {
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+};
+
+const noPrefixBuilder = createBuilder(register);
+```
+
+## Builder with prefixes
+
+If the builder is created with prefixes, the generated keys array would be prefixed with the prefixes, followed by the keys accessed in the register. The prefixes serve as an identifier for each `builder` object created. Although there is no limit to the number of prefixes that can be used, it is advised to use a maximum of three prefixes.
+
+The following code snippet demonstrates how to use the `createBuilder` function with prefixes:
+
+```typescript copy
+const builder = createBuilder(register, ["root", "branch"]);
+```

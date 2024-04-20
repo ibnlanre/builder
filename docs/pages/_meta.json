@@ -1,6 +1,8 @@
 {
-  "index": "Getting started",
-  "constructing-keys": "Constructing keys",
+  "index": "Introduction",
+  "getting-started": "Getting started",
+  "overview": "Overview",
+  "content": "Content",
   "retrieving-values": "Retrieving values",
   "external-libraries": "External libraries",
   "type": "Type"
