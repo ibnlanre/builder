@@ -7,7 +7,7 @@ description: Accessing types in the @ibnlanre/builder package.
 
 # Accessing types
 
-The `builder` object provides a type-safe way to access the values stored in the register. The type of the register is inferred from the values passed to the `createBuilder` function during initialization. This ability is unique to the root branch of the `builder` object, as it is effectively the register itself. This document explains how to access the type of the register using the `builder` object.
+The `builder` object provides a type-safe way to access the values stored in the register. The type of the register is inferred from the values passed to the `createBuilder` function during initialization. This ability is unique to the root node of the `builder` object, as it is effectively the register itself. This document explains how to access the type of the register using the `builder` object.
 
 An example of a `builder` object created from a register is shown below:
 
@@ -26,9 +26,9 @@ const builder = createBuilder(register);
 
 ## The `map` property
 
-The preferred way to access the type of the register is to use the `map` property on the root branch of the `builder` object. The `map` property returns the inferred type of the register, which is useful in cases involving an interface or type assignment. Unlike the `use` and `get` methods, `map` is not a function, and is exclusive to the root branch of the `builder` object. Although, it is possible to see the type of the register by hovering over the `builder` object in an IDE, the `map` property provides a way to access the type programmatically. 
+The preferred way to access the type of the register is to use the [map](/overview/accessing-types#the-map-property) property on the root node of the `builder` object. The [map](/overview/accessing-types#the-map-property) property returns the inferred type of the register, which is useful in cases involving an interface or type assignment. Unlike the [use](/overview#the-use-method) and `get` methods, [map](/overview/accessing-types#the-map-property) is not a function, and is exclusive to the root node of the `builder` object. Although, it is possible to see the type of the register by hovering over the `builder` object in an IDE, the [map](/overview/accessing-types#the-map-property) property provides a way to access the type programmatically. 
 
-The following code snippet demonstrates how to retrieve the type of the register using the `map` property:
+The following code snippet demonstrates how to retrieve the type of the register using the [map](/overview/accessing-types#the-map-property) property:
 
 ```typescript copy
 const map = builder.map.user.name
@@ -37,7 +37,7 @@ console.log(map); // Output: string
 
 ### Checking the `register`
 
-The type of the values stored in the register can be accessed directly using the `typeof` operator. This is useful when the register exists within the location of use. The following code snippet demonstrates how to access the type of the register using the `typeof` operator:
+The type of the values stored in the register can be accessed directly using the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator. This is useful when the register exists within the location of use. The following code snippet demonstrates how to access the type of the register using the `typeof` operator:
 
 ```typescript copy
 type UserName = typeof register.user.name;
@@ -45,10 +45,12 @@ type UserName = typeof register.user.name;
 
 ### Using the `use` method
 
-The `use` method carries the associated type of the every accessed key, but its primary purpose is to access a value from the register. It is also a function, and therefore cannot be used to access the type directly.
+The [use](/overview#the-use-method) method carries the associated type of every accessed key, but its primary purpose is to retrieves keys and values from the register. It is also a function, and therefore cannot be used to access the type directly.
 
-To access the type using the `use` method, would require the use of the `typeof` operator, as well as, the ReturnType utility type. Accessing nested types would also require the use of `brackets` notation. This makes the using `use` a chore for accessing the type of the register. The `map` property a more convenient way to access the type of the register, using `dot` notation.
+To access the type using the [use](/overview#the-use-method) method, would require the use of the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator, as well as, the [ReturnType](https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype) utility type. Accessing nested types would also require the use of [bracket](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation) notation. This makes using [use](/overview#the-use-method) a chore for accessing the type of the register. The [map](/overview/accessing-types#the-map-property) property provides a more convenient way to access the type of the register, using [dot](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) notation.
 
 ## Conclusion
 
-In summary, the root branch is the only branch that return the register when accessed using the `use` method. The `get` method returns the prefixes used to create the `builder` object, and the `map` property returns the inferred type of the register. This behavior is different from the other branches, which generate keys from the nested keys of the register. The root branch is a special case, and it is important to understand how it works.
+In summary, the root node is the only node that return the register when accessed using the [use](/overview#the-use-method) method. The `get` method returns the prefixes used to create the `builder` object, and the [map](/overview/accessing-types#the-map-property) property returns the inferred type of the register. This behavior is different from the other nodes, which generate keys from the nested keys of the register. The root node is a special case, and it is important to understand how it works.
+
+For more information on the `builder` object, see the [overview](/overview) page.

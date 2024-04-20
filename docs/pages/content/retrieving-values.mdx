@@ -5,9 +5,9 @@ description: Retrieving register values
 
 ---
 
-# The root branch
+# The root node
 
-The root is the starting point of the `builder` object. It is effectively the register, which is passed to the `createBuilder` function. The root branch is the first branch of the `builder` object, and it is the only branch that does not have a key. The root branch is the only branch that can be accessed using the `use` function, and it returns the register itself. The `get` function on the other hand, returns the prefixes used to create the `builder` object.
+The root is the starting point of the `builder` object. It is effectively the register, which is passed to the `createBuilder` function. The root node is the first node of the `builder` object, and it is the only node that does not have a key. The root node is the only node that can be accessed using the `use` function, and it returns the register itself. The `get` function on the other hand, returns the prefixes used to create the `builder` object.
 
 ```typescript copy
 const builder = createBuilder({
@@ -15,14 +15,14 @@ const builder = createBuilder({
     baz: (id: number) => `/bazaar/${id}`,
     bar: 10,
   },
-}, ["root", "branch"]);
+}, ["root", "node"]);
 ```
 
 ## Accessing register values
 
-Calling the `use` function on the root branch returns the register itself. As a consequence, this allows us to access the nested values of the register. This is a different behavior from the other branches, which instead, generates a key from the nested keys of the register.
+Calling the `use` function on the root node returns the register itself. As a consequence, this allows us to access the nested values of the register. This is a different behavior from the other nodes, which instead, generates a key from the nested keys of the register.
 
-The following code snippet demonstrates how to retrieve the root branch:
+The following code snippet demonstrates how to retrieve the root node:
 
 ```typescript copy
 builder.use(); // { foo: { baz: [Function: baz], bar: 10 } }
@@ -36,10 +36,10 @@ builder.use().foo.bar; // 10
 
 ## Retrieving the prefixes
 
-Similarly, calling the `get` function on the root branch returns the prefixes associated with the `builder` object. If no prefix is set, the `get` function returns an empty array. 
+Similarly, calling the `get` function on the root node returns the prefixes associated with the `builder` object. If no prefix is set, the `get` function returns an empty array. 
 
-The following code snippet demonstrates how to retrieve the root branch using the `get` function:
+The following code snippet demonstrates how to retrieve the root node using the `get` function:
 
 ```typescript copy
-builder.get(); // ["root", "branch"]
+builder.get(); // ["root", "node"]
 ```

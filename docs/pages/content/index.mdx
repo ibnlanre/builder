@@ -7,7 +7,7 @@ description: Learn how to construct keys using the builder object.
 
 # Constructing keys
 
-The main motivation behind the `builder` object is to provide a way of defining keys and values, without having to worry about constructing a meaningful key, or accessing its corresponding value. Generating the key requires either the `use` or `get` function. These functions are found at every level of the `builder` object. The `key` returned from calling the `use` or `get` function is an array of strings, crafted from the branches in the register.
+The main motivation behind the `builder` object is to provide a way of defining keys and values, without having to worry about constructing a meaningful key, or accessing its corresponding value. Generating the key requires either the `use` or `get` function. These functions are found at every level of the `builder` object. The `key` returned from calling the `use` or `get` function is an array of strings, crafted from the nodes in the register.
 
 ```typescript copy
 const builder = createBuilder({
@@ -15,18 +15,18 @@ const builder = createBuilder({
     baz: (id: number) => `/bazaar/${id}`,
     bar: 10,
   },
-}, ["root", "branch"]);
+}, ["root", "node"]);
 ```
   
 
 ## `.use` function
 
-The `use` function is used to retrieve the keys, expecting the same signature as the defined value. If the value of that branch is a primitive value, object or array, the `use` function expects no arguments. However, if the value is a function that expects arguments, the `use` function expects the same arguments. `foo.baz` is a function that expects an `id` of `number` type, therefore, the `use` function expects an `id` of `number` type as well. If the argument was optional, it would equally be optional.
+The `use` function is used to retrieve the keys, expecting the same signature as the defined value. If the value of that node is a primitive value, object or array, the `use` function expects no arguments. However, if the value is a function that expects arguments, the `use` function expects the same arguments. `foo.baz` is a function that expects an `id` of `number` type, therefore, the `use` function expects an `id` of `number` type as well. If the argument was optional, it would equally be optional.
 
 The following code snippet demonstrates how to use the `use` function:
 
 ```typescript copy
-builder.foo.baz.use(11); // ["root", "branch", "foo", "baz", 11]
+builder.foo.baz.use(11); // ["root", "node", "foo", "baz", 11]
 ```
 
 ## `.get` function
@@ -36,8 +36,8 @@ The `get` function is used to retrieve the keys, without following the pattern d
 The following code snippet demonstrates how to use the `get` function:
 
 ```typescript copy
-builder.foo.baz.get(); // ["root", "branch", "foo", "baz"]
-builder.foo.baz.get("test"); // ["root", "branch", "foo", "baz", "test"]
+builder.foo.baz.get(); // ["root", "node", "foo", "baz"]
+builder.foo.baz.get("test"); // ["root", "node", "foo", "baz", "test"]
 ```
 
 ## Transforming the key
@@ -47,7 +47,7 @@ Because the `key` returned from calling the `use` or `get` function is an array 
 The following code snippet demonstrates how to use the `join` functions:
 
 ```typescript copy
-builder.foo.baz.get().join("."); // "root.branch.foo.baz"
+builder.foo.baz.get().join("."); // "root.node.foo.baz"
 
 // notice the `slice` function is used to extract the first two elements of the array.
 builder.foo.baz.use(11).slice(2).join("/"); // "foo/baz/11"

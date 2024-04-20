@@ -17,22 +17,48 @@ import { createBuilder, hasTypes } from "./dist";
 // const y = builder.use();
 // const z = builder.map;
 
-const register = {
-  user: {
-    id: 1,
-    name: "John Doe",
-    email: "johndoe@jmail.com",
-  },
-  post: {
-    id: 1,
-    title: "Hello, World!",
-    content: "This is my first post.",
-  },
+// const register = {
+//   user: {
+//     id: 1,
+//     name: "John Doe",
+//     email: "johndoe@jmail.com",
+//   },
+//   post: {
+//     id: 1,
+//     title: "Hello, World!",
+//     content: "This is my first post.",
+//   },
+// };
+
+// const builder = createBuilder(register);
+// const userName = builder.use().user.name;
+
+// type User = ReturnType<typeof builder.use>["user"];
+
+// type UserName = typeof register.user.name;
+
+const create = (data: { email: string; password: string }) => {
+  return fetch("/account/create", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    method: "POST",
+  });
 };
 
-const builder = createBuilder(register);
-const userName = builder.use().user.name;
+const delete_account = (id: number) => {
+  return fetch(`/account/${id}/delete`, {
+    method: "DELETE",
+  });
+};
 
-type User = ReturnType<typeof builder.use>["user"];
+const register = createBuilder({
+  account: {
+    delete_account,
+    create,
+  },
+});
 
-type UserName = typeof register.user.name;
+register.account.create.get("test", { email: "test", password: "test" });

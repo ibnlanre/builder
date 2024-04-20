@@ -13,7 +13,7 @@
     font-family: "Cabin", "sans-serif";
     color: #cdcdcd;
     background-color: #000;
-    font-size: 16px;
+    font-size: 18px;
 
     /* Font Smoothing https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth */
     -webkit-font-smoothing: antialiased;
@@ -24,7 +24,7 @@
     color: inherit;
     text-decoration: none;
   }
-  
+
   h1,
   h2,
   h3,
@@ -33,7 +33,11 @@
     letter-spacing: normal !important;
   }
 
-  a, summary, button, input, [tabindex]:not([tabindex="-1"]) {
+  a,
+  summary,
+  button,
+  input,
+  [tabindex]:not([tabindex="-1"]) {
     &:focus-visible {
       --tw-ring-shadow: none !important;
       border-color: var(--tw-ring-color);
