@@ -1,0 +1,56 @@
+---
+
+title: Retrieving values
+description: Retrieving register values using the @ibnlanre/builder package.
+
+---
+
+# The root node
+
+The root node, the starting point and first node of the builder object, behaves differently from other nodes when interacting with the `use` and `get` methods. When accessed using the `use` method, the root node returns the register itself, which is effectively the input to the [createBuilder][2] function.
+
+Conversely, the `get` method returns the prefixes used to create the builder object. Unique to the root node is its lack of a key. However, a key can be assigned by passing an array of strings as a second argument to the [createBuilder][2] function, which then serves as the key for the root node and a prefix for other nodes.
+
+This guide elucidates the behavior of the `use` and `get` methods specifically on the root node of the builder object.
+
+```typescript copy
+const builder = createBuilder({
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+}, ["root", "node"]);
+```
+
+## Retrieving values
+
+Invoking the `use` method on the root node returns the register in its entirety, thereby enabling access to its values. This behavior is distinct from that of other nodes, which generate a key derived from the nested keys within the register, rather than providing direct access to the nested values.
+
+Because of the dual-purpose nature of the `use` method, it is important to distinguish between the `use` method that returns the value and the `use` method that returns the key. The rule of thumb is to remember that the `use` method that returns the value is always situated closest to the root node. While the `use` method that returns the key is always situated at the end of the chain.
+
+The following code snippet demonstrates how to retrieve register values:
+
+```typescript copy
+builder.use(); // { foo: { baz: [Function: baz], bar: 10 } }
+
+// Accessing a nested function value
+builder.use().foo.baz(12); // "/bazaar/12"
+
+// Accessing a nested primitive value
+builder.use().foo.bar; // 10
+```
+
+## Builder prefix
+
+The root node, unique in its initial lack of a key, can be assigned one by passing an array of strings as a second argument to the [createBuilder][2] function. This array not only serves as the key for the root node but also as a prefix for other nodes. When the get method is invoked on the root node, it returns the prefixes that were used to create the [builder][3] object. If no prefix has been set, this method will return an empty array, reflecting the absence of associated prefixes.
+
+The following code snippet demonstrates how to retrieve the root key:
+
+```typescript copy
+builder.get(); // ["root", "node"]
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts#defining-registers

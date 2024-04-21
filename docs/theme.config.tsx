@@ -22,14 +22,14 @@ const config: DocsThemeConfig = {
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
-          content="{process.env.NEXT_PUBLIC_BASE_URL}/portal-logo.png"
+          content="{process.env.NEXT_PUBLIC_BASE_URL}/builder-logo.png"
         />
       </>
     );
   },
   logo: (
     <div style={logoStyle}>
-      <img height="25" width="25" src="/portal-logo.png" />
+      <img height="25" width="25" src="/builder-logo.png" />
       <span className="text-primary" style={{ marginLeft: "8px" }}>
         Builder Docs
       </span>
@@ -53,7 +53,9 @@ const config: DocsThemeConfig = {
           width="1em"
           height="1em"
           viewBox="0 0 24 24"
-          className="text-[1.75rem]"
+          style={{
+            fontSize: 28,
+          }}
         >
           <mask id="lineMdBuyMeACoffeeTwotone0">
             <path

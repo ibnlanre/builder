@@ -1,0 +1,52 @@
+---
+
+title: Overview
+description: Overview of the @ibnlanre/builder package.
+
+---
+
+# Nodes
+
+Upon creating a `builder` object, the `use` and `get` methods are added to every level of the object. The behavior of these methods on the root is different from the behavior of the same methods on the other levels of the object. The root node is the first node of the `builder` object, and it is the only node that does not have a key. To assign it a key, we can pass an array of strings as a second argument to the `createBuilder` function. This array of strings is used as the prefix for the root node. This guide explains the behavior of the `use` and `get` methods on the root node of the `builder` object.
+
+The following code snippet is an example builder object created from a register:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+
+const register = {
+  post: {
+    id: 1,
+    title: 'Hello, World!',
+    content: 'This is my first post.'
+  }
+};
+
+const builder = createBuilder(register, ["news"]);
+```
+
+## Methods
+
+The root level of the `builder` object has two methods that can be used to access the values passed to the `createBuilder` function during initialization. This is useful when we need to access the values stored in the register. These methods are:
+
+### The `use` method
+
+The root node is the only node that can be accessed using the `use` method that returns the register itself. Calling the `use` method on the root node returns the register itself. As a consequence, this allows us to access the nested values of the register. This is a different behavior from the other nodes, which instead, generates a key from the nested keys of the register.
+
+For example, to retrieve the title of the post from the register, we can use the following code:
+
+```typescript copy
+const postTitle = builder.use().post.title;
+console.log(postTitle); // Output: Hello, World!
+```
+
+### The `get` method
+
+Similarly, calling the `get` method on the root node returns the prefixes associated with the `builder` object. If no prefix is set, the `get` method returns an empty array. This is because the root node does not have any prefixes associated with it. The prefix is appended to the key generated from the nested keys of the register.
+
+The following code snippet demonstrates how to retrieve prefixes using the `get` method:
+
+```typescript copy
+const prefixes = builder.get();
+console.log(prefixes); // Output: ["news"]
+```

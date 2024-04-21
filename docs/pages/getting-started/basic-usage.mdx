@@ -1,0 +1,63 @@
+---
+
+title: Basic Usage
+description: Basic usage of the @ibnlanre/builder package.
+
+---
+
+# Basic Usage
+
+The `@ibnlanre/builder` package provides a simple and efficient way to generate and manage keys in a nested object. It requires you to create a register object with nested keys and values, and provides functions to access and retrieve those values through a builder object.
+
+This guide will walk you through the basic usage of the `@ibnlanre/builder` package, including creating a builder object, accessing values, and retrieving prefixes.
+
+To use the @ibnlanre/builder library, follow these steps:
+
+1. Import the createBuilder function from the library:
+
+    ```typescript
+    import { createBuilder } from '@ibnlanre/builder';
+    ```
+
+2. Create a register object with nested keys and values:
+
+    ```typescript
+    const register = {
+      foo: {
+        baz: (id: number) => `/bazaar/${id}`,
+        bar: 10,
+      },
+    }
+    ```
+
+3. Create a builder object using the createBuilder function:
+
+    ```typescript
+    const builder = createBuilder(register, ["root", "node"]);
+    ```
+
+4. Access the register values using the builder object:
+
+    ```typescript
+    // Accessing the register values
+    builder.use(); // { foo: { baz: [Function: baz], bar: 10 } }
+
+    // Accessing a nested function value
+    builder.use().foo.baz(12); // "/bazaar/12"
+
+    // Accessing a nested primitive value
+    builder.use().foo.bar; // 10
+    ```
+
+5. Generate keys using the builder object:
+
+    ```typescript
+    // Retrieving the root key
+    builder.get(); // ["root", "node"]
+
+    // Accessing a nested function key
+    builder.foo.baz.use(12); // ["root", "node", "foo", "baz", 12]
+
+    // Accessing a nested primitive key
+    builder.foo.bar.use(); // ["root", "node", "foo", "bar"]
+    ```

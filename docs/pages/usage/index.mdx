@@ -1,0 +1,63 @@
+---
+
+title: Constructing keys
+description: Learn how to construct keys using the builder object.
+
+---
+
+import { Callout } from "components";
+
+# Constructing keys
+
+The [@ibnlanre/builder][1] package provides a mechanism for constructing keys using the [builder][3] object. This process is facilitated by the `use` and `get` methods, which are available at every level of the [builder][3] object.
+
+These methods are designed to access the [register][4]'s values, as well as, generate keys from the [register][4]'s nodes. While they perform similar operations, there is a subtle difference. The `use` method adheres to the pattern defined by the node's value, whereas the `get` method does not.
+
+<Callout type="info">
+  The `use` method invoked on the root node does not return a key, but the `get` method does.
+</Callout>
+
+The following code snippet shows the sample [builder][3] that would be used in this guide:
+
+```typescript copy
+const builder = createBuilder({
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+}, ["root"]);
+```
+
+## Uniform signature
+
+The `use` method is used to retrieve the keys, expecting the same signature as the defined value. If the value of that node is a primitive value, object or array, the `use` method expects no arguments. However, if the value is a function that expects arguments, the `use` method expects the same arguments.
+
+`foo.baz` is a function that expects an `id` of `number` type, therefore, the `use` method expects an `id` of `number` type as well. If the argument was optional, it would equally be optional. Likewise, if the value is a function that no arguments, the `use` method would not expect any arguments.
+
+The following code snippet demonstrates how to use the `use` method:
+
+```typescript copy
+builder.foo.baz.use(11); // ["root", "foo", "baz", 11]
+```
+
+## Variable signature
+
+The `get` method is used to retrieve the keys, without following the pattern defined by the value. It expects an arbitrary number of arguments, which are added to the returned key. This flexibility exhibited by the `get` method is particularly useful when you want to add more keys to the returned array of strings. The arguments can be of any type, and they are added to the returned key in the order they are passed.
+
+The following code snippet demonstrates how to retrieve nested node keys:
+
+```typescript copy
+// Invoking the `get` method without any arguments
+builder.foo.baz.get(); // ["root", "foo", "baz"]
+
+// Invoking the `get` method with a string argument
+builder.foo.baz.get("test"); // ["root", "foo", "baz", "test"]
+
+// Invoking the `get` method with multiple arguments
+builder.foo.baz.get("test", { id: 11 }); // ["root", "foo", "baz", "test", { id: 11 }]
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts#defining-registers

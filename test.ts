@@ -1,21 +1,23 @@
-import { createBuilder, hasTypes } from "./dist";
+import { Intersect } from "@ibnlanre/types";
+import { createBuilder, hasTypes } from "./src";
 
-// const builder = createBuilder({
-//   foo: {
-//     bar: hasTypes({
-//       baz: (a: number, b: string) => a + b,
-//     })<{
-//       hello: "world";
-//     }>(),
-//   },
-// });
+const builder = createBuilder({
+  foo: {
+    bar: hasTypes({
+      baz: (a: number, b: string) => a + b,
+    })<{
+      hello: string;
+    }>(),
+  },
+});
 
-// builder.map.foo.bar.has.hello;
-// const test = builder.foo.bar.get("test", { hello: "world" }, 8, 74n).join("/");
+const test = builder.foo.bar.get("test", { hello: "world" }, 8, 74n).join("/");
 
-// const x = builder.get();
-// const y = builder.use();
-// const z = builder.map;
+const x = builder.use();
+const y = builder.foo.bar.use();
+const z = builder.foo.get();
+
+// ========================================================
 
 // const register = {
 //   user: {
@@ -37,28 +39,38 @@ import { createBuilder, hasTypes } from "./dist";
 
 // type UserName = typeof register.user.name;
 
-const create = (data: { email: string; password: string }) => {
-  return fetch("/account/create", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    method: "POST",
-  });
+// ========================================================
+
+// const create = (data: { email: string; password: string }) => {
+//   return fetch("/account/create", {
+//     headers: {
+//       Accept: "application/json",
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//     method: "POST",
+//   });
+// };
+
+// const delete_account = (id: number) => {
+//   return fetch(`/account/${id}/delete`, {
+//     method: "DELETE",
+//   });
+// };
+
+// const register = createBuilder({
+//   account: {
+//     delete_account,
+//     create,
+//   },
+// });
+
+// register.account.create.get("test", { email: "test", password: "test" });
+// type x = typeof register.map.account.create;
+
+type List = {
+  data: {
+    id: number;
+    name: string;
+  }[];
 };
-
-const delete_account = (id: number) => {
-  return fetch(`/account/${id}/delete`, {
-    method: "DELETE",
-  });
-};
-
-const register = createBuilder({
-  account: {
-    delete_account,
-    create,
-  },
-});
-
-register.account.create.get("test", { email: "test", password: "test" });

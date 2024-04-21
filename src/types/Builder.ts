@@ -14,7 +14,7 @@ export type Builder<
   Register extends Dictionary,
   Prefix extends string[] = []
 > = {
-  map: DeepRequired<Register>;
+  unbuild: DeepRequired<Register>;
   use: () => OmitOptionalValues<Register>;
   get: () => Prefix;
 } & KeyBuilder<Register, Prefix>;

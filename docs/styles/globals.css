@@ -13,7 +13,7 @@
     font-family: "Cabin", "sans-serif";
     color: #cdcdcd;
     background-color: #000;
-    font-size: 18px;
+    font-size: 16px;
 
     /* Font Smoothing https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth */
     -webkit-font-smoothing: antialiased;

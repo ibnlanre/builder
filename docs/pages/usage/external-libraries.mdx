@@ -1,16 +1,17 @@
 ---
 
-title: createBuilder - External libraries
-description: Learn how to use the createBuilder function to generate keys for asynchronous state management libraries.
+title: External libraries
+description: Working with asynchronous state management libraries using the @ibnlanre/builder package.
 
 ---
+
 import { Tabs } from 'nextra/components'
 
 # External libraries
 
 The `builder` object is useful for generating keys for asynchronous state management libraries, such as [Tanstack Query](https://tanstack.com/query/latest) and SWR ([Stale-While-Revalidate](https://swr.vercel.app/)). This eliminates the need to manually construct keys for each query, and reduces the risk of inconsistencies and conflicts.
 
-The values of the nested keys in the `builder` object can be made function queries, making it a documentation for the various endpoints to the API. This approach simplifies code maintenance, dynamic key generation, and refactoring, as the `builder` object becomes the single source of truth for all queries.
+The values of the nested keys in the `builder` object can be made function queries, making it a documentation for the various endpoints to any given API. This approach simplifies code maintenance, dynamic key generation, and refactoring, as the `builder` object becomes the single source of truth for all queries.
 
 The following code snippet demonstrates how to define an **api** builder using `createBuilder`:
 

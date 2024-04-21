@@ -1,0 +1,40 @@
+---
+
+title: createBuilder
+description: Guide on how to create a builder object from a register.
+
+---
+
+# createBuilder
+
+The `createBuilder` function is a factory function that accepts a [register][4] and an optional list of prefixes as arguments. `createBuilder` is exported as a named export from the [@ibnlanre/builder][1] package. This guide explains how to create a [builder][3] object using the `createBuilder` function.
+
+The following code snippet demonstrates how to import the `createBuilder` function:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+```
+
+## Creating a builder
+To get started with the [@ibnlanre/builder][1] package, you need to create a [builder][3] object using the `createBuilder` function. The `createBuilder` function takes two arguments: the register object and an optional array of prefixes. The register object is a nested object that contains keys and values, while the prefixes array is used to generate keys for the register object.
+
+The following code snippet demonstrates how to create a [builder][3] object using the `createBuilder` function:
+
+```typescript copy
+const noPrefixBuilder = createBuilder(register);
+```
+
+## Builder with prefixes
+
+If the [builder][3] object is created with prefixes, the generated keys array would be prefixed with the prefixes, followed by the keys accessed in the [register][4]. The prefixes serve as an identifier for each [builder][3] object created. Although there is no limit to the number of prefixes that can be used, it is advised to use a maximum of three prefixes.
+
+The following code snippet demonstrates how to use the `createBuilder` function with prefixes:
+
+```typescript copy
+const builder = createBuilder(register, ["user", "record"]);
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts#defining-registers

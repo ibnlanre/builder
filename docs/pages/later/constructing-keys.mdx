@@ -1,6 +1,6 @@
 ---
 
-title: builder - Constructing keys
+title: Constructing keys
 description: Learn how to construct keys using the builder object.
 
 ---
@@ -27,28 +27,4 @@ The following code snippet demonstrates how to use the `use` function:
 
 ```typescript copy
 builder.foo.baz.use(11); // ["root", "node", "foo", "baz", 11]
-```
-
-## `.get` function
-
-The `get` function is used to retrieve the keys, without following the pattern defined by the value. It expects an arbitrary number of arguments, which are added to the returned array of strings. This flexibility is useful when you want to add more keys that are not defined in the register.
-
-The following code snippet demonstrates how to use the `get` function:
-
-```typescript copy
-builder.foo.baz.get(); // ["root", "node", "foo", "baz"]
-builder.foo.baz.get("test"); // ["root", "node", "foo", "baz", "test"]
-```
-
-## Transforming the key
-
-Because the `key` returned from calling the `use` or `get` function is an array of strings, it is possible to transform the key using any array method. One of such methods is the `join` method. The `join` method is a function that concatenates the value in an array into a single string, using a separator.
-
-The following code snippet demonstrates how to use the `join` functions:
-
-```typescript copy
-builder.foo.baz.get().join("."); // "root.node.foo.baz"
-
-// notice the `slice` function is used to extract the first two elements of the array.
-builder.foo.baz.use(11).slice(2).join("/"); // "foo/baz/11"
 ```

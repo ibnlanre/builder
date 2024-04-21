@@ -1,5 +1,6 @@
 import type { Dictionary } from "@ibnlanre/types";
 import type { Builder, KeyBuilder } from "../types";
+import { hasTypes } from "../has-types";
 
 function isFunction(value: any): value is (...args: any) => any {
   return typeof value === "function";
@@ -25,10 +26,10 @@ function isDictionary(value: any): value is Dictionary {
 export function createBuilder<
   Register extends Dictionary,
   const Prefix extends string[] = []
->(register: Register, prefix?: Prefix): Builder<Register, Prefix> {
+>(register: Register, prefix?: Prefix) {
   const keys = Object.keys(register) as Array<keyof Register>;
 
-  const builder = keys.reduce((acc, key) => {
+  const branches = keys.reduce((acc, key) => {
     const value = register[key];
     const newPath = prefix ? prefix.concat([key as string]) : [key as string];
 
@@ -64,11 +65,13 @@ export function createBuilder<
     };
   }, {} as KeyBuilder<Register>);
 
-  return Object.assign(
+  const builder = Object.assign(
     {
       use: () => register,
       get: () => prefix,
     },
-    builder
+    branches
   ) as Builder<Register, Prefix>;
+
+  return builder;
 }
