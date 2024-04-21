@@ -9,11 +9,11 @@ import { Tabs } from 'nextra/components'
 
 # External libraries
 
-The `builder` object is useful for generating keys for asynchronous state management libraries, such as [Tanstack Query](https://tanstack.com/query/latest) and SWR ([Stale-While-Revalidate](https://swr.vercel.app/)). This eliminates the need to manually construct keys for each query, and reduces the risk of inconsistencies and conflicts.
+The [builder][3] object is useful for generating keys for asynchronous state management libraries, such as [Tanstack Query](https://tanstack.com/query/latest) and SWR ([Stale-While-Revalidate](https://swr.vercel.app/)). This eliminates the need to manually construct keys for each query, and reduces the risk of inconsistencies and conflicts.
 
-The values of the nested keys in the `builder` object can be made function queries, making it a documentation for the various endpoints to any given API. This approach simplifies code maintenance, dynamic key generation, and refactoring, as the `builder` object becomes the single source of truth for all queries.
+The values of the nested keys in the [builder][3] object can be made function queries, making it a documentation for the various endpoints to any given API. This approach simplifies code maintenance, synchronizing values, generating keys, refactoring, and managing cache invalidation, as the [builder][3] object becomes the single source of truth for all queries.
 
-The following code snippet demonstrates how to define an **api** builder using `createBuilder`:
+The following code snippet demonstrates how to define an **api** builder using [createBuilder][2]:
 
 ```typescript copy
 type List = {
@@ -49,9 +49,13 @@ const api = createBuilder({
 });
 ```
 
-## Generating the query key using the `use` function
+## Queries
 
-The `use` function is used to retrieve the query key because although the `list` function is defined as a function query, it does not accept any parameters.
+The `api` object above contains two endpoints, `retailers` and `products`, each with a `list` and `delete` function query. The `list` function query is used to retrieve a list of items, while the `delete` function query is used to delete an item.
+
+### Using the `use` method
+
+The `use` method is used to retrieve the query key because although the `list` function is defined as a function query, it does not accept any parameters.
 
 <Tabs items={['Tanstack Query', 'SWR']}>
   <Tabs.Tab>
@@ -75,8 +79,9 @@ The `use` function is used to retrieve the query key because although the `list`
   </Tabs.Tab>
 </Tabs>
 
+### Using the `get` method
 
-It is common to use the `use` function to retrieve the query key, as it is the most common use case. However, the `get` function can also be used to retrieve the query key. And in some cases, it is more suitable to use the `get` function when we want to include arbitrary parameters in the query key.
+It is common to use the `use` method to retrieve the query key, as it is the most common use case. However, the `get` method can also be used to retrieve the query key. And in some cases, it is more suitable to use the `get` method when we want to include arbitrary parameters in the query key.
 
 <Tabs items={['Tanstack Query', 'SWR']}>
   <Tabs.Tab>
@@ -100,33 +105,13 @@ It is common to use the `use` function to retrieve the query key, as it is the m
   </Tabs.Tab>
 </Tabs>
 
-## Generating the query key with parameters:
+## Mutations
 
-In the example below, the `get` function is used instead of the `use` function to retrieve the `mutationKey`. This is because the `api.retailers.delete` node is a function that accepts its argument as `{ id: 5 }` instead of a number. 
+Mutations are used to update or delete data on the server. The `delete` function query is used to delete an item from the server. The `api.retailers.delete` node is a function that expects an object with an `id` property, as an argument.
 
-<Tabs items={['Tanstack Query', 'SWR']}>
-  <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useMutation({
-    mutationKey: api.retailers.delete.get(5, "alive"), 
-    //                                ^? ["retailers", "delete", 5, "alive"]
-    mutationFn: () => api.use().retailers.delete({ id: 5 })
-  });
-  ```
-  </Tabs.Tab>
+### Using the `use` method
 
-  <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useSWR(
-    api.retailers.delete.get(5, "alive"), 
-    //                   ^? ["retailers", "delete", 5, "alive"]
-    api.use().retailers.delete
-  );
-  ```
-  </Tabs.Tab>
-</Tabs>
-
-Since we wanted the flexibility to pass the argument how we choose, we used the `get` function to retrieve the key. If we'd intended to pass the argument the way it was defined, we would have used the `use` function instead.
+In the following example, the `use` method is used to retrieve the mutation key. The `use` method expects the same number of arguments as the function query.
 
 <Tabs items={['Tanstack Query', 'SWR']}>
   <Tabs.Tab>
@@ -150,25 +135,61 @@ Since we wanted the flexibility to pass the argument how we choose, we used the 
     </Tabs.Tab>
 </Tabs>
 
+### Using the `get` method
+
+If, for some reason, you want to pass the argument in a different way, you can use the `get` method to retrieve the mutation key. 
+
+<Tabs items={['Tanstack Query', 'SWR']}>
+  <Tabs.Tab>
+  ```typescript copy
+  const { mutate } = useMutation({
+    mutationKey: api.retailers.delete.get(5, "alive"), 
+    //                                ^? ["retailers", "delete", 5, "alive"]
+    mutationFn: () => api.use().retailers.delete({ id: 5 })
+  });
+  ```
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+  ```typescript copy
+  const { mutate } = useSWR(
+    api.retailers.delete.get(5, "alive"), 
+    //                   ^? ["retailers", "delete", 5, "alive"]
+    api.use().retailers.delete
+  );
+  ```
+  </Tabs.Tab>
+</Tabs>
+
 ## Missing dependencies
 
-Due to how the `use` function is constructed, it is impossible to pass the wrong number of arguments to the function, unless the type allows for it. For example, using optional parameters in the function query.
+Due to how the `use` method is constructed, it is **impossible** to pass the wrong number of arguments to the function. Unless the function is not a [TypeScript][functions] function, within a strict [TypeScript][typescript] environment, or if the function is defined in such a way that allows it. For example, using optional parameters in the function query.
 
 ```typescript copy
 type State = 'active' | 'completed' | 'archived'
 type Sorting = 'dateCreated' | 'name'
+type Todos = {
+  data: {
+    title: string;
+    description: string;
+    created: string;
+    state: State;
+  }[];
+};
 
 const api = createBuilder({
   todos: {
-    list: async (state: State, sorting: Sorting): Promise<Todos> => {
-      const resp = await axios.get(`todos/${state}?sorting=${sorting}`);
+    list: async (state: State, sorting?: Sorting) => {
+      const resp = await axios.get<Todos>(`todos/${state}?sorting=${sorting}`);
       return resp.data;
     }
   }
 })
 ```
 
-Not passing the specified number of arguments will result in a type error. This is because the `use` function is typed to accept the same number of arguments as the function query.
+## Error handling
+
+In the **api** [builder][3] above, the `api.todos.list` function query accepts two parameters, `state` and `sorting`. The `state` parameter is required, while the `sorting` parameter is optional. The `use` method is used to retrieve the query key, and it expects the same number of required arguments as the function query. Not passing the required amount of arguments will result in a [type error][errors].
 
 <Tabs items={['Tanstack Query', 'SWR']}>
   <Tabs.Tab>
@@ -176,9 +197,9 @@ Not passing the specified number of arguments will result in a type error. This 
   const [state, setState] = useState<State>('active');
 
   const { data: todos } = useQuery({
-    queryKey: api.todos.list.use(state, 'dateCreated'), 
-    //                       ^? ["todos", "list", "active", "dateCreated"]
-    queryFn: () => api.use().todos.list(state, 'dateCreated')
+    queryKey: api.todos.list.use(state), 
+    //                       ^? ["todos", "list", "active", undefined]
+    queryFn: () => api.use().todos.list(state)
   });
   ```
   </Tabs.Tab>
@@ -188,10 +209,18 @@ Not passing the specified number of arguments will result in a type error. This 
   const [state, setState] = useState<State>('active');
 
   const { data: todos } = useSWR(
-    api.todos.list.use(state, 'dateCreated'), 
-    //             ^? ["todos", "list", "active", "dateCreated"]
+    api.todos.list.use(state), 
+    //             ^? ["todos", "list", "active", undefined]
     api.use().todos.list
   );
   ```
   </Tabs.Tab>
 </Tabs>
+
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts
+
+[typescript]: https://www.typescriptlang.org/
+[functions]: https://www.typescriptlang.org/docs/handbook/2/functions.html
+[errors]: https://www.typescriptlang.org/docs/handbook/2/understanding-errors.html

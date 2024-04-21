@@ -156,10 +156,6 @@ The @ibnlanre/builder library provides the following methods for working with th
 
 - `use()`: Returns the register itself, allowing developers to access nested values in the register.
 - `get()`: Returns the prefixes associated with the builder object, allowing developers to retrieve the keys used to create the builder object.
-- `setPrefixes(prefixes: string[])`: Sets the prefixes for the builder object, allowing developers to customize key generation.
-- `setRegister(register: Record<string, any>)`: Sets the register for the builder object, allowing developers to access and retrieve values from the register.
-- `reset()`: Resets the builder object, clearing the register and prefixes.
-- `clone()`: Clones the builder object, creating a new instance with the same register and prefixes.
 
 ### Configuration Options
 

@@ -1,8 +1,10 @@
 {
   "index": "Introduction",
   "overview": "Overview",
-  "getting-started": "Getting started",
-  "core-concepts": "Core concepts",
+  "getting-started": "Getting Started",
+  "core-concepts": "Core Concepts",
   "usage": "Usage",
+  "type-access": "Type Access",
+  "contributions": "Contributions",
   "support": "Support"
 }

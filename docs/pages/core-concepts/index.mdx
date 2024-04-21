@@ -7,11 +7,7 @@ description: The register object in the @ibnlanre/builder package.
 
 # Registers
 
-To effectively use the [@ibnlanre/builder][1] package, you need to create a [builder][3] object from a `register`. The [builder][3] object provides methods for key generation and value retrieval from the `register`. This guide explains what a `register` is and how to create one.
-
-## Defining registers
-
-A `register` is a plain object that contains the keys and values that you want to access. The `register` can contain nested objects, functions, or values. It is passed as an argument to the [createBuilder][2] function, which returns a [builder][3] object. The `register` is the **soul** of the [builder][3] object, as it is the source of the keys and values contained within the [builder][3] object.
+A `register` is a plain object that contains the keys and values that you want to access. The `register` can contain nested objects, functions, or values. To effectively use the [@ibnlanre/builder][1] package, a register is passed as an argument to the [createBuilder][2] function, which returns a [builder][3] object. The [builder][3] object adds a layer of abstraction to the `register` that facilitates the dynamic generation of keys. The `register` is the **soul** of the [builder][3] object, as it is the source of the keys and values contained within the [builder][3] object. This guide explains how to define a `register` and how to structure it effectively.
 
 The following code snippet show what a typical `register` looks like:
 
@@ -59,4 +55,4 @@ const register = {
 [1]: /getting-started
 [2]: /core-concepts/create-builder
 [3]: /core-concepts/builder-object
-[4]: /core-concepts#defining-registers
+[4]: /core-concepts

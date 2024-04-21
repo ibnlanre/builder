@@ -1,23 +1,15 @@
 ---
 
-title: Constructing keys
-description: Learn how to construct keys using the builder object.
+title: Retrieving values
+description: Retrieving register values using the @ibnlanre/builder package.
 
 ---
 
-import { Callout } from "components";
+# The root node
 
-# Constructing keys
+The root node, the starting point and first node of the [builder][3] object, behaves differently from other nodes when interacting with the `use` and `get` methods. When accessed using the `use` method, the root node returns the [register][4] itself, which is effectively the input to the [createBuilder][2] function.
 
-The [@ibnlanre/builder][1] package provides a mechanism for constructing keys using the [builder][3] object. This process is facilitated by the `use` and `get` methods, which are available at every level of the [builder][3] object.
-
-These methods are designed to access the [register][4]'s values, as well as, generate keys from the [register][4]'s nodes. While they perform similar operations, there is a subtle difference. The `use` method adheres to the pattern defined by the node's value, whereas the `get` method does not.
-
-<Callout type="info">
-  The `use` method invoked on the root node does not return a key, but the `get` method does.
-</Callout>
-
-The following code snippet shows the sample [builder][3] that would be used in this guide:
+This guide elucidates the behavior of the `use` and `get` methods specifically on the root node of the [builder][3] object.
 
 ```typescript copy
 const builder = createBuilder({
@@ -25,39 +17,40 @@ const builder = createBuilder({
     baz: (id: number) => `/bazaar/${id}`,
     bar: 10,
   },
-}, ["root"]);
+}, ["root", "node"]);
 ```
 
-## Uniform signature
+## Retrieving values
 
-The `use` method is used to retrieve the keys, expecting the same signature as the defined value. If the value of that node is a primitive value, object or array, the `use` method expects no arguments. However, if the value is a function that expects arguments, the `use` method expects the same arguments.
+Invoking the `use` method on the root node returns the [register][4] in its entirety, thereby enabling access to its values. This behavior is distinct from that of other nodes, which generate a key derived from the nested keys within the [register][4], rather than providing direct access to the nested values.
 
-`foo.baz` is a function that expects an `id` of `number` type, therefore, the `use` method expects an `id` of `number` type as well. If the argument was optional, it would equally be optional. Likewise, if the value is a function that no arguments, the `use` method would not expect any arguments.
+Because of the dual-purpose nature of the `use` method, it is important to distinguish between the `use` method that returns the value and the `use` method that returns the key. The rule of thumb is to remember that the `use` method that returns the value is always situated closest to the root node. While the `use` method that returns the key is always situated at the end of the chain.
 
-The following code snippet demonstrates how to use the `use` method:
+The following code snippet demonstrates how to retrieve [register][4] values:
 
 ```typescript copy
-builder.foo.baz.use(11); // ["root", "foo", "baz", 11]
+builder.use(); // { foo: { baz: [Function: baz], bar: 10 } }
+
+// Accessing a nested function value
+builder.use().foo.baz(12); // "/bazaar/12"
+
+// Accessing a nested primitive value
+builder.use().foo.bar; // 10
 ```
 
-## Variable signature
+## Builder prefix
 
-The `get` method is used to retrieve the keys, without following the pattern defined by the value. It expects an arbitrary number of arguments, which are added to the returned key. This flexibility exhibited by the `get` method is particularly useful when you want to add more keys to the returned array of strings. The arguments can be of any type, and they are added to the returned key in the order they are passed.
+The root node is the only node that does not have a key. This is because its name resides outside the hierarchy of the [builder][3] object. However, it can be assigned one by passing an array of strings as a second argument to the [createBuilder][2] function. This array not only serves as the key for the root node but also as a prefix for other nodes.
 
-The following code snippet demonstrates how to retrieve nested node keys:
+To retrieve this prefix, the `get` method is used. The `get` method returns the prefixes that were used to create the [builder][3] object. If no prefix has been set, this method will return an empty array, reflecting the absence of associated prefixes.
+
+The following code snippet demonstrates how to retrieve the root key:
 
 ```typescript copy
-// Invoking the `get` method without any arguments
-builder.foo.baz.get(); // ["root", "foo", "baz"]
-
-// Invoking the `get` method with a string argument
-builder.foo.baz.get("test"); // ["root", "foo", "baz", "test"]
-
-// Invoking the `get` method with multiple arguments
-builder.foo.baz.get("test", { id: 11 }); // ["root", "foo", "baz", "test", { id: 11 }]
+builder.get(); // ["root", "node"]
 ```
 
 [1]: /getting-started
 [2]: /core-concepts/create-builder
 [3]: /core-concepts/builder-object
-[4]: /core-concepts#defining-registers
+[4]: /core-concepts

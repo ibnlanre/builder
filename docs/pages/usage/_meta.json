@@ -1,6 +1,6 @@
 {
-  "index": "Constructing keys",
-  "key-transforms": "Key Transforms",
-  "retrieving-values": "Retrieving Values",
+  "index": "Retrieving Values",
+  "constructing-keys": "Constructing keys",
+  "morphing-keys": "Morphing Keys",
   "external-libraries": "External libraries"
 }

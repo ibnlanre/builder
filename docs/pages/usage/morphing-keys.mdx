@@ -1,13 +1,13 @@
 ---
 
-title: Key Transforms
-description: Transforming keys using the @ibnlanre/builder package.
+title: Morphing Keys
+description: Morphing keys using the @ibnlanre/builder package.
 
 ---
 
-# Key transforms
+# Morphing Keys
 
-Since the `key` returned from calling the `use` or `get` method is an array of strings, crafted from the nodes in the [register][4], it is possible to transform the key using any array method. There are several array methods, on the array prototype, that can be used to transform the key. You can learn more about these methods in the [MDN Web Docs][methods].
+Since the key returned from calling the `use` or `get` method is an array of strings, crafted from the nodes in the [register][4], it is possible to transform the key using any array method. There are several array methods, on the array prototype, that can be used to transform the key. You can learn more about these methods in the [MDN Web Docs][methods].
 
 The following code snippet is a continuation of the previous example:
 
@@ -38,7 +38,8 @@ Another array method that can be used to transform the key is the [join][join] m
 builder.foo.baz.get().join("."); // "root.node.foo.baz"
 ```
 
-[4]: /core-concepts#defining-registers
+[4]: /core-concepts
+
 [methods]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#instance_methods
 [slice]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
 [join]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join

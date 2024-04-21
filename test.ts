@@ -67,10 +67,3 @@ const z = builder.foo.get();
 
 // register.account.create.get("test", { email: "test", password: "test" });
 // type x = typeof register.map.account.create;
-
-type List = {
-  data: {
-    id: number;
-    name: string;
-  }[];
-};
