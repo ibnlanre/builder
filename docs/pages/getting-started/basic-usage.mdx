@@ -7,19 +7,19 @@ description: Basic usage of the @ibnlanre/builder package.
 
 # Basic Usage
 
-The `@ibnlanre/builder` package provides a simple and efficient way to generate and manage keys in a nested object. It requires you to create a register object with nested keys and values, and provides functions to access and retrieve those values through a builder object.
+To get started using the [@ibnlanre/builder][1] package, it is essential to understand the basic concepts and usage patterns involved in working with the library. This guide will walk you through the fundamental steps required to create a [builder][3] object, access values, and retrieve keys using the package.
 
-This guide will walk you through the basic usage of the `@ibnlanre/builder` package, including creating a builder object, accessing values, and retrieving prefixes.
+The [@ibnlanre/builder][1] package provides a simple and efficient way to generate and manage keys within your application. It requires a [register][4] to be passed as an argument to the [createBuilder][2] function, which can be imported from the package. In turn, it generates a builder which serves as a bridge between the [register][4] object and the user, providing a convenient way to interact with the data structure.
 
-To use the `@ibnlanre/builder` library, follow these steps:
+The following steps outline how to quickly get started using the [@ibnlanre/builder][1] package:
 
-1. Import the createBuilder function from the library:
+1. Import the [createBuilder][2] function from the library:
 
     ```typescript
     import { createBuilder } from '@ibnlanre/builder';
     ```
 
-2. Create a register object with nested keys and values:
+2. Create a [register][4] object with nested keys and values:
 
     ```typescript
     const register = {
@@ -30,13 +30,13 @@ To use the `@ibnlanre/builder` library, follow these steps:
     }
     ```
 
-3. Create a builder object using the createBuilder function:
+3. Create a [builder][3] object using the [createBuilder][2] function:
 
     ```typescript
     const builder = createBuilder(register, ["root", "node"]);
     ```
 
-4. Access the register values using the builder object:
+4. Access the [register][4] values using the [builder][3] object:
 
     ```typescript
     // Accessing the register values
@@ -49,7 +49,7 @@ To use the `@ibnlanre/builder` library, follow these steps:
     builder.use().foo.bar; // 10
     ```
 
-5. Generate keys using the builder object:
+5. Generate keys using the [builder][3] object:
 
     ```typescript
     // Retrieving the root key
@@ -61,3 +61,9 @@ To use the `@ibnlanre/builder` library, follow these steps:
     // Accessing a nested primitive key
     builder.foo.bar.use(); // ["root", "node", "foo", "bar"]
     ```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts
+[5]: /overview

@@ -30,6 +30,8 @@ const builder = createBuilder({
   },
 });
 
+builder.foo.baz.get("test", { id: 11 });
+
 // Access the type of the `bar` property.
 type Bar = typeof builder.unbuild.foo.bar;
 //   ^? { hello: string; has: { id: number; } }

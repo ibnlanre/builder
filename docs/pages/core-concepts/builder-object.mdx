@@ -7,7 +7,9 @@ description: The builder object in the @ibnlanre/builder package.
 
 # Builder
 
-The `builder` object is a tree-like structure that provides mechanisms for accessing the keys and values of a [register][4]. It is created from a [register][4] using the [createBuilder][2] function, and should serve as the main interface for querying the [register][4]. Every level of the `builder` object has two methods: `use` and `get`. Both methods are used to access the keys and values of the [register][4].
+The `builder` object is a tree-like structure that provides mechanisms for accessing the keys and values of a [register][4]. It is created from a [register][4] using the [createBuilder][2] function, and serves as the main interface for querying the [register][4].
+
+The `builder` object is an enhanced version of the [register][4] object, augmented with the `use` and `get` methods. These methods exist on every level of the `builder` object, facilitating the creation of dynamic keys at the point of access. To avoid conflicts, it's recommended not to use `use` or `get` as keys in the [register][4].
 
 The following code snippet defines a typical [register][4] object:
 
@@ -18,12 +20,14 @@ const register = {
     country: 'Nigeria',
   },
 };
+
+const builder = createBuilder(register);
 ```
 
-The following code snippet shows the `builder` object of the above [register][4]:
+The following code snippet illustrates the similarities between a [register][4] and its `builder`:
 
 ```typescript copy
-const builder = {
+{
   use: () => register,
   get: () => [],
   location: {

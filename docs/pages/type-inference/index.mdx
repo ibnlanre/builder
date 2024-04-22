@@ -60,7 +60,7 @@ type UserName = typeof builder.unbuild.user.name;
 
 Another means by which the type of the [register][4] can be accessed is through the `use` method. This method, however, requires the use of the [typeof][typeof] operator coupled with the [ReturnType][return-type] utility type. Accessing nested types would also require the use of [bracket notation][bracket-notation]. This makes using `use` a chore for accessing the type of the [register][4].
 
-Conversely, the `unbuild` property provides a more convenient way to access the type of the [register][4], using [dot notation][dot-notation]. Although the `use` method carries the associated type of every accessed key, its primary purpose is to retrieve keys and values from the [register][4].
+Conversely, the `unbuild` property provides a more convenient way to access the type of the [register][4], using [dot notation][dot-notation]. Although the `use` method carries the associated type of every accessed key, its **primary purpose** is to retrieve keys and values from the [register][4].
 
 ## Addendum: Root node
 
@@ -69,7 +69,6 @@ In summary, the [root node][5] uniquely returns the [register][4] when the `use`
 For a more detailed review of the **root node**, refer to the [usage][5] page.
   
 [1]: /getting-started
-[2]: /core-concepts/create-builder
 [3]: /core-concepts/builder-object
 [4]: /core-concepts
 [5]: /overview

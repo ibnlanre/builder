@@ -5,6 +5,8 @@ description: Working with types in the @ibnlanre/builder package.
 
 ---
 
+import { Callout } from "@/components";
+
 # Working with Types
 
 Type inference is a powerful feature in TypeScript that allows the compiler to deduce the types of variables based on their usage. The [@ibnlanre/builder][1] package leverages type inference to provide a seamless developer experience when working with types. This guide explores various ways to work with types in the [@ibnlanre/builder][1] package, including accessing the type of the [register][4], and the type of nested properties.
@@ -53,7 +55,9 @@ type Address = typeof builder.unbuild.address.house;
 
 ## Using the `typeValue` function
 
-To provide additional type information to a value in the [register][4], the `typeValue` function, exported by the [@ibnlanre/builder][1] package, can be used. Using this function is recommended over manual type assertions, as it ensures that the type information is correctly associated with a value. To expatiate, the type information would not be made accessible through the `use` and `get` methods as it is not an actual value in the [register][4]. Regardless, the type information can be accessed using the `unbuild` property.
+To provide additional type information to a value in the [register][4], the `typeValue` function, exported by the [@ibnlanre/builder][1] package, can be used. Using this function is recommended over making type assertions, as it ensures that the type information is correctly associated with a value. 
+
+To expatiate, the type information would not be made accessible through the `use` and `get` methods as it is not an actual value in the [register][4]. Regardless, the type information can be accessed using the `unbuild` property.
 
 The following snippet demonstrates how to use the `typeValue` function:
 
@@ -76,7 +80,9 @@ const builder = createBuilder({
 });
 ```
 
-The `typeValue` function is a curried function that initially accepts a value to which it will append any given type information. It then returns another function that takes the type information as a type parameter. When invoked, this returned function embellishes the initial value with a new `has` property, which holds the given type information. Note that the `has` property is inserted as an optional property on the initial value, however, accessing its value through the `unbuild` property would display it as required.
+The `typeValue` function is a curried function that initially accepts a value to which it will append any given type information. It then returns another function that takes the type information as a type parameter. When invoked, this returned function embellishes the initial value with a new `has` property, which holds the given type information.
+
+<Callout type="info">Note that the `has` property is inserted as an **optional** property on the initial value, however, accessing its value through the `unbuild` property would display it as **required**.</Callout>
 
 The following snippet demonstrates how to access the given type information:
 

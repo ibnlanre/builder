@@ -1,0 +1,89 @@
+---
+
+title: Functions
+description: The functions in the @ibnlanre/builder package.
+
+---
+
+## Functions
+
+The `@ibnlanre/builder` package exports a set of functions and types for creating and manipulating the [builder][3] object. This page documents the public API of the package.
+
+### `createBuilder`
+
+The [createBuilder][2] function is used to create a [builder][3] object from a [register][4]. The function takes two arguments: a [register][4] object and an optional array of prefixes, and returns a [builder][3] object.
+
+#### Signature
+
+```typescript
+function createBuilder<T extends Record<string, any>>(
+  register: T,
+  prefixes?: string[]
+): Builder<T>;
+```
+
+#### Parameters
+
+- `register` - The [register][4] object to create the [builder][3] object from.
+- `prefixes` - An optional array of prefixes to associate with the [builder][3] object.
+
+#### Returns
+
+A [builder][3] object with the keys and values of the [register][4] object.
+
+#### Example
+
+```typescript
+const builder = createBuilder({
+  location: (id: number) => `/location/${id}`,
+  address: {
+    country: 'Nigeria',
+  },
+}, ["root", "node"]);
+```
+
+### `typeValue`
+
+The `typeValue` function is used to assign additional type information to members of a [register][4]. The function takes a [register][4] object and returns a function that can be used to assign type information to the members of the [register][4].
+
+#### Signature
+
+```typescript
+export function typeValue<Register extends Dictionary>(register: Register) {
+  const assignType = <
+    Types extends Dictionary = {},
+    const Key extends string = "has"
+  >() => {
+    return register as HasTypes<Register, Types, Key>;
+  };
+
+  return assignType;
+}
+```
+
+#### Parameters
+
+- `register` - The [register][4] object to assign type information to.
+
+#### Returns
+
+A function that can be used to assign type information to the members of the [register][4].
+
+#### Example
+
+```typescript
+const builder = createBuilder({
+  foo: {
+    baz: typeValue({
+      hello: "world",
+    })<{
+      hi: string;
+    }>(),
+  },
+});
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts

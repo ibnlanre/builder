@@ -7,9 +7,11 @@ description: Retrieving register values using the @ibnlanre/builder package.
 
 # The root node
 
-The root node, the starting point and first node of the [builder][3] object, behaves differently from other nodes when interacting with the `use` and `get` methods. When accessed using the `use` method, the root node returns the [register][4] itself, which is effectively the input to the [createBuilder][2] function.
+The root node is the starting point and first node of the [builder][3] object. It is distinctive in how it behaves when interacting with the `use` and `get` methods.
 
-This guide elucidates the behavior of the `use` and `get` methods specifically on the root node of the [builder][3] object.
+When accessed using the `use` method, the root node returns the [register][4] passed to the [createBuilder][2] function during initialization. Likewise, when accessed using the `get` method, the root node returns the prefixes used to create the [builder][3] object. This behavior is unique to the root node and is not replicated in other nodes.
+
+This guide elucidates the behavior of the `use` and `get` methods specifically on the root node.
 
 ```typescript copy
 const builder = createBuilder({
@@ -22,7 +24,7 @@ const builder = createBuilder({
 
 ## Retrieving values
 
-Invoking the `use` method on the root node returns the [register][4] in its entirety, thereby enabling access to its values. This behavior is distinct from that of other nodes, which generate a key derived from the nested keys within the [register][4], rather than providing direct access to the nested values.
+Invoking the `use` method on the root node returns the [register][4] in its entirety, thereby enabling access to its values. This behavior is distinct from that of other nodes, which generate a key derived from the nested keys within the [register][4], rather than providing direct access to the [register][4] and its sub-keys.
 
 Because of the dual-purpose nature of the `use` method, it is important to distinguish between the `use` method that returns the value and the `use` method that returns the key. The rule of thumb is to remember that the `use` method that returns the value is always situated closest to the root node. While the `use` method that returns the key is always situated at the end of the chain.
 
