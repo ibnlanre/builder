@@ -58,16 +58,14 @@ export function createBuilder<
     };
   }, {} as KeyBuilder<Register>);
 
-  const builder = Object.assign(
-    {
-      use: () => register,
-      get: () => prefix,
-    },
-    branches
-  ) as RegisterBuilder<Register, Prefix>;
+  const builder = Object.assign(branches, {
+    use: () => register,
+    get: () => prefix,
+  }) as RegisterBuilder<Register, Prefix>;
 
-  return Object.assign(builder, { unbuild: register }) as Builder<
-    Register,
-    Prefix
-  >;
+  return Object.assign(builder, {
+    get unbuild() {
+      return register;
+    },
+  }) as Builder<Register, Prefix>;
 }

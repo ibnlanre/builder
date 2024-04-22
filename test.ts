@@ -1,17 +1,42 @@
 import { Intersect } from "@ibnlanre/types";
-import { createBuilder, hasTypes } from "./src";
+import { createBuilder, typeValue } from "./src";
+
+// const builder = createBuilder({
+//   foo: {
+//     bar: hasTypes({
+//       baz: (a: number, b: string) => a + b,
+//     })<{
+//       hello: string;
+//     }>(),
+//   },
+// });
+
+// const test = builder.foo.bar.get("test", { hello: "world" }, 8, 74n).join("/");
+
+const bar = typeValue({
+  hello: "world",
+});
+
+//   <{
+//   id: number;
+// }>();
 
 const builder = createBuilder({
   foo: {
-    bar: hasTypes({
-      baz: (a: number, b: string) => a + b,
-    })<{
-      hello: string;
-    }>(),
+    bar,
+    baz: typeValue({
+      id: 42,
+    })(),
   },
 });
 
-const test = builder.foo.bar.get("test", { hello: "world" }, 8, 74n).join("/");
+// Access the type of the `bar` property.
+type Bar = typeof builder.unbuild.foo.bar;
+//   ^? { hello: string; has: { id: number; } }
+
+// Access the type of the `baz` property.
+type Baz = typeof builder.unbuild.foo.baz;
+//   ^? { id: number; has: {} }
 
 const x = builder.use();
 const y = builder.foo.bar.use();
@@ -69,5 +94,4 @@ const register = createBuilder(
 );
 
 register.account.create.get("test", { email: "test", password: "test" });
-const u = register.get();
 type x = typeof register.unbuild.account.create;

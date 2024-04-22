@@ -1,0 +1,1 @@
+export { typeValue } from "./typeValue";

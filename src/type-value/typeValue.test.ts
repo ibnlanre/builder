@@ -1,9 +1,9 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
-import { hasTypes } from "./hasTypes";
+import { typeValue } from "./typeValue";
 
-describe("hasTypes", () => {
+describe("typeValue", () => {
   test("should add types to the input object", () => {
-    const result = hasTypes({ value: "test" })<{ type: string }>();
+    const result = typeValue({ value: "test" })<{ type: string }>();
 
     expect(result).toEqual({ value: "test" });
     expectTypeOf(result).toMatchTypeOf<{
@@ -13,7 +13,7 @@ describe("hasTypes", () => {
   });
 
   test("should add types to the input object with a custom key", () => {
-    const result = hasTypes({ value: "test" })<{ type: number }, "types">();
+    const result = typeValue({ value: "test" })<{ type: number }, "types">();
 
     expect(result).toEqual({ value: "test" });
     expectTypeOf(result).toMatchTypeOf<{

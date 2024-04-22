@@ -7,4 +7,4 @@ export type {
 } from "./types";
 
 export { createBuilder } from "./create-builder";
-export { hasTypes } from "./has-types";
+export { typeValue } from "./type-value";

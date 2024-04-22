@@ -1,1 +1,0 @@
-export { hasTypes } from "./hasTypes";

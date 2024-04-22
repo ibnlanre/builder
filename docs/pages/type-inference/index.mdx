@@ -1,15 +1,21 @@
 ---
 
-title: Accessing Types
-description: Accessing types in the @ibnlanre/builder package.
+title: Modularizing Types
+description: Modularizing types in the @ibnlanre/builder package.
 
 ---
 
-# Accessing types
+# Modularizing Types
 
-To get the type of the [register][4] object within the builder, or the type of a nested property, use the `typeof` operator with the `.unbuild` property of the builder. This is useful for type checking the values stored in the register, and for type inference. The `unbuild` property is exclusive to the root node of the builder object, and is not a function. This guide explains how to access the type of the register using the `builder` object.
+Type modularization refers to the practice of organizing and managing types in a way that promotes reusability and maintainability, often through the use of import and export statements. To facilitate this process, the [@ibnlanre/builder][1] package provides ways to access the type of values stored within the builder, or the type of a nested property, without the need for manual type declarations.
 
-An example of a `builder` object created from a register is shown below:
+## Accessing types
+
+Although it is possible to inspect the type of the [register][4] by hovering over the [builder][3] object in an IDE, having a way to access the type programmatically is essential. 
+
+The [@ibnlanre/builder][1] package provides three primary ways to retrieve the type of the values stored within the [register][4]. Each method has its unique characteristics and use cases. This guide explains the various methods in detail, and which is best suited for a given scenario.
+
+An example of a [builder][3] object created from a [register][4] is shown below:
 
 ```typescript copy
 import { createBuilder } from '@ibnlanre/builder';
@@ -24,13 +30,21 @@ const register = {
 const builder = createBuilder(register);
 ```
 
-## The `unbuild` property
+### Checking the `register`
 
-The preferred way to access the type of the register is to use the `unbuild` property on the root node of the `builder` object. The `unbuild` property returns the inferred type of the register, which is useful in cases involving an interface or type assignment. Unlike the `use` and `get` methods, `unbuild` is not a function, and is exclusive to the root node of the `builder` object. 
+The type of the values stored in the [register][4] can be accessed directly using the [typeof][typeof] operator. This is useful when the [register][4] exists within the location of use. In scenarios where the type of the [register][4] is required outside the file it is defined in, exporting the [register][4] and importing it in the desired location is **not** advised. A better approach is to access the type of the [register][4] directly from the [builder][3] object.
 
-Although, it is possible to see the type of the register by hovering over the `builder` object in an IDE, the `unbuild` property provides a way to access the type programmatically. 
+```typescript copy
+// Access the type of the register directly.
+type UserAge = typeof register.user.age;
+//   ^? number
+```
 
-The following code snippet demonstrates how to retrieve the type of the register using the `unbuild` property:
+### The `unbuild` property
+
+The `unbuild` property is a **read-only** attribute on the root node of the [builder][3] object, that returns the inferred type of the [register][4]. Unlike the `use` and `get` methods, it is not a function and cannot be invoked. The `unbuild` property not only represents the [register][4] but also yields the anticipated result when accessed, ensuring the integrity of the [builder][3]'s inferred type and to avoid misleading the user.
+
+The following code snippet demonstrates how to retrieve the type of the [register][4] using the `unbuild` property:
 
 ```typescript copy
 // Access the type of the register using the `unbuild` property.
@@ -42,26 +56,25 @@ type UserName = typeof builder.unbuild.user.name;
 //   ^? string
 ```
 
-### Checking the `register`
-
-The type of the values stored in the register can be accessed directly using the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator. This is useful when the register exists within the location of use. In such scenarios, the `unbuild` property is not required to access the type of the register. 
-
-The following code snippet demonstrates how to access the type of the register directly:
-
-```typescript copy
-// Access the type of the register directly.
-type UserAge = typeof register.user.age;
-//   ^? number
-```
-
 ### Using the `use` method
 
-The `use` method carries the associated type of every accessed key, but its primary purpose is to retrieves keys and values from the register. It is also a function, and therefore cannot be used to access the type directly. The `typeof` operator requires that a value be passed directly to it, and not accessed through a function. This is why the `use` method is not suitable for type checking.
+Another means by which the type of the [register][4] can be accessed is through the `use` method. This method, however, requires the use of the [typeof][typeof] operator coupled with the [ReturnType][return-type] utility type. Accessing nested types would also require the use of [bracket notation][bracket-notation]. This makes using `use` a chore for accessing the type of the [register][4].
 
-Accessing the type using the `use` method, would require the use of the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator, as well as, the [ReturnType](https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype) utility type. Accessing nested types would also require the use of [bracket](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation) notation. This makes using [use](/overview#the-use-method) a chore for accessing the type of the register. The `unbuild` property provides a more convenient way to access the type of the register, using [dot](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) notation.
+Conversely, the `unbuild` property provides a more convenient way to access the type of the [register][4], using [dot notation][dot-notation]. Although the `use` method carries the associated type of every accessed key, its primary purpose is to retrieve keys and values from the [register][4].
 
-## Addendum
+## Addendum: Root node
 
-In summary, the [root node] is the only node that return the register when accessed using the `use` method. The `get` method returns the prefixes used to create the `builder` object, and the `unbuild` property returns the inferred type of the register. This behavior is different from the other nodes, which generate keys from the nested keys of the register. The [root node] is a special case, and it is important to understand how it works.
+In summary, the [root node][5] uniquely returns the [register][4] when the `use` method is invoked. The `get` method, in contrast, yields the prefixes used in the creation of the [builder][3] object, while the `unbuild` property provides the inferred type of the [register][4]. This behavior diverges from that of other nodes, which generate keys from the nested keys within the [register][4]. Given its distinct characteristics, comprehending how the [root node][5] works is crucial.
 
-For more information on the `builder` object, see the [overview](/overview) page.
+For a more detailed review of the **root node**, refer to the [usage][5] page.
+  
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts
+[5]: /overview
+
+[typeof]: https://www.typescriptlang.org/docs/handbook/2/typeof-types.html
+[return-type]: https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype
+[bracket-notation]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation
+[dot-notation]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation

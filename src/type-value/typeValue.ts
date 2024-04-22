@@ -10,15 +10,15 @@ import type { HasTypes } from "../types";
  * @return A function that adds types to the register object.
  *
  * @example
- * const result = hasTypes({ value: "test" })<{ type: string }>();
+ * const result = typeValue({ value: "test" })<{ type: string }>();
  */
-export function hasTypes<Register extends Dictionary>(register: Register) {
-  const assignTypes = <
+export function typeValue<Register extends Dictionary>(register: Register) {
+  const assignType = <
     Types extends Dictionary = {},
     const Key extends string = "has"
   >() => {
     return register as HasTypes<Register, Types, Key>;
   };
 
-  return assignTypes;
+  return assignType;
 }
