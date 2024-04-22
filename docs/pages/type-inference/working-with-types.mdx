@@ -7,25 +7,24 @@ description: Working with types in the @ibnlanre/builder package.
 
 # Working with Types
 
-To get the type of object passed to the builder, or the type of a nested property, use the `typeof` operator with the `.unbuild` property of the builder. This is useful for type checking the object passed to the builder, or for type checking the return value of a nested property.
 
-## Type Checking with `typeof`
+
+```typescript copy
+
+This is useful when the register exists within the location of use.
+
+```typescript copy
 
 Although the actual value of `builder.typeof` is `undefined`, the type of `builder.typeof` is the type of the object passed to the builder. To get the value, you can use either the `use` or `get` method.
 
 ```typescript copy
-const builder = createBuilder({
-  name: "John",
-  age: 42,
-});
 
-// Note that the actual value of builder.typeof is undefined.
-type StoreType = typeof builder.typeof;
-//   ^? { name: string; age: number; }
+## Conclusion
 
-// Ease of use accessing the type of nested properties.
-type NameType = typeof builder.typeof.name;
-//   ^? string
+In summary, the root node is the only node that return the register when accessed using the `use` method. The `get` method returns the prefixes used to create the `builder` object, and the `unbuild` property returns the inferred type of the register. This behavior is different from the other nodes, which generate keys from the nested keys of the register. The root node is a special case, and it is important to understand how it works.
+
+For more information on the `builder` object, see the [overview](/overview) page.
+
 ```
 
 ## Utility Types

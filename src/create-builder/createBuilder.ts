@@ -1,14 +1,7 @@
 import type { Dictionary } from "@ibnlanre/types";
-import type { Builder, KeyBuilder } from "../types";
-import { hasTypes } from "../has-types";
+import type { Builder, KeyBuilder, RegisterBuilder } from "../types";
 
-function isFunction(value: any): value is (...args: any) => any {
-  return typeof value === "function";
-}
-
-function isDictionary(value: any): value is Dictionary {
-  return typeof value === "object" && value !== null;
-}
+import { isDictionary, isFunction } from "../utilities";
 
 /**
  * Returns a builder object that represents the nested keys of the provided object.
@@ -38,7 +31,7 @@ export function createBuilder<
         ...acc,
         [key]: {
           use: (...args: Parameters<typeof value>) => [...newPath, ...args],
-          get: (...args: any[]) => [...newPath, ...args],
+          get: (...args: unknown[]) => [...newPath, ...args],
         },
       };
     }
@@ -49,7 +42,7 @@ export function createBuilder<
         [key]: Object.assign(
           {
             use: () => newPath,
-            get: (...args: any[]) => [...newPath, ...args],
+            get: (...args: unknown[]) => [...newPath, ...args],
           },
           createBuilder(value, newPath)
         ),
@@ -60,7 +53,7 @@ export function createBuilder<
       ...acc,
       [key]: {
         use: () => newPath,
-        get: (...args: any[]) => [...newPath, ...args],
+        get: (...args: unknown[]) => [...newPath, ...args],
       },
     };
   }, {} as KeyBuilder<Register>);
@@ -71,7 +64,10 @@ export function createBuilder<
       get: () => prefix,
     },
     branches
-  ) as Builder<Register, Prefix>;
+  ) as RegisterBuilder<Register, Prefix>;
 
-  return builder;
+  return Object.assign(builder, { unbuild: register }) as Builder<
+    Register,
+    Prefix
+  >;
 }

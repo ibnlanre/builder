@@ -4,7 +4,7 @@
   "getting-started": "Getting Started",
   "core-concepts": "Core Concepts",
   "usage": "Usage",
-  "type-access": "Type Access",
+  "type-inference": "Type Inference",
   "contributions": "Contributions",
   "support": "Support"
 }

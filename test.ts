@@ -41,29 +41,33 @@ const z = builder.foo.get();
 
 // ========================================================
 
-// const create = (data: { email: string; password: string }) => {
-//   return fetch("/account/create", {
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//     method: "POST",
-//   });
-// };
+const create = (data: { email: string; password: string }) => {
+  return fetch("/account/create", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    method: "POST",
+  });
+};
 
-// const delete_account = (id: number) => {
-//   return fetch(`/account/${id}/delete`, {
-//     method: "DELETE",
-//   });
-// };
+const delete_account = (id: number) => {
+  return fetch(`/account/${id}/delete`, {
+    method: "DELETE",
+  });
+};
 
-// const register = createBuilder({
-//   account: {
-//     delete_account,
-//     create,
-//   },
-// });
+const register = createBuilder(
+  {
+    account: {
+      delete_account,
+      create,
+    },
+  },
+  ["account"]
+);
 
-// register.account.create.get("test", { email: "test", password: "test" });
-// type x = typeof register.map.account.create;
+register.account.create.get("test", { email: "test", password: "test" });
+const u = register.get();
+type x = typeof register.unbuild.account.create;

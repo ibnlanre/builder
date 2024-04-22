@@ -1,12 +1,9 @@
-import type {
-  DeepRequired,
-  Dictionary,
-  OmitOptionalValues,
-} from "@ibnlanre/types";
-import type { KeyBuilder } from "./KeyBuilder";
+import type { DeepRequired, Dictionary } from "@ibnlanre/types";
+import type { RegisterBuilder } from "./RegisterBuilder";
 
 /**
  * Represents a builder for a store.
+ *
  * @template Register The type of the store.
  * @template Prefix The type of the path.
  */
@@ -15,6 +12,4 @@ export type Builder<
   Prefix extends string[] = []
 > = {
   unbuild: DeepRequired<Register>;
-  use: () => OmitOptionalValues<Register>;
-  get: () => Prefix;
-} & KeyBuilder<Register, Prefix>;
+} & RegisterBuilder<Register, Prefix>;

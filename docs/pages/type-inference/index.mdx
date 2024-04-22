@@ -1,0 +1,67 @@
+---
+
+title: Accessing Types
+description: Accessing types in the @ibnlanre/builder package.
+
+---
+
+# Accessing types
+
+To get the type of the [register][4] object within the builder, or the type of a nested property, use the `typeof` operator with the `.unbuild` property of the builder. This is useful for type checking the values stored in the register, and for type inference. The `unbuild` property is exclusive to the root node of the builder object, and is not a function. This guide explains how to access the type of the register using the `builder` object.
+
+An example of a `builder` object created from a register is shown below:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+
+const register = {
+  user: {
+    name: 'John Doe',
+    age: 42,
+  },
+};
+
+const builder = createBuilder(register);
+```
+
+## The `unbuild` property
+
+The preferred way to access the type of the register is to use the `unbuild` property on the root node of the `builder` object. The `unbuild` property returns the inferred type of the register, which is useful in cases involving an interface or type assignment. Unlike the `use` and `get` methods, `unbuild` is not a function, and is exclusive to the root node of the `builder` object. 
+
+Although, it is possible to see the type of the register by hovering over the `builder` object in an IDE, the `unbuild` property provides a way to access the type programmatically. 
+
+The following code snippet demonstrates how to retrieve the type of the register using the `unbuild` property:
+
+```typescript copy
+// Access the type of the register using the `unbuild` property.
+type Register = typeof builder.unbuild;
+//   ^? { name: string; age: number; }
+
+// Access the type of a nested property using the `typeof` operator.
+type UserName = typeof builder.unbuild.user.name;
+//   ^? string
+```
+
+### Checking the `register`
+
+The type of the values stored in the register can be accessed directly using the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator. This is useful when the register exists within the location of use. In such scenarios, the `unbuild` property is not required to access the type of the register. 
+
+The following code snippet demonstrates how to access the type of the register directly:
+
+```typescript copy
+// Access the type of the register directly.
+type UserAge = typeof register.user.age;
+//   ^? number
+```
+
+### Using the `use` method
+
+The `use` method carries the associated type of every accessed key, but its primary purpose is to retrieves keys and values from the register. It is also a function, and therefore cannot be used to access the type directly. The `typeof` operator requires that a value be passed directly to it, and not accessed through a function. This is why the `use` method is not suitable for type checking.
+
+Accessing the type using the `use` method, would require the use of the [typeof](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html) operator, as well as, the [ReturnType](https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype) utility type. Accessing nested types would also require the use of [bracket](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation) notation. This makes using [use](/overview#the-use-method) a chore for accessing the type of the register. The `unbuild` property provides a more convenient way to access the type of the register, using [dot](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation) notation.
+
+## Addendum
+
+In summary, the [root node] is the only node that return the register when accessed using the `use` method. The `get` method returns the prefixes used to create the `builder` object, and the `unbuild` property returns the inferred type of the register. This behavior is different from the other nodes, which generate keys from the nested keys of the register. The [root node] is a special case, and it is important to understand how it works.
+
+For more information on the `builder` object, see the [overview](/overview) page.
