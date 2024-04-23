@@ -8,6 +8,7 @@
     "bundle": "tsup",
     "lint": "eslint --ext .ts,.tsx .",
     "test": "vitest --typecheck",
+    "test:ui": "vitest --typecheck --ui",
     "package": "yarn publish --access public"
   },
   "main": "dist/index.cjs",
@@ -39,6 +40,7 @@
     "builder"
   ],
   "devDependencies": {
+    "@vitest/ui": "^1.5.0",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
     "vitest": "^1.5.0"

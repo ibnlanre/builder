@@ -7,7 +7,7 @@ description: The builder object in the @ibnlanre/builder package.
 
 # Builder
 
-The `builder` object is a tree-like structure that provides mechanisms for accessing the keys and values of a [register][4]. It is created from a [register][4] using the [createBuilder][2] function, and serves as the main interface for querying the [register][4].
+The `builder` object is a tree-like graph that provides mechanisms for crafting complex key structures and accessing associated values within a given [register][4]. It is created from a [register][4] object using the [createBuilder][2] function, and serves as the main interface for querying the [register][4].
 
 The `builder` object is an enhanced version of the [register][4] object, augmented with the `use` and `get` methods. These methods exist on every level of the `builder` object, facilitating the creation of dynamic keys at the point of access. To avoid conflicts, it's recommended not to use `use` or `get` as keys in the [register][4].
 
