@@ -5,6 +5,7 @@
     "module": "CommonJS",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "jsx": "preserve"
   }
 }

@@ -1,11 +1,11 @@
 ---
 
-title: Modularizing Types
+title: Modular Types
 description: Modularizing types in the @ibnlanre/builder package.
 
 ---
 
-# Modularizing Types
+# Modular Types
 
 Type modularization refers to the practice of organizing and managing types in a way that promotes reusability and maintainability, often through the use of import and export statements. To facilitate this process, the [@ibnlanre/builder][1] package provides ways to access the type of values stored within the builder, or the type of a nested property, without the need for manual type declarations.
 
@@ -62,6 +62,8 @@ Another means by which the type of the [register][4] can be accessed is through 
 
 Conversely, the `unbuild` property provides a more convenient way to access the type of the [register][4], using [dot notation][dot-notation]. Although the `use` method carries the associated type of every accessed key, its **primary purpose** is to retrieve keys and values from the [register][4].
 
+This begs the question, if `unbuild` can effectively perform the same task as `use`, why use `use` at all? The answer lies in the fact that `use` declutters the resulting type by removing the `has` property, which is present when using the `unbuild` property. This makes the [type completion][intellisense] more readable and easier to work with, when **retrieving values from the [register][4].
+
 ## Addendum: Root node
 
 In summary, the [root node][5] uniquely returns the [register][4] when the `use` method is invoked. The `get` method, in contrast, yields the prefixes used in the creation of the [builder][3] object, while the `unbuild` property provides the inferred type of the [register][4]. This behavior diverges from that of other nodes, which generate keys from the nested keys within the [register][4]. Given its distinct characteristics, comprehending how the [root node][5] works is crucial.
@@ -77,3 +79,4 @@ For a more detailed review of the **root node**, refer to the [usage][5] page.
 [return-type]: https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype
 [bracket-notation]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#bracket_notation
 [dot-notation]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors#dot_notation
+[intellisense]: https://code.visualstudio.com/docs/editor/intellisense

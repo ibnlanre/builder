@@ -96,6 +96,8 @@ type Baz = typeof builder.unbuild.foo.baz;
 //   ^? { id: number; has: {} }
 ```
 
+## Key Conflicts
+
 In a scenario where the added `has` property coincides with an existing property on the value, a second parameter can be passed to the `typeValue` function to specify the key under which the type information should be stored. This is to ensure that the type information is not lost, and that the value remains intact.
 
 The following snippet demonstrates how to specify a different storage key:
