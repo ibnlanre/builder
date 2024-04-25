@@ -1,0 +1,81 @@
+---
+
+title: React
+description: The React adapter for the @ibnlanre/builder package.
+
+---
+
+# React Adapter
+
+The `@ibnlanre/builder` package provides a set of hooks and components that make it easier to use the [@ibnlanre/builder][1] package with React. This guide explains how to use the React adapter to create and consume [builder][3] objects in a React application.
+
+## Usage
+
+The React adapter provides a set of hooks and components that simplify the process of creating and consuming [builder][3] objects in a React application. The adapter includes the following hooks and components:
+
+- `useBuilder`: A custom hook that provides access to the [builders][4] prop in a React component.
+- `BuilderProvider`: A context provider that provides the [builders][4] prop to all its children.
+
+## Builder Provider
+
+To access the `useBuilder` hook and the `BuilderProvider` component, you need to import the `useBuilderProvider` function from the x@xxxxxxxxxxxxxxxxx package. The `useBuilderProvider` function is a custom hook that creates the `BuilderProvider` component and the `useBuilder` hook.
+
+The `BuilderProvider` component is a [context][context] provider that provides the `builders` prop to all its children. While, the useBuilder hook is used to access the `builders` prop in any child component. Within a [TypeScript][typescript] environment, the `useBuilderProvider` does not need to be typed, as its type is inferred from the `builder` objects passed to it.
+
+To use the `BuilderProvider`, you need to create [builder][4] objects using the [createBuilder][2] function, exported from the [@ibnlanre/builder][1] package. The [builder][4] objects are then passed to the `BuilderProvider` using the `useBuilderProvider` function.
+
+The following code snippet illustrates how to use the `Builder Provider`:
+
+```typescript copy
+import { createBuilder } from "@ibnlanre/builder";
+
+const userBuilder = createBuilder({
+  user: {
+    name: "John Doe",
+    age: 30,
+  },
+});
+
+const locationBuilder = createBuilder({
+  location: {
+    country: "Nigeria",
+    city: "Lagos",
+  },
+});
+
+export const { useBuilder, BuilderProvider } = useBuilderProvider({
+  locationBuilder,
+  userBuilder,
+});
+```
+
+In the code snippet above, the `userBuilder` object is created using the `createBuilder` function. The `useBuilderProvider` function is then used to create the `BuilderProvider` component and the `useBuilder` hook. The `userBuilder` object is passed to the `useBuilderProvider` function as an argument.
+
+## BuilderProvider
+
+The `Builder Provider` is expected to be used in the root of your application to provide the `builders` prop to all its children. Alternatively, you can provide the `BuilderProvider` in a specific part of your application, under which children components can access the `builders` prop. The `BuilderProvider` component does not require any prop outside its children.
+
+```typescript copy filename="App.tsx"
+import { ChildrenWithProps } from "@ibnlanre/builder";
+
+
+
+export function App({ children }: AppProps) {
+  return (
+    <BuilderProvider>
+      <App />
+    </BuilderProvider>
+  );
+}
+```
+
+## useBuilder
+
+The `useBuilder` hook is used to access the `builders` prop in any child component. 
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-provider
+[4]: /core-concepts/registers/builder-object
+
+[context]: https://react.dev/reference/react/createContext

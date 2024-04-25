@@ -3,6 +3,7 @@
   "getting-started": "Getting Started",
   "core-concepts": "Core Concepts",
   "usage": "Usage",
+  "adapters": "Adapters",
   "type-inference": "Type Inference",
   "api-reference": "API Reference",
   "contribution": "Contribution",

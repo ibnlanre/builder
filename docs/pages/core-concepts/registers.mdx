@@ -1,0 +1,60 @@
+---
+
+title: Registers
+description: The register object in the @ibnlanre/builder package.
+
+---
+
+# Registers
+
+A `register` is a plain object that contains the keys and values that you want to access. The `register` can contain nested objects, functions, or values. To effectively use the [@ibnlanre/builder][1] package, a register is passed as an argument to the [createBuilder][2] function, which returns a [builder][3] object. 
+
+The [builder][3] object adds additional functionalities to the `register` that facilitates the dynamic generation of keys. The `register` is the **soul** of the [builder][3] object, as it is the source from which it derives its keys and values. This guide explains how to define a `register` and how to structure it effectively.
+
+The following code snippet displays a sample `register` object:
+
+```typescript copy
+const register = {
+  user: {
+    name: 'John Doe',
+    email: 'john.doe@jmail.com'
+  },
+};
+```
+
+## Nested registers
+
+Registers can be made to have complex structures by nesting objects within objects. This allows you to group related keys and values together. The recommended approach is to keep the `register` as flat as possible, to avoid unnecessary complexity. This can be achieved by creating multiple registers, each with a specific purpose, and nesting them within the main `register`.
+
+The following code snippet demonstrates how to create a `register` with nested objects:
+
+```typescript copy
+const create = (data: { email: string; password: string }) => {
+  return fetch("/account/create", {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    method: "POST",
+  });
+};
+
+const delete_by_id = (id: number) => {
+  return fetch(`/account/${id}/delete`, {
+    method: "DELETE",
+  });
+};
+
+const register = {
+  account: {
+    delete_by_id,
+    create,
+  },
+};
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts/registers

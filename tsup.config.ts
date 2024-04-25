@@ -1,14 +1,24 @@
 import { defineConfig, Options } from "tsup";
 
-const build: Options = {
+const core: Options = {
   format: ["esm", "cjs"],
   dts: true,
   sourcemap: true,
   clean: true,
-  entry: ["src/index.ts"],
-  outDir: "dist",
+  entry: ["src/core/index.ts"],
+  outDir: "dist/core",
+  treeshake: true,
+};
+
+const react: Options = {
+  format: ["esm", "cjs"],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  entry: ["src/react/index.ts"],
+  outDir: "dist/react",
   external: ["react"],
   treeshake: true,
 };
 
-export default defineConfig(build);
+export default defineConfig([core, react]);

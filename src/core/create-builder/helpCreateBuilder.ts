@@ -1,7 +1,7 @@
 import type { Dictionary } from "@ibnlanre/types";
 import type { KeyBuilder, RegisterBuilder } from "../types";
 
-import { isDictionary, isFunction } from "../utilities";
+import { isDictionary, isFunction } from "../../utilities";
 
 /**
  * Helper function to create a builder object that represents the nested keys of the provided object.

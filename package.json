@@ -11,17 +11,22 @@
     "test:ui": "vitest --typecheck --ui",
     "package": "yarn publish --access public"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/core/index.cjs",
+  "module": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
   "files": [
     "dist"
   ],
   "exports": {
     ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/core/index.cjs",
+      "import": "./dist/core/index.js",
+      "types": "./dist/core/index.d.ts"
+    },
+    "./react": {
+      "require": "./dist/react/index.cjs",
+      "import": "./dist/react/index.js",
+      "types": "./dist/react/index.d.ts"
     }
   },
   "author": "Ridwan Olanrewaju <olaitanlanre28@gmail.com>",
