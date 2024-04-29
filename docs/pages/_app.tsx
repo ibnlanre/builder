@@ -49,10 +49,24 @@ export function FavIcon() {
   );
 }
 
+function Meta() {
+  return (
+    <Head>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta httpEquiv="content-language" content="en" />
+      <meta property="og:type" content="website" />
+      <meta property="og:image" content="/bundlephobia.png" />
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:image" content="/bundlephobia.png" />
+    </Head>
+  );
+}
+
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
       <FavIcon />
+      <Meta />
       <Component {...pageProps} />
     </>
   );
