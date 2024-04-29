@@ -1,5 +1,5 @@
 import type { Dictionary } from "@ibnlanre/types";
-import type { Builder } from "../../core/types/Builder";
+import type { Builder } from "@/core";
 
 export type BuilderRecord<
   Register extends Dictionary = {},

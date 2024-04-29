@@ -9,7 +9,10 @@
     "lint": "eslint --ext .ts,.tsx .",
     "test": "vitest --typecheck",
     "test:ui": "vitest --typecheck --ui",
-    "package": "yarn publish --access public"
+    "tag": "git tag -a v$npm_package_version -m v$npm_package_version",
+    "push": "git push origin v$npm_package_version",
+    "package": "yarn publish --access public",
+    "release": "yarn package && yarn tag && yarn push"
   },
   "main": "dist/core/index.cjs",
   "module": "dist/core/index.js",
