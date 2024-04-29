@@ -12,6 +12,9 @@ module.exports = {
       mono: ["Inconsolata", "monospace"],
     },
     extend: {
+      screens: {
+        xs: "320px",
+      },
       animation: {
         "shine-infinite": "shine-infinite 2s ease-in-out infinite",
       },

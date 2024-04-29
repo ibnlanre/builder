@@ -31,7 +31,7 @@ const config: DocsThemeConfig = {
     <div style={logoStyle}>
       <img height="25" width="25" src="/builder-logo.png" />
       <span
-        className="nextra-content sm:!nx-block"
+        className="nextra-content xs:!nx-block"
         style={{ marginLeft: "8px", display: "none" }}
       >
         Builder
