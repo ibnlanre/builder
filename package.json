@@ -11,8 +11,8 @@
     "test:ui": "vitest --typecheck --ui",
     "tag": "git tag -a v$npm_package_version -m v$npm_package_version",
     "push": "git push origin v$npm_package_version",
-    "package": "yarn publish --access public",
-    "release": "yarn package && yarn tag && yarn push"
+    "package": "npm publish --access public",
+    "release": "npm run package && npm run tag && npm run push"
   },
   "main": "dist/core/index.cjs",
   "module": "dist/core/index.js",
