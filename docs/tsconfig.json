@@ -29,7 +29,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/key-features/index.mdx"
+    "pages/key-features/index.mdx",
+    "pages/index.mdx"
   ],
   "exclude": [
     "node_modules"

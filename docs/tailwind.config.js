@@ -1,4 +1,5 @@
 import { zinc } from "tailwindcss/colors";
+import plugin from "tailwindcss/plugin";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -58,4 +59,16 @@ module.exports = {
       },
     },
   },
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant("ahfvs", [
+        "&:active",
+        "&:hover",
+        "&:focus",
+        "&:focus-visible",
+      ]);
+      addVariant("clump", "@supports (font-size: clamp(1rem,2vw,3rem))");
+      addVariant("last-two", "&>:nth-last-child(-n+2)");
+    }),
+  ],
 };

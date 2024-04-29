@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import Head from "next/head";
 
 export function FavIcon() {
@@ -55,7 +54,6 @@ export default function MyApp({ Component, pageProps }) {
     <>
       <FavIcon />
       <Component {...pageProps} />
-      <SpeedInsights />
     </>
   );
 }

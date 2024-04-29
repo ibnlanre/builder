@@ -1,5 +1,14 @@
 {
-  "index": "Introduction",
+  "index": {
+    "type": "page",
+    "title": "Home",
+    "display": "hidden",
+    "theme": {
+      "timestamp": false,
+      "layout": "full"
+    }
+  },
+  "introduction": "Introduction",
   "getting-started": "Getting Started",
   "core-concepts": "Core Concepts",
   "usage": "Usage",
