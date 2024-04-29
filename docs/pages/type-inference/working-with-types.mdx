@@ -64,11 +64,13 @@ The following snippet demonstrates how to use the `typeValue` function:
 ```typescript copy
 import { createBuilder, typeValue } from '@ibnlanre/builder';
 
-const bar = typeValue({
-  hello: 'world',
-})<{
+type ID = {
   id: number;
-}>();
+}
+
+const greeting = { hello: 'world' }
+const bar = typeValue(greeting)<ID>();
+//    ^? { hello: string; has: { id: number; } }
 
 const builder = createBuilder({
   foo: {
