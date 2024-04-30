@@ -1,39 +1,32 @@
-import React from "react";
-
 import { DocsThemeConfig } from "nextra-theme-docs";
-import { useRouter } from "next/router";
 
-const logoStyle = {
-  display: "flex",
-  alignItems: "center",
-  fontSize: "1.45rem",
-  fontWeight: "bold",
-};
+const site = process.env.NEXT_PUBLIC_BASE_URL;
+const image = `${site}/bundlephobia.png`;
 
 const config: DocsThemeConfig = {
   head: () => {
-    const { asPath } = useRouter();
-    const url = `{process.env.NEXT_PUBLIC_BASE_URL}${asPath}`;
-
     return (
       <>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta property="og:url" content={url} />
+        <meta httpEquiv="content-language" content="en" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#4f772d" />
+
         <meta property="og:type" content="website" />
-        <meta
-          property="og:image"
-          content="{process.env.NEXT_PUBLIC_BASE_URL}/builder-logo.png"
-        />
+        <meta property="og:image" content={image} />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:image" content={image} />
+        <meta property="twitter:image:alt" content="Builder Bundlephobia" />
+
+        <meta property="twitter:site" content={site} />
+        <meta property="twitter:creator" content="@ibnlanre" />
       </>
     );
   },
   logo: (
-    <div style={logoStyle}>
+    <div className="nx-font-bold nx-flex nx-items-center nx-text-[1.45rem]">
       <img height="25" width="25" src="/builder-logo.png" />
-      <span
-        className="nextra-content xs:!nx-block"
-        style={{ marginLeft: "8px", display: "none" }}
-      >
+      <span className="nextra-content xs:!nx-block nx-ml-2 nx-hidden">
         Builder
       </span>
     </div>
