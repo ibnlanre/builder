@@ -1,5 +1,8 @@
 import "../styles/globals.css";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import Head from "next/head";
 
 export function FavIcon() {
@@ -49,11 +52,15 @@ export function FavIcon() {
   );
 }
 
-export default function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
+  const gTagId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+
   return (
     <>
       <FavIcon />
+      <SpeedInsights />
       <Component {...pageProps} />
+      <GoogleAnalytics gaId={gTagId} />
     </>
   );
 }
