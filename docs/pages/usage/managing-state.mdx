@@ -5,7 +5,7 @@ description: Managing asynchronous state using the @ibnlanre/builder package.
 
 ---
 
-import { Tabs } from 'nextra/components'
+import { Tabs } from "nextra/components";
 
 # External libraries
 
@@ -21,7 +21,7 @@ type List = {
     id: number;
     name: string;
   }[];
-}
+};
 
 const api = createBuilder({
   retailers: {
@@ -29,10 +29,10 @@ const api = createBuilder({
       return axios.get<List>("/api/retailers");
     },
     delete: async (params: { id: number }) => {
-      return axios.delete<{ message: string; }>({
-          url: `/api/retailers/${params.id}`
+      return axios.delete<{ message: string }>({
+        url: `/api/retailers/${params.id}`,
       });
-    }
+    },
   },
   products: {
     list: async () => {
@@ -41,11 +41,11 @@ const api = createBuilder({
     },
     delete: async (params: { id: number }) => {
       const resp = await fetch(`/api/products/${params.id}`, {
-        method: "DELETE"
+        method: "DELETE",
       });
       return resp.json();
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -62,7 +62,7 @@ The `use` method is used to retrieve the query key because although the `list` f
     ```typescript copy
     const { data: retailers } = useQuery({
       queryKey: api.retailers.list.use(), 
-      //                           ^? ["retailers", "list"]
+      // ^? ["retailers", "list"]
       queryFn: api.use().retailers.list
     });
     ```
@@ -88,7 +88,7 @@ It is common to use the `use` method to retrieve the query key, as it is the mos
   ```typescript copy
   const { data: products } = useQuery({
     queryKey: api.products.list.get(4, ['my', 'shelf']), 
-    //                          ^? ["products", "list", 4, ['my', 'shelf'] ]
+    // ^? ["products", "list", 4, ['my', 'shelf'] ]
     queryFn: api.use().products.list
   });
   ```
@@ -118,7 +118,7 @@ In the following example, the `use` method is used to retrieve the mutation key.
   ```typescript copy
   const { mutate } = useMutation({
     mutationKey: api.products.delete.use({ id: 5 }), 
-    //                               ^? ["products", "delete", { id: 5 }]
+    // ^? ["products", "delete", { id: 5 }]
     mutationFn: () => api.use().products.delete({ id: 5 })
   });
   ```
@@ -132,19 +132,19 @@ In the following example, the `use` method is used to retrieve the mutation key.
     api.use().products.delete
   );
   ```
-    </Tabs.Tab>
+  </Tabs.Tab>
 </Tabs>
 
 ### Using the `get` method
 
-If, for some reason, you want to pass the argument in a different way, you can use the `get` method to retrieve the mutation key. 
+If, for some reason, you want to pass the argument in a different way, you can use the `get` method to retrieve the mutation key.
 
 <Tabs items={['Tanstack Query', 'SWR']}>
   <Tabs.Tab>
   ```typescript copy
   const { mutate } = useMutation({
     mutationKey: api.retailers.delete.get(5, "alive"), 
-    //                                ^? ["retailers", "delete", 5, "alive"]
+    // ^? ["retailers", "delete", 5, "alive"]
     mutationFn: () => api.use().retailers.delete({ id: 5 })
   });
   ```
@@ -166,8 +166,8 @@ If, for some reason, you want to pass the argument in a different way, you can u
 Due to how the `use` method is constructed, it is **impossible** to pass the wrong number of arguments to the function. Unless the function is not a [TypeScript][functions] function, within a strict [TypeScript][typescript] environment, or if the function is defined in such a way that allows it. For example, using optional parameters in the function query.
 
 ```typescript copy
-type State = 'active' | 'completed' | 'archived'
-type Sorting = 'dateCreated' | 'name'
+type State = "active" | "completed" | "archived";
+type Sorting = "dateCreated" | "name";
 type Todos = {
   data: {
     title: string;
@@ -182,9 +182,9 @@ const api = createBuilder({
     list: async (state: State, sorting?: Sorting) => {
       const resp = await axios.get<Todos>(`todos/${state}?sorting=${sorting}`);
       return resp.data;
-    }
-  }
-})
+    },
+  },
+});
 ```
 
 ## Error handling
@@ -197,8 +197,8 @@ In the **api** [builder][3] above, the `api.todos.list` function query accepts t
   const [state, setState] = useState<State>('active');
 
   const { data: todos } = useQuery({
-    queryKey: api.todos.list.use(state), 
-    //                       ^? ["todos", "list", "active", undefined]
+    queryKey: api.todos.list.use(state),
+    // ^? ["todos", "list", "active", undefined]
     queryFn: () => api.use().todos.list(state)
   });
   ```
@@ -209,7 +209,7 @@ In the **api** [builder][3] above, the `api.todos.list` function query accepts t
   const [state, setState] = useState<State>('active');
 
   const { data: todos } = useSWR(
-    api.todos.list.use(state), 
+    api.todos.list.use(state),
     //             ^? ["todos", "list", "active", undefined]
     api.use().todos.list
   );
@@ -217,9 +217,9 @@ In the **api** [builder][3] above, the `api.todos.list` function query accepts t
   </Tabs.Tab>
 </Tabs>
 
+
 [2]: /core-concepts/create-builder
 [3]: /core-concepts/builder-object
-[4]: /core-concepts/registers
 
 [typescript]: https://www.typescriptlang.org/
 [functions]: https://www.typescriptlang.org/docs/handbook/2/functions.html
