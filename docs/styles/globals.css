@@ -14,6 +14,7 @@
     color: #cdcdcd;
     background-color: #000;
     font-size: 17.5px;
+    font-size: clamp(16px, 3vw, 17.5px);
 
     /* Font Smoothing https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth */
     -webkit-font-smoothing: antialiased;
