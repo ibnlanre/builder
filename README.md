@@ -9,10 +9,6 @@
 
 </div>
 
-## Website
-
-[Builder](https://ibnlanre.github.io/builder)
-
 ## FAQs
 
 ### What is the purpose of the @ibnlanre/builder library?
