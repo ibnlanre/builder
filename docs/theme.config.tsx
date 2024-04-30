@@ -15,11 +15,9 @@ const config: DocsThemeConfig = {
         <meta property="og:image" content={image} />
 
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:image" content={image} />
-        <meta property="twitter:image:alt" content="Builder Bundlephobia" />
-
-        <meta property="twitter:site" content={site} />
+        <meta property="twitter:image:alt" content="Builder Bundle Size" />
         <meta property="twitter:creator" content="@ibnlanre" />
+        <meta property="twitter:image" content={image} />
       </>
     );
   },
