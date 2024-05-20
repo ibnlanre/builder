@@ -10,7 +10,7 @@ export function createBuilderProvider<Builders extends BuilderRecord>(
     const builders = useContext(BuilderContext);
 
     if (!builders) {
-      const message = `useBuilder should be used within a BuilderProvider`;
+      const message = "useBuilder should be used within a BuilderProvider";
       throw new Error(message);
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/builder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Creates a builder object for defining keys and values.",
   "homepage": "https://builder.root.i.ng",
   "type": "module",
@@ -58,7 +58,7 @@
     "vitest": "^1.5.0"
   },
   "dependencies": {
-    "@ibnlanre/types": "^0.2.1"
+    "@ibnlanre/types": "^0.3.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",

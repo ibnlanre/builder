@@ -1,4 +1,4 @@
-import type { Dictionary, RequiredKeys } from "@ibnlanre/types";
+import type { Dictionary, RequiredKeyMap } from "@ibnlanre/types";
 import type { Key } from "./Key";
 
 /**
@@ -13,9 +13,10 @@ export type KeyBuilder<
   Register extends Dictionary,
   Prefix extends readonly string[] = []
 > = {
-  [Field in RequiredKeys<Register>]: Register[Field] extends (
-    ...args: infer Arguments
-  ) => unknown
+  [Field in keyof Register as RequiredKeyMap<
+    Register,
+    Field
+  >]: Register[Field] extends (...args: infer Arguments) => unknown
     ? {
         get: <Variables extends any[]>(
           ...args: Variables
