@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/builder",
-  "version": "0.0.3",
+  "version": "0.0.2",
   "description": "Creates a builder object for defining keys and values.",
   "homepage": "https://builder.root.i.ng",
   "type": "module",
