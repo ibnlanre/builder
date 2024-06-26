@@ -1,7 +1,7 @@
 import type { Dictionary } from "@ibnlanre/types";
-import type { Builder } from "../types";
+import type { Builder, RegisterBuilder } from "../types";
 
-import { helpCreateBuilder } from "./helpCreateBuilder";
+import { createBranches } from "./createBranches";
 
 /**
  * Returns a builder object that represents the nested keys of the provided object.
@@ -18,7 +18,12 @@ export function createBuilder<
   Register extends Dictionary,
   const Prefix extends string[] = []
 >(register: Register, prefix?: Prefix) {
-  const builder = helpCreateBuilder(register, prefix);
+  const branches = createBranches(register, prefix);
+
+  const builder = Object.assign(branches, {
+    use: () => register,
+    get: () => prefix,
+  }) as RegisterBuilder<Register, Prefix>;
 
   return Object.assign(builder, {
     get unbuild() {

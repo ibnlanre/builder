@@ -4,7 +4,7 @@ import type { KeyBuilder, RegisterBuilder } from "../types";
 import { isDictionary, isFunction } from "@/utilities";
 
 /**
- * Helper function to create a builder object that represents the nested keys of the provided object.
+ * Helper function to create branches that represent the nested keys of the provided object.
  *
  * @template Register The type of the object.
  * @template Prefix The type of the prefix array.
@@ -14,14 +14,13 @@ import { isDictionary, isFunction } from "@/utilities";
  *
  * @returns {RegisterBuilder<Register, Prefix>} A builder object with callable functions representing the nested keys.
  */
-export function helpCreateBuilder<
+export function createBranches<
   Register extends Dictionary,
   const Prefix extends string[] = []
 >(register: Register, prefix?: Prefix) {
-  const keys = Object.keys(register) as Array<keyof Register>;
+  const entries = Object.entries(register);
 
-  const branches = keys.reduce((acc, key) => {
-    const value = register[key];
+  const branches = entries.reduce((acc, [key, value]) => {
     const newPath = prefix ? prefix.concat([key as string]) : [key as string];
 
     if (isFunction(value)) {
@@ -35,15 +34,14 @@ export function helpCreateBuilder<
     }
 
     if (isDictionary(value)) {
+      const root = {
+        use: () => newPath,
+        get: (...args: unknown[]) => [...newPath, ...args],
+      };
+
       return {
         ...acc,
-        [key]: Object.assign(
-          {
-            use: () => newPath,
-            get: (...args: unknown[]) => [...newPath, ...args],
-          },
-          helpCreateBuilder(value, newPath)
-        ),
+        [key]: Object.assign(root, createBranches(value, newPath)),
       };
     }
 
@@ -54,12 +52,7 @@ export function helpCreateBuilder<
         get: (...args: unknown[]) => [...newPath, ...args],
       },
     };
-  }, {} as KeyBuilder<Register>);
+  }, {} as KeyBuilder<Register, Prefix>) as RegisterBuilder<Register, Prefix>;
 
-  const builder = Object.assign(branches, {
-    use: () => register,
-    get: () => prefix,
-  }) as RegisterBuilder<Register, Prefix>;
-
-  return builder;
+  return branches;
 }
