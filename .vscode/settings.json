@@ -6,9 +6,11 @@
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
-    "source.sortImports": "explicit",
+    "source.sortImports": "always",
+    "source.addMissingImports.ts": "always",
+    "source.removeUnusedImports": "always"
   },
   "css.customData": [
     ".vscode/tailwind.json"
-  ]
+  ],
 }

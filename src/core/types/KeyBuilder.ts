@@ -1,4 +1,4 @@
-import type { Dictionary, RequiredKeyMap } from "@ibnlanre/types";
+import type { Dictionary } from "./Dictionary";
 import type { Key } from "./Key";
 
 /**
@@ -13,15 +13,14 @@ export type KeyBuilder<
   Register extends Dictionary,
   Prefix extends readonly string[] = []
 > = {
-  [Field in keyof Register as RequiredKeyMap<
-    Register,
-    Field
-  >]: Register[Field] extends (...args: infer Arguments) => unknown
+  [Field in keyof Register]: Register[Field] extends (
+    ...args: infer Arguments
+  ) => unknown
     ? {
-        get: <Variables extends any[]>(
+        $get: <Variables extends any[]>(
           ...args: Variables
         ) => [...Prefix, Extract<Field, string>, ...Variables];
-        use: (
+        $use: (
           ...args: Parameters<Register[Field]>
         ) => [...Prefix, Extract<Field, string>, ...Arguments];
       }

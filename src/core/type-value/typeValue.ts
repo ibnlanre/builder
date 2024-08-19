@@ -1,5 +1,4 @@
-import type { Dictionary } from "@ibnlanre/types";
-import type { HasTypes } from "../types";
+import type { Dictionary, HasTypes } from "../types";
 
 /**
  * Adds types to an object.

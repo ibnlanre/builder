@@ -6,4 +6,10 @@ const withNextra = require("nextra")({
 
 module.exports = {
   ...withNextra(),
+
+  // https://nextjs.org/docs/app/api-reference/next-config-js/basePath
+  basePath: "/builder",
+
+  // https://nextjs.org/docs/app/building-your-application/deploying/static-exports
+  output: "export",
 };

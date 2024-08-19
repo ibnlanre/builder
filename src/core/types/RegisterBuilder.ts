@@ -1,10 +1,10 @@
-import type { Dictionary, OmitOptionalValues } from "@ibnlanre/types";
+import type { Dictionary } from "./Dictionary";
 import type { KeyBuilder } from "./KeyBuilder";
 
 export type RegisterBuilder<
   Register extends Dictionary,
-  Prefix extends string[] = []
+  Prefix extends readonly string[] = []
 > = {
-  use: () => OmitOptionalValues<Register>;
-  get: () => Prefix;
+  $use: () => Register;
+  $get: () => Prefix;
 } & KeyBuilder<Register, Prefix>;

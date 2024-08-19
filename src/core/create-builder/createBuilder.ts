@@ -1,6 +1,4 @@
-import type { Dictionary } from "@ibnlanre/types";
-import type { Builder, RegisterBuilder } from "../types";
-
+import type { Builder, Dictionary, RegisterBuilder } from "../types";
 import { createBranches } from "./createBranches";
 
 /**
@@ -26,7 +24,7 @@ export function createBuilder<
   }) as RegisterBuilder<Register, Prefix>;
 
   return Object.assign(builder, {
-    get unbuild() {
+    get $ctx() {
       return register;
     },
   }) as Builder<Register, Prefix>;

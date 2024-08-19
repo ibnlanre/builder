@@ -1,4 +1,4 @@
-import type { DeepRequired, Dictionary } from "@ibnlanre/types";
+import { Dictionary } from "./Dictionary";
 import type { RegisterBuilder } from "./RegisterBuilder";
 
 /**
@@ -11,5 +11,5 @@ export type Builder<
   Register extends Dictionary,
   Prefix extends string[] = []
 > = {
-  unbuild: DeepRequired<Register>;
+  $ctx: Register;
 } & RegisterBuilder<Register, Prefix>;

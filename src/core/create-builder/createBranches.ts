@@ -1,7 +1,5 @@
-import type { Dictionary } from "@ibnlanre/types";
-import type { KeyBuilder, RegisterBuilder } from "../types";
-
 import { isDictionary, isFunction } from "@/utilities";
+import type { Dictionary, KeyBuilder, RegisterBuilder } from "../types";
 
 /**
  * Helper function to create branches that represent the nested keys of the provided object.
@@ -27,16 +25,16 @@ export function createBranches<
       return {
         ...acc,
         [key]: {
-          use: (...args: Parameters<typeof value>) => [...newPath, ...args],
-          get: (...args: unknown[]) => [...newPath, ...args],
+          $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
+          $get: (...args: unknown[]) => [...newPath, ...args],
         },
       };
     }
 
     if (isDictionary(value)) {
       const root = {
-        use: () => newPath,
-        get: (...args: unknown[]) => [...newPath, ...args],
+        $use: () => newPath,
+        $get: (...args: unknown[]) => [...newPath, ...args],
       };
 
       return {
@@ -48,8 +46,8 @@ export function createBranches<
     return {
       ...acc,
       [key]: {
-        use: () => newPath,
-        get: (...args: unknown[]) => [...newPath, ...args],
+        $use: () => newPath,
+        $get: (...args: unknown[]) => [...newPath, ...args],
       },
     };
   }, {} as KeyBuilder<Register, Prefix>) as RegisterBuilder<Register, Prefix>;
