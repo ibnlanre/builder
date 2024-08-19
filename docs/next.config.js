@@ -7,8 +7,10 @@ const withNextra = require("nextra")({
 module.exports = {
   ...withNextra(),
 
+  assetPrefix: "https://ibnlanre.github.io/builder/",
+
   // https://nextjs.org/docs/app/api-reference/next-config-js/basePath
-  basePath: "/builder",
+  basePath: "",
 
   // https://nextjs.org/docs/app/building-your-application/deploying/static-exports
   output: "export",
