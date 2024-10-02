@@ -14,43 +14,51 @@ import type { Dictionary, KeyBuilder, RegisterBuilder } from "../types";
  */
 export function createBranches<
   Register extends Dictionary,
-  const Prefix extends string[] = []
->(register: Register, prefix?: Prefix) {
+  const Prefix extends string[] = [],
+  const Separator extends string = ".",
+>(register: Register, prefix?: Prefix, separator?: Separator) {
   const entries = Object.entries(register);
 
-  const branches = entries.reduce((acc, [key, value]) => {
-    const newPath = prefix ? prefix.concat([key as string]) : [key as string];
+  const branches = entries.reduce(
+    (acc, [key, value]) => {
+      const newPath = prefix ? prefix.concat([key]) : [key];
+      const $key = newPath.join(separator);
 
-    if (isFunction(value)) {
+      if (isFunction(value)) {
+        return {
+          ...acc,
+          [key]: {
+            $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
+            $get: (...args: unknown[]) => [...newPath, ...args],
+            $key,
+          },
+        };
+      }
+
+      if (isDictionary(value)) {
+        const root = {
+          $use: () => newPath,
+          $get: (...args: unknown[]) => [...newPath, ...args],
+          $key,
+        };
+
+        return {
+          ...acc,
+          [key]: Object.assign(root, createBranches(value, newPath, separator)),
+        };
+      }
+
       return {
         ...acc,
         [key]: {
-          $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
+          $use: () => newPath,
           $get: (...args: unknown[]) => [...newPath, ...args],
+          $key,
         },
       };
-    }
-
-    if (isDictionary(value)) {
-      const root = {
-        $use: () => newPath,
-        $get: (...args: unknown[]) => [...newPath, ...args],
-      };
-
-      return {
-        ...acc,
-        [key]: Object.assign(root, createBranches(value, newPath)),
-      };
-    }
-
-    return {
-      ...acc,
-      [key]: {
-        $use: () => newPath,
-        $get: (...args: unknown[]) => [...newPath, ...args],
-      },
-    };
-  }, {} as KeyBuilder<Register, Prefix>) as RegisterBuilder<Register, Prefix>;
+    },
+    {} as KeyBuilder<Register, Prefix>
+  ) as RegisterBuilder<Register, Prefix>;
 
   return branches;
 }

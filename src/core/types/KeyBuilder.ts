@@ -1,5 +1,6 @@
+import type { Base } from "./Base";
 import type { Dictionary } from "./Dictionary";
-import type { Key } from "./Key";
+import type { Paths } from "./Paths";
 
 /**
  * Represents a builder for a store key.
@@ -11,7 +12,8 @@ import type { Key } from "./Key";
  */
 export type KeyBuilder<
   Register extends Dictionary,
-  Prefix extends readonly string[] = []
+  Prefix extends readonly string[] = [],
+  Separator extends string = ".",
 > = {
   [Field in keyof Register]: Register[Field] extends (
     ...args: infer Arguments
@@ -23,9 +25,14 @@ export type KeyBuilder<
         $use: (
           ...args: Parameters<Register[Field]>
         ) => [...Prefix, Extract<Field, string>, ...Arguments];
+        $key: Paths<Prefix, Extract<Field, string>, Separator>;
       }
     : Register[Field] extends Dictionary
-    ? Key<Field, Prefix> &
-        KeyBuilder<Register[Field], [...Prefix, Extract<Field, string>]>
-    : Key<Field, Prefix>;
+      ? Base<Field, Prefix, Separator> &
+          KeyBuilder<
+            Register[Field],
+            [...Prefix, Extract<Field, string>],
+            Separator
+          >
+      : Base<Field, Prefix, Separator>;
 };

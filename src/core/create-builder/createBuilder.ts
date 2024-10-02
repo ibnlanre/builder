@@ -14,11 +14,20 @@ import { createBranches } from "./createBranches";
  */
 export function createBuilder<
   Register extends Dictionary,
-  const Prefix extends string[] = []
->(register: Register, prefix?: Prefix) {
-  const branches = createBranches(register, prefix);
+  const Prefix extends string[] = [],
+  const Separator extends string = ".",
+>(
+  register: Register,
+  options?: {
+    prefix?: Prefix;
+    separator?: Separator;
+  }
+) {
+  const { prefix = [], separator = "." } = { ...options };
+  const branches = createBranches(register, prefix, separator);
 
   const builder = Object.assign(branches, {
+    key: prefix.join(separator),
     use: () => register,
     get: () => prefix,
   }) as RegisterBuilder<Register, Prefix>;
@@ -29,3 +38,19 @@ export function createBuilder<
     },
   }) as Builder<Register, Prefix>;
 }
+
+const builder = createBuilder(
+  {
+    num: 2,
+    str: "string",
+    foo: {
+      baz: ["foo", "bar", "baz"],
+    },
+  },
+  {
+    prefix: ["foo"],
+    separator: "/",
+  }
+);
+
+const x = builder.$key;
