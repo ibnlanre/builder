@@ -1,0 +1,20 @@
+{
+  "index": {
+    "type": "page",
+    "title": "Home",
+    "display": "hidden",
+    "theme": {
+      "timestamp": false,
+      "layout": "full"
+    }
+  },
+  "introduction": "Introduction",
+  "getting-started": "Getting Started",
+  "core-concepts": "Core Concepts",
+  "usage": "Usage",
+  "adapters": "Adapters",
+  "type-inference": "Type Inference",
+  "api-reference": "API Reference",
+  "contribution": "Contribution",
+  "support": "Support"
+}

@@ -1,1 +1,0 @@
-export { typeValue } from "./typeValue";

@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("./fonts/cabin/stylesheet.css");
+@import url("./fonts/inconsolata/stylesheet.css");
+
+@layer base {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    font-family: "Cabin", "sans-serif";
+    color: #cdcdcd;
+    background-color: #000;
+    font-size: 17.5px;
+    font-size: clamp(16px, 3vw, 17.5px);
+
+    /* Font Smoothing https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    letter-spacing: normal !important;
+  }
+
+  a,
+  summary,
+  button,
+  input,
+  [tabindex]:not([tabindex="-1"]) {
+    &:focus-visible {
+      --tw-ring-shadow: none !important;
+      border-color: var(--tw-ring-color);
+    }
+  }
+}

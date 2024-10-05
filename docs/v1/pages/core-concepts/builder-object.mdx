@@ -1,0 +1,51 @@
+---
+
+title: Builder Object
+description: The builder object in the @ibnlanre/builder package.
+
+---
+
+# Builder
+
+The `builder` object is a tree-like graph that provides mechanisms for crafting complex key structures and accessing associated values within a given [register][4]. It is created from a [register][4] object using the [createBuilder][2] function, and serves as the main interface for querying the [register][4].
+
+The `builder` object is an enhanced version of the [register][4] object, augmented with the `$use` and `$get` property. These properties exist on every level of the `builder` object, facilitating the creation of dynamic keys at the point of access. To avoid conflicts with other keys within your register, the `$use` and `$get` methods are prefixed with a `$` sign.
+
+The following code snippet defines a typical [register][4] object:
+
+```typescript copy
+const register = {
+  location: (id: number) => `/location/${id}`,
+  address: {
+    country: 'Nigeria',
+  },
+};
+
+const builder = createBuilder(register);
+```
+
+The following code snippet illustrates the similarities between a [register][4] and its `builder`. Note that the `$use` property is a function on every level except the root level, while the `$get` method is a function on every level:
+
+```typescript copy
+{
+  $use: register,
+  $get: () => [],
+  location: {
+    $use: (id: number) => ['location', id],
+    $get: () => ['location'],
+  },
+  address: {
+    $use: () => ['address'],
+    $get: () => ['address'],
+    country: {
+      $use: () => ['address', 'country'],
+      $get: () => ['address', 'country'],
+    },
+  },
+};
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts/registers

@@ -5,3 +5,7 @@ export type Intersect<ObjectType extends unknown> = {
     ? Intersect<ObjectType[Key]>
     : ObjectType[Key];
 } & unknown;
+
+type Prettify<T> = {
+  [K in keyof T]: T[K];
+} & {};

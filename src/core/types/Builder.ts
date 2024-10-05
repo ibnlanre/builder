@@ -7,7 +7,20 @@ interface Get<
   Prefix extends readonly string[] = [],
   Separator extends string = ".",
 > {
+  /**
+   * Returns the prefix array.
+   *
+   * @returns {Prefix} The prefix array.
+   */
   (): Prefix;
+
+  /**
+   * Returns the key passed to the method.
+   * If no key is provided, it returns the prefix array.
+   *
+   * @param {Paths<Register, Prefix, Separator>} [path] The key to return.
+   * @returns {Paths<Register, Prefix, Separator>} The key passed to the method.
+   */
   <Path extends Paths<Register, Prefix, Separator>>(path: Path): Path;
 }
 

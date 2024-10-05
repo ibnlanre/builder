@@ -1,4 +1,5 @@
-import type { Dictionary, Intersect } from "@ibnlanre/types";
+import type { Dictionary } from "./Dictionary";
+import { Intersect } from "./Intersect";
 
 /**
  * Represents an object with types.
@@ -12,5 +13,5 @@ import type { Dictionary, Intersect } from "@ibnlanre/types";
 export type HasTypes<
   Input extends Dictionary,
   Types extends Dictionary,
-  Key extends string = "has"
+  Key extends string = "has",
 > = Intersect<Input & Partial<Record<Key, Types>>>;

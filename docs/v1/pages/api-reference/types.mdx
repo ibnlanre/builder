@@ -1,0 +1,108 @@
+---
+
+title: Types
+description: Types in the @ibnlanre/builder package.
+
+---
+
+## Types
+
+The `@ibnlanre/builder` package exports a set of types that are used to define the structure of the [builder][3] object. These types are used internally by the package and are not intended to be used directly by consumers.
+
+### `Key`
+
+The `Key` type represents a single key in the [builder][3] object created by the [createBuilder][2] function.
+
+#### Signature
+
+```typescript
+type Key<Field, Prefix extends readonly string[] = []> = {
+  get: <Y extends any[]>(...args: Y) => [...Prefix, Field, ...Y];
+  use: () => [...Prefix, Field];
+};
+```
+
+### `KeyBuilder`
+
+The `KeyBuilder` type represents the type of nested nodes in the structure of the [builder][3] object created by the [createBuilder][2] function. The type is a recursive structure that mirrors the structure of the [register][4] object.
+
+#### Signature
+
+```typescript
+type KeyBuilder<
+  Register extends Dictionary,
+  Prefix extends readonly string[] = []
+> = {
+  [Field in RequiredKeys<Register>]: Register[Field] extends (
+    ...args: infer Arguments
+  ) => unknown
+    ? {
+        get: <Variables extends any[]>(
+          ...args: Variables
+        ) => [...Prefix, Extract<Field, string>, ...Variables];
+        use: (
+          ...args: Parameters<Register[Field]>
+        ) => [...Prefix, Extract<Field, string>, ...Arguments];
+      }
+    : Register[Field] extends Dictionary
+    ? Key<Field, Prefix> &
+        KeyBuilder<Register[Field], [...Prefix, Extract<Field, string>]>
+    : Key<Field, Prefix>;
+};
+```
+
+### `RegisterBuilder`
+
+The `RegisterBuilder` type represents the root node of the [builder][3] object created by the [createBuilder][2] function, excluding the `unbuild` property.
+
+#### Signature
+
+```typescript
+type RegisterBuilder<
+  Register extends Dictionary,
+  Prefix extends string[] = []
+> = {
+  use: () => OmitOptionalValues<Register>;
+  get: () => Prefix;
+} & KeyBuilder<Register, Prefix>;
+```
+
+### `Builder`
+
+The `Builder` type represents the [builder][3] object created by the [createBuilder][2] function.
+
+#### Signature
+
+```typescript
+export type Builder<
+  Register extends Dictionary,
+  Prefix extends string[] = []
+> = {
+  unbuild: DeepRequired<Register>;
+} & RegisterBuilder<Register, Prefix>;
+```
+
+### `HasTypes`
+
+The `HasTypes` type represents a [register][4] object with additional type information assigned to its members.
+
+#### Signature
+
+```typescript
+type HasTypes<
+  Register extends Dictionary,
+  Types extends Dictionary,
+  Key extends string = "has"
+> = {
+  [Field in keyof Register]: Register[Field] extends Dictionary
+    ? HasTypes<Register[Field], Types, Key>
+    : Register[Field] extends (...args: any[]) => any
+    ? Register[Field] & Types
+    : Register[Field];
+};
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts/registers

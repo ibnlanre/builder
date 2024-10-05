@@ -1,0 +1,67 @@
+---
+
+title: Helper Types
+description: Helper types in the @ibnlanre/builder package.
+
+---
+
+## Helper Types
+
+The types exported by the `@ibnlanre/builder` package are built on top of a set of helper types. These types are not intended to be used directly by consumers. Nor are they exported by the package. They are included here for reference purposes. And their definitions may be different from the actual implementation.
+
+### `Dictionary`
+
+The `Dictionary` type represents a generic object type with string keys and unknown values. This type is not exported from the package but is used internally to represent objects with arbitrary keys and values.
+
+#### Signature
+
+```typescript
+type Dictionary = Record<string, unknown>;
+```
+
+### `RequiredKeys`
+
+The `RequiredKeys` type represents the keys of a [register][4] object that have required values. This type is used to filter out keys with optional values from the [builder][3] object.
+
+#### Signature
+
+```typescript
+type RequiredKeys<Register extends Dictionary> = {
+  [Field in keyof Register]: Register[Field] extends (...args: any[]) => any
+    ? Field
+    : Register[Field] extends Dictionary
+    ? Field
+    : never;
+}[keyof Register];
+```
+
+### `OmitOptionalValues`
+
+The `OmitOptionalValues` type represents a [register][4] object with optional values removed. This type is used to filter out keys with optional values from the [builder][3] object.
+
+#### Signature
+
+```typescript
+type OmitOptionalValues<Register extends Dictionary> = {
+  [Field in RequiredKeys<Register>]: Register[Field];
+};
+```
+
+### `DeepRequired`
+
+The `DeepRequired` type represents a [register][4] object with all values deeply required. This type is used to ensure that all values in the [builder][3] object are required.
+
+#### Signature
+
+```typescript
+type DeepRequired<Register extends Dictionary> = {
+  [Field in keyof Register]: Register[Field] extends Dictionary
+    ? DeepRequired<Register[Field]>
+    : Register[Field];
+};
+```
+
+[1]: /getting-started
+[2]: /core-concepts/create-builder
+[3]: /core-concepts/builder-object
+[4]: /core-concepts/registers

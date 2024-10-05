@@ -1,0 +1,79 @@
+---
+
+title: Installation
+description: Installation guide for the @ibnlanre/builder package.
+
+---
+import { Tabs } from 'nextra/components'
+
+# Installation
+
+To install the `@ibnlanre/builder` package, you can use either [npm][NPM], [yarn][Yarn] or [pnpm][PNPM]. The following code snippets demonstrate how to install the package using either of the package managers:
+
+<Tabs items={['NPM', 'Yarn', 'PNPM']}>
+  <Tabs.Tab>
+    ```typescript copy
+    npm install @ibnlanre/builder
+    ```
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+    ```typescript copy
+    yarn add @ibnlanre/builder
+    ```
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+    ```typescript copy
+    pnpm i @ibnlanre/builder
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## CDN
+
+The `@ibnlanre/builder` package is also available on [unpkg](https://unpkg.com/browse/@ibnlanre/builder). You can include it in your HTML file using the following script tag:
+
+```html
+<script src="https://unpkg.com/@ibnlanre/builder" type="module"></script>
+```
+
+Alternatively, you can use the `importmap` attribute to import the package in your HTML file:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@ibnlanre/builder": "https://unpkg.com/@ibnlanre/builder"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import { createBuilder } from '@ibnlanre/builder';
+
+      const register = {
+        foo: {
+          baz: (id) => `/bazaar/${id}`,
+          bar: 10,
+        },
+      };
+
+      const builder = createBuilder(register);
+    </script>
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
+```
+
+[NPM]: https://www.npmjs.com/package/@ibnlanre/builder
+[Yarn]: https://yarnpkg.com/package?name=%40ibnlanre%2Fbuilder
+[PNPM]: https://www.pnpm.io

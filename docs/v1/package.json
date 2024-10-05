@@ -1,0 +1,12 @@
+{
+  "name": "@ibnlanre/docs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Dynamic key generation library",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "license": "MIT"
+}

@@ -9,6 +9,7 @@ import { createBranches } from "./createBranches";
  *
  * @param {Register} register The object to traverse and retrieve the nested keys.
  * @param {string[]} [prefix=[]] An optional prefix to prepend to keys array in the builder object.
+ * @param {string} [separator="."] An optional separator to join the keys in the builder object.
  *
  * @returns {Builder<Register, Prefix>} A builder object with callable functions representing the nested keys.
  */

@@ -1,0 +1,96 @@
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-SemiBold.eot');
+    src: local('Cabin SemiBold'), local('Cabin-SemiBold'),
+        url('Cabin-SemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-SemiBold.woff2') format('woff2'),
+        url('Cabin-SemiBold.woff') format('woff'),
+        url('Cabin-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-Bold.eot');
+    src: local('Cabin Bold'), local('Cabin-Bold'),
+        url('Cabin-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-Bold.woff2') format('woff2'),
+        url('Cabin-Bold.woff') format('woff'),
+        url('Cabin-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-Italic.eot');
+    src: local('Cabin Italic'), local('Cabin-Italic'),
+        url('Cabin-Italic.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-Italic.woff2') format('woff2'),
+        url('Cabin-Italic.woff') format('woff'),
+        url('Cabin-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-Regular.eot');
+    src: local('Cabin Regular'), local('Cabin-Regular'),
+        url('Cabin-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-Regular.woff2') format('woff2'),
+        url('Cabin-Regular.woff') format('woff'),
+        url('Cabin-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-Medium.eot');
+    src: local('Cabin Medium'), local('Cabin-Medium'),
+        url('Cabin-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-Medium.woff2') format('woff2'),
+        url('Cabin-Medium.woff') format('woff'),
+        url('Cabin-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-BoldItalic.eot');
+    src: local('Cabin Bold Italic'), local('Cabin-BoldItalic'),
+        url('Cabin-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-BoldItalic.woff2') format('woff2'),
+        url('Cabin-BoldItalic.woff') format('woff'),
+        url('Cabin-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-MediumItalic.eot');
+    src: local('Cabin Medium Italic'), local('Cabin-MediumItalic'),
+        url('Cabin-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-MediumItalic.woff2') format('woff2'),
+        url('Cabin-MediumItalic.woff') format('woff'),
+        url('Cabin-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Cabin';
+    src: url('Cabin-SemiBoldItalic.eot');
+    src: local('Cabin SemiBold Italic'), local('Cabin-SemiBoldItalic'),
+        url('Cabin-SemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Cabin-SemiBoldItalic.woff2') format('woff2'),
+        url('Cabin-SemiBoldItalic.woff') format('woff'),
+        url('Cabin-SemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}
+
