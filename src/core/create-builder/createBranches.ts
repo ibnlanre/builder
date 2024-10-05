@@ -1,5 +1,5 @@
 import { isDictionary, isFunction } from "@/utilities";
-import type { Dictionary, KeyBuilder, RegisterBuilder } from "../types";
+import type { Dictionary, KeyBuilder } from "../types";
 
 /**
  * Helper function to create branches that represent the nested keys of the provided object.
@@ -9,20 +9,19 @@ import type { Dictionary, KeyBuilder, RegisterBuilder } from "../types";
  *
  * @param {Register} register The object to traverse and retrieve the nested keys.
  * @param {string[]} [prefix=[]] An optional prefix to prepend to keys array in the builder object.
+ * @param {string} [separator="."] An optional separator to use when joining the keys.
  *
- * @returns {RegisterBuilder<Register, Prefix>} A builder object with callable functions representing the nested keys.
+ * @returns {Builder<Register, Prefix>} A builder object with callable functions representing the nested keys.
  */
 export function createBranches<
   Register extends Dictionary,
   const Prefix extends string[] = [],
-  const Separator extends string = ".",
->(register: Register, prefix?: Prefix, separator?: Separator) {
+>(register: Register, prefix: Prefix = [] as unknown as Prefix) {
   const entries = Object.entries(register);
 
-  const branches = entries.reduce(
+  const branches: KeyBuilder<Register, Prefix> = entries.reduce(
     (acc, [key, value]) => {
-      const newPath = prefix ? prefix.concat([key]) : [key];
-      const $key = newPath.join(separator);
+      const newPath = prefix.concat([key]);
 
       if (isFunction(value)) {
         return {
@@ -30,35 +29,24 @@ export function createBranches<
           [key]: {
             $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
             $get: (...args: unknown[]) => [...newPath, ...args],
-            $key,
           },
         };
       }
 
-      if (isDictionary(value)) {
-        const root = {
-          $use: () => newPath,
-          $get: (...args: unknown[]) => [...newPath, ...args],
-          $key,
-        };
-
-        return {
-          ...acc,
-          [key]: Object.assign(root, createBranches(value, newPath, separator)),
-        };
-      }
+      const root = {
+        $use: () => newPath,
+        $get: (...args: unknown[]) => [...newPath, ...args],
+      };
 
       return {
         ...acc,
-        [key]: {
-          $use: () => newPath,
-          $get: (...args: unknown[]) => [...newPath, ...args],
-          $key,
-        },
+        [key]: isDictionary(value)
+          ? Object.assign(root, createBranches(value, newPath))
+          : root,
       };
     },
     {} as KeyBuilder<Register, Prefix>
-  ) as RegisterBuilder<Register, Prefix>;
+  );
 
   return branches;
 }

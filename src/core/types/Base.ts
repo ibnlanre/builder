@@ -1,5 +1,3 @@
-import type { Paths } from "./Paths";
-
 /**
  * Represents a store key.
  *
@@ -8,12 +6,9 @@ import type { Paths } from "./Paths";
  *
  * @returns {Base<Field, Prefix>} A store key object with get and use functions.
  */
-export type Base<
-  Field,
-  Prefix extends readonly string[] = [],
-  Separator extends string = ".",
-> = {
-  $get: <Y extends any[]>(...args: Y) => [...Prefix, Field, ...Y];
+export type Base<Field, Prefix extends readonly string[] = []> = {
+  $get: <Arguments extends unknown[]>(
+    ...args: Arguments
+  ) => [...Prefix, Field, ...Arguments];
   $use: () => [...Prefix, Field];
-  $key: Paths<[...Prefix, Field], Separator>;
 };

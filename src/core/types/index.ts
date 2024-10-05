@@ -4,4 +4,4 @@ export type { Dictionary } from "./Dictionary";
 export type { HasTypes } from "./HasTypes";
 export type { Intersect } from "./Intersect";
 export type { KeyBuilder } from "./KeyBuilder";
-export type { RegisterBuilder } from "./RegisterBuilder";
+export type { Paths } from "./Paths";

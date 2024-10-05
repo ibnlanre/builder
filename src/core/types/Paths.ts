@@ -1,13 +1,28 @@
-export type Paths<
-  List extends readonly unknown[],
+import type { Dictionary } from "./Dictionary";
+import type { Values } from "./Values";
+
+type PathsHelper<
+  Prefix extends readonly string[],
+  Key extends string,
   Separator extends string = ".",
-  Result extends string = "",
-> = List extends []
-  ? Result
-  : List extends [...infer Head, infer Tail]
-    ? Tail extends string | number
-      ? Result extends ""
-        ? Paths<Head, `${Tail}`>
-        : Paths<Head, `${Tail}${Separator}${Result}`>
-      : Paths<Head, Result>
-    : never;
+> = Values<[...Prefix, Key], Separator>;
+
+export type Paths<
+  Register extends Dictionary,
+  Prefix extends readonly string[] = [],
+  Separator extends string = ".",
+> = Register extends Dictionary
+  ? {
+      [Key in keyof Register]: Key extends string | number
+        ? Register[Key] extends Dictionary
+          ?
+              | PathsHelper<Prefix, `${Key}`, Separator>
+              | PathsHelper<
+                  Prefix,
+                  `${Key}${Separator}${Paths<Register[Key], [], Separator>}`,
+                  Separator
+                >
+          : PathsHelper<Prefix, `${Key}`, Separator>
+        : never;
+    }[keyof Register]
+  : never;
