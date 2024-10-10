@@ -50,50 +50,14 @@ const match = {
 };
 
 describe("createBuilder", () => {
-  it("should create a builder object with correct nested structure", () => {
-    const builder = createBuilder(register);
-    expect(builder).toMatchObject(match);
-
-    expect(builder.foo.qux.$use()).toEqual(["foo", "qux"]);
-    expect(builder.foo.bar.baz.$use(14)).toEqual(["foo", "bar", "baz", 14]);
-
-    expect(builder.foo.bar.baz.$get()).toEqual(["foo", "bar", "baz"]);
-    expect(builder.foo.qux.$get("hello", "world")).toEqual([
-      "foo",
-      "qux",
-      "hello",
-      "world",
-    ]);
-    expect(builder.foo.bar.$get(["baz", "quz"])).toEqual([
-      "foo",
-      "bar",
-      ["baz", "quz"],
-    ]);
-  });
-
   const builder = createBuilder(register, {
     prefix: ["parent"],
     separator: "/",
   });
 
-  it("should retrieve the nested value using the use method", () => {
-    expect(builder.num.$use()).toEqual(["parent", "num"]);
-    expect(builder.str.$use()).toEqual(["parent", "str"]);
-    expect(builder.dex.$use()).toEqual(["parent", "dex"]);
-  });
-
-  it("should append the value to the prefix array", () => {
-    expect(builder.foo.bar.baz.$use(110)).toEqual([
-      "parent",
-      "foo",
-      "bar",
-      "baz",
-      110,
-    ]);
-  });
-
-  it("should create a builder object with custom prefix", () => {
-    expect(builder.foo.qux.$use()).toEqual(["parent", "foo", "qux"]);
+  it("should create a builder object with correct nested structure", () => {
+    expect(builder).toMatchObject(match);
+    expectTypeOf(builder).toMatchTypeOf<typeof match>();
   });
 
   it("should correctly retrieve nested value using the use method on the root", () => {
@@ -101,7 +65,7 @@ describe("createBuilder", () => {
     expectTypeOf(builder.$use).toEqualTypeOf(register);
 
     expect(builder.$use.dex).toBeUndefined();
-    expectTypeOf(builder.dex.$use).toMatchTypeOf<() => string[]>();
+    expectTypeOf(builder.dex.$use()).toEqualTypeOf<["parent", "dex"]>();
   });
 
   it("should return the key passed to the get method", () => {
@@ -115,5 +79,61 @@ describe("createBuilder", () => {
 
     expect(builder.$get()).toEqual(["parent"]);
     expectTypeOf(builder.$get()).toEqualTypeOf<["parent"]>();
+  });
+
+  it("should retrieve the nested value using the get method", () => {
+    expect(builder.foo.bar.baz.$get()).toEqual(["parent", "foo", "bar", "baz"]);
+    expectTypeOf(builder.foo.bar.baz.$get()).toEqualTypeOf<
+      ["parent", "foo", "bar", "baz"]
+    >();
+
+    expect(builder.foo.qux.$get("hello", "world")).toEqual([
+      "parent",
+      "foo",
+      "qux",
+      "hello",
+      "world",
+    ]);
+    expectTypeOf(builder.foo.qux.$get("more", "test")).toEqualTypeOf<
+      ["parent", "foo", "qux", string, string]
+    >();
+
+    expect(builder.foo.bar.$get(["baz", "quz"])).toEqual([
+      "parent",
+      "foo",
+      "bar",
+      ["baz", "quz"],
+    ]);
+  });
+
+  it("should retrieve the nested value using the use method", () => {
+    expect(builder.num.$use()).toEqual(["parent", "num"]);
+    expectTypeOf(builder.num.$use).toEqualTypeOf<() => ["parent", "num"]>();
+
+    expect(builder.str.$use()).toEqual(["parent", "str"]);
+    expectTypeOf(builder.str.$use).toEqualTypeOf<() => ["parent", "str"]>();
+
+    expect(builder.dex.$use()).toEqual(["parent", "dex"]);
+    expectTypeOf(builder.dex.$use).toEqualTypeOf<() => ["parent", "dex"]>();
+  });
+
+  it("should append the value to the prefix array", () => {
+    expect(builder.foo.bar.baz.$use(110)).toEqual([
+      "parent",
+      "foo",
+      "bar",
+      "baz",
+      110,
+    ]);
+    expectTypeOf(builder.foo.bar.baz.$use(20)).toEqualTypeOf<
+      ["parent", "foo", "bar", "baz", number]
+    >();
+  });
+
+  it("should create a builder object with custom prefix", () => {
+    expect(builder.foo.qux.$use()).toEqual(["parent", "foo", "qux"]);
+    expectTypeOf(builder.foo.qux.$use()).toEqualTypeOf<
+      ["parent", "foo", "qux"]
+    >();
   });
 });

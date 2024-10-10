@@ -37,21 +37,3 @@ export function createBuilder<
     },
   }) as Builder<Register, Prefix, Separator>;
 }
-
-const builder = createBuilder(
-  {
-    hello: {
-      world: {
-        8: "test",
-      },
-    },
-  },
-  {
-    prefix: ["test"],
-    separator: "/",
-  }
-);
-
-builder.hello.world.$get(8);
-builder.$use.hello.world[8];
-builder.$get("test/hello");
