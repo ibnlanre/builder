@@ -1,12 +1,15 @@
 import { createBuilder } from "./createBuilder";
 
-const store = {
-  foo: {
-    baz: (id) => `/bazaar/${id}`,
-    bar: 10,
+const builder = createBuilder(
+  {
+    foo: {
+      baz: (id) => `/bazaar/${id}`,
+      bar: 10,
+    },
   },
-};
+  {
+    prefix: ["root"],
+  }
+);
 
-const builder = createBuilder(store, ["root"]);
-
-builder.$get("");
+builder.$get("root.foo.bar");

@@ -1,0 +1,57 @@
+---
+
+title: Morphing Keys
+description: Morphing keys using the @ibnlanre/builder package.
+
+---
+
+# Morphing Keys
+
+Since the key returned from calling the `$use` or `$get` method is an array of strings, crafted from the nodes in the [register][4], it is possible to transform the key using any array [method][array]. There are several methods, on the array [prototype][prototype], that can be used to transform the key. You can learn more about these methods in the [MDN Web Docs][methods].
+
+The following code snippet is a continuation of the previous example:
+
+```typescript copy
+const builder = createBuilder({
+  foo: {
+    baz: (id: number) => `/bazaar/${id}`,
+    bar: 10,
+  },
+}, ["root"]);
+```
+
+### The `slice` method
+
+One of such methods is the [slice][slice] method. The [slice][slice] method is a function that extracts a section of an array and returns a new array. The following code snippet demonstrates how to use the [slice][slice] method:
+
+```typescript copy
+// extracting the first two elements of the array
+builder.foo.baz.get().slice(2); // ["root", "foo"]
+```
+
+### The `join` method
+
+Another array method that can be used to transform the key is the [join][join] method. The [join][join] method is a function that concatenates the value in an array into a single string, using a separator. The following code snippet demonstrates how to use the [join][join] method:
+
+```typescript copy
+// concatenating the elements of the array into a single string
+builder.foo.baz.get().join("."); // "root.node.foo.baz"
+```
+
+### Conclusion
+
+Note that to get the key as a string, you can call the `$get` method on the root node, then pass it the key, as an argument. This will return the key as a string. The `$get` method is typed to suggest the possible keys that can be passed to it, based on the structure of the [register][4].
+
+The following code snippet demonstrates how to get the key as a string:
+
+```typescript copy
+builder.$get("root.node.foo.baz"); // "root.node.foo.baz"
+```
+
+[4]: /core-concepts/registers
+
+[methods]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#instance_methods
+[slice]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+[join]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+[prototype]: https://javascript.info/native-prototypes
+[array]: https://javascript.info/array-methods

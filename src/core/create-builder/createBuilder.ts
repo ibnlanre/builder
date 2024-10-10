@@ -1,4 +1,4 @@
-import type { Builder, Dictionary, Paths } from "../types";
+import type { Builder, Dictionary } from "../types";
 import { createBranches } from "./createBranches";
 
 /**
@@ -24,24 +24,34 @@ export function createBuilder<
     separator?: Separator;
   }
 ) {
-  const { prefix = [] } = { ...options };
+  const { prefix = [], separator = "." } = { ...options };
   const branches = createBranches(register, prefix);
 
-  function $get(): Prefix;
-
-  function $get<Path extends Paths<Register, Prefix, Separator>>(
-    path: Path
-  ): Path;
-
-  function $get(path?: Paths<Register, Prefix, Separator>) {
-    if (path) return path;
-    return prefix;
-  }
-
   return Object.assign(branches, {
-    $get,
+    $get(...path: unknown[]) {
+      if (path.length) return path.join(separator);
+      return prefix;
+    },
     get $use() {
       return register;
     },
   }) as Builder<Register, Prefix, Separator>;
 }
+
+const builder = createBuilder(
+  {
+    hello: {
+      world: {
+        8: "test",
+      },
+    },
+  },
+  {
+    prefix: ["test"],
+    separator: "/",
+  }
+);
+
+builder.hello.world.$get(8);
+builder.$use.hello.world[8];
+builder.$get("test/hello");

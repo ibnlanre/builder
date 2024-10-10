@@ -1,8 +1,9 @@
 import type { Dictionary } from "./Dictionary";
+import type { Join } from "./Join";
 import type { KeyBuilder } from "./KeyBuilder";
 import type { Paths } from "./Paths";
 
-interface Get<
+export interface Get<
   Register extends Dictionary,
   Prefix extends readonly string[] = [],
   Separator extends string = ".",
@@ -18,10 +19,18 @@ interface Get<
    * Returns the key passed to the method.
    * If no key is provided, it returns the prefix array.
    *
-   * @param {Paths<Register, Prefix, Separator>} [path] The key to return.
-   * @returns {Paths<Register, Prefix, Separator>} The key passed to the method.
+   * @template {Paths<Register, Prefix, Separator>} Path
+   * @template {readonly [Path, ...Array<string | number | boolean>]} Key
+   *
+   * @param {Key} path The key to return.
+   * @returns {Join<Key, Separator>} The key passed to the method.
    */
-  <Path extends Paths<Register, Prefix, Separator>>(path: Path): Path;
+  <
+    Path extends Paths<Register, Prefix, Separator>,
+    Key extends readonly [Path, ...Array<string | number | boolean>],
+  >(
+    ...path: Key
+  ): Join<Key, Separator>;
 }
 
 /**
