@@ -67,7 +67,7 @@ builder.foo.baz.$get("test", { id: 11 }); // ["root", "foo", "baz", "test", { id
 
 The `$get` method on the root node of the builder object is unique in that if it is called without an argument, it returns the prefixes used to create the builder object. However, it can also accept a string as an argument, which becomes the key returned by the method. This behavior is distinct from other nodes, which appends the string argument to the returned key.
 
-The following code snippet demonstrates how to create a key using a string argument:
+The `$get` method is typed to suggest the possible keys that can be passed to it, based on the structure of the [register][4]. The following code snippet demonstrates how to create a key using a string argument:
 
 ```typescript copy
 // Invoking the `$get` method without any arguments
@@ -75,6 +75,9 @@ builder.$get(); // ["root"]
 
 // Invoking the `$get` method with a string argument
 builder.$get("root.foo"); // "root.foo"
+
+// Invoking the `$get` method with multiple string arguments
+builder.$get("root.foo", "baz"); // "root.foo.baz"
 ```
 
 [1]: /getting-started

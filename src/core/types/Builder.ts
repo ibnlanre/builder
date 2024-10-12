@@ -2,6 +2,7 @@ import type { Dictionary } from "./Dictionary";
 import type { Join } from "./Join";
 import type { KeyBuilder } from "./KeyBuilder";
 import type { Paths } from "./Paths";
+import type { Primitives } from "./Primitives";
 
 export interface Get<
   Register extends Dictionary,
@@ -20,14 +21,14 @@ export interface Get<
    * If no key is provided, it returns the prefix array.
    *
    * @template {Paths<Register, Prefix, Separator>} Path
-   * @template {readonly [Path, ...Array<string | number | boolean>]} Key
+   * @template {readonly [Path, ...Array<Primitives>]} Key
    *
    * @param {Key} path The key to return.
    * @returns {Join<Key, Separator>} The key passed to the method.
    */
   <
     Path extends Paths<Register, Prefix, Separator>,
-    Key extends readonly [Path, ...Array<string | number | boolean>],
+    Key extends readonly [Path, ...Array<Primitives>],
   >(
     ...path: Key
   ): Join<Key, Separator>;

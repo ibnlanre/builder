@@ -15,38 +15,24 @@ const register = {
 
 const $use = expect.any(Function);
 const $get = expect.any(Function);
+const $ = { $use, $get };
 
 const match = {
   $use: register,
   $get,
-  dex: {
-    $use,
-    $get,
-  },
+  dex: $,
   foo: {
     bar: {
-      baz: {
-        $use,
-        $get,
-      },
+      baz: $,
       $use,
       $get,
     },
-    qux: {
-      $use,
-      $get,
-    },
+    qux: $,
     $use,
     $get,
   },
-  num: {
-    $use,
-    $get,
-  },
-  str: {
-    $use,
-    $get,
-  },
+  num: $,
+  str: $,
 };
 
 describe("createBuilder", () => {
@@ -69,6 +55,9 @@ describe("createBuilder", () => {
   });
 
   it("should return the key passed to the get method", () => {
+    expect(builder.$get()).toEqual(["parent"]);
+    expectTypeOf(builder.$get()).toEqualTypeOf<["parent"]>();
+
     expect(builder.$get("parent/foo/bar/baz")).toEqual("parent/foo/bar/baz");
     expectTypeOf(
       builder.$get("parent/foo/bar/baz")
@@ -77,8 +66,22 @@ describe("createBuilder", () => {
     expect(builder.$get("parent/foo")).toEqual("parent/foo");
     expectTypeOf(builder.$get("parent/foo")).toEqualTypeOf<"parent/foo">();
 
-    expect(builder.$get()).toEqual(["parent"]);
-    expectTypeOf(builder.$get()).toEqualTypeOf<["parent"]>();
+    expect(builder.$get("parent/foo/qux")).toEqual("parent/foo/qux");
+    expectTypeOf(
+      builder.$get("parent/foo/qux")
+    ).toEqualTypeOf<"parent/foo/qux">();
+
+    expect(builder.$get("parent/num", 34, 5n)).toEqual("parent/num/34/5n");
+    expectTypeOf(
+      builder.$get("parent/num", 34, 5n)
+    ).toEqualTypeOf<"parent/num/34/5n">();
+
+    expect(builder.$get("parent/str", "hello", "world")).toEqual(
+      "parent/str/hello/world"
+    );
+    expectTypeOf(
+      builder.$get("parent/str", "hello", "world")
+    ).toEqualTypeOf<"parent/str/hello/world">();
   });
 
   it("should retrieve the nested value using the get method", () => {
