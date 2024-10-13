@@ -32,7 +32,7 @@ If the [builder][3] object is created with prefixes, the generated keys array wo
 The following code snippet demonstrates how to call the `createBuilder` function with prefixes:
 
 ```typescript copy
-const prefixedBuilder = createBuilder(register, ["user", "record"]);
+const prefixedBuilder = createBuilder(register, { prefix: ["user", "record"] });
 ```
 
 [1]: /getting-started

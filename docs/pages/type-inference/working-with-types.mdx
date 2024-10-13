@@ -26,11 +26,11 @@ const builder = createBuilder({
 });
 
 // Use the ReturnType utility to get the return type of a function.
-type Height = ReturnType<typeof builder.unbuild.getHeight>;
+type Height = ReturnType<typeof builder.$use.getHeight>;
 //   ^? number
 
 // Use the Parameter utility to get the parameter type of a function.
-type Width = Parameters<typeof builder.unbuild.setSize>[1];
+type Width = Parameters<typeof builder.$use.setSize>[1];
 //   ^? number
 ```
 
@@ -49,76 +49,8 @@ const builder = createBuilder({
 });
 
 // Using `as` to assert the type of a property.
-type Address = typeof builder.unbuild.address.house;
+type Address = typeof builder.$use.address.house;
 //   ^? number
-```
-
-## Using the `typeValue` function
-
-To provide additional type information to a value in the [register][4], the `typeValue` function, exported by the [@ibnlanre/builder][1] package, can be used. Using this function is recommended over making type assertions, as it ensures that the type information is correctly associated with a value. 
-
-To expatiate, the type information would not be made accessible through the `use` and `get` methods as it is not an actual value in the [register][4]. Regardless, the type information can be accessed using the `unbuild` property.
-
-The following snippet demonstrates how to use the `typeValue` function:
-
-```typescript copy
-import { createBuilder, typeValue } from '@ibnlanre/builder';
-
-type ID = {
-  id: number;
-}
-
-const greeting = { hello: 'world' }
-const bar = typeValue(greeting)<ID>();
-//    ^? { hello: string; has: { id: number; } }
-
-const builder = createBuilder({
-  foo: {
-    bar,
-    baz: typeValue({
-      id: 42,
-    })(),
-  },
-});
-```
-
-The `typeValue` function is a curried function that initially accepts a value to which it will append any given type information. It then returns another function that takes the type information as a type parameter. When invoked, this returned function embellishes the initial value with a new `has` property, which holds the given type information.
-
-<Callout type="info">Note that the `has` property is inserted as an **optional** property on the initial value, however, accessing its value through the `unbuild` property would display it as **required**.</Callout>
-
-The following snippet demonstrates how to access the given type information:
-
-```typescript copy
-// Access the type of the `bar` property.
-type Bar = typeof builder.unbuild.foo.bar;
-//   ^? { hello: string; has: { id: number; } }
-
-// Access the type of the `baz` property.
-type Baz = typeof builder.unbuild.foo.baz;
-//   ^? { id: number; has: {} }
-```
-
-## Key Conflicts
-
-In a scenario where the added `has` property coincides with an existing property on the value, a second parameter can be passed to the `typeValue` function to specify the key under which the type information should be stored. This is to ensure that the type information is not lost, and that the value remains intact.
-
-The following snippet demonstrates how to specify a different storage key:
-
-```typescript copy
-import { createBuilder, typeValue } from '@ibnlanre/builder';
-
-const builder = createBuilder({
-  foo: {
-    qux: typeValue({
-      hello: 'world',
-      has: undefined,
-    })<{ id: number }, "added">(),
-  },
-});
-
-// Access the type of the `qux` property.
-type Qux = typeof builder.unbuild.foo.qux;
-//   ^? { hello: string; has: { id: number; }; added: {} }
 ```
 
 [1]: /getting-started

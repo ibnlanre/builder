@@ -23,7 +23,7 @@ type List = {
   }[];
 };
 
-const store = {
+const register = {
   retailers: {
     list: async () => {
       return axios.get<List>("/api/retailers");
@@ -48,7 +48,7 @@ const store = {
   },
 };
 
-const api = createBuilder(store);
+const api = createBuilder(register);
 ```
 
 ## Queries

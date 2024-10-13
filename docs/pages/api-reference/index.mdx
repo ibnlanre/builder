@@ -34,53 +34,14 @@ A [builder][3] object with the keys and values of the [register][4] object.
 #### Example
 
 ```typescript
-const builder = createBuilder({
+const register = {
   location: (id: number) => `/location/${id}`,
   address: {
     country: 'Nigeria',
   },
-}, ["root", "node"]);
-```
+};
 
-### `typeValue`
-
-The `typeValue` function is used to assign additional type information to members of a [register][4]. The function takes a [register][4] object and returns a function that can be used to assign type information to the members of the [register][4].
-
-#### Signature
-
-```typescript
-export function typeValue<Register extends Dictionary>(register: Register) {
-  const assignType = <
-    Types extends Dictionary = {},
-    const Key extends string = "has"
-  >() => {
-    return register as HasTypes<Register, Types, Key>;
-  };
-
-  return assignType;
-}
-```
-
-#### Parameters
-
-- `register` - The [register][4] object to assign type information to.
-
-#### Returns
-
-A function that can be used to assign type information to the members of the [register][4].
-
-#### Example
-
-```typescript
-const builder = createBuilder({
-  foo: {
-    baz: typeValue({
-      hello: "world",
-    })<{
-      hi: string;
-    }>(),
-  },
-});
+const builder = createBuilder(register, { prefix: ["root", "node"] });
 ```
 
 [1]: /getting-started

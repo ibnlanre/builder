@@ -16,12 +16,14 @@ When accessed using the `$use` property, the root node returns the [register][4]
 This guide elucidates the behavior of the `$use` and `$get` properties specifically on the root node.
 
 ```typescript copy
-const builder = createBuilder({
+const register = {
   foo: {
     baz: (id: number) => `/bazaar/${id}`,
     bar: 10,
   },
-}, ["root", "node"]);
+};
+
+const builder = createBuilder(register, { prefix: ["root", "node"]});
 ```
 
 ## Retrieving values
@@ -40,13 +42,6 @@ builder.$use.foo.baz(12); // "/bazaar/12"
 
 // Accessing a nested primitive value
 builder.$use.foo.bar; // 10
-```
-
-The reason why `$use` is a property on the root node and not a method is to facilitate retrieving the type of nested keys within the register, without having to import the register object alongside the builder object. If the `$use` property had been a method, accessing nested types would require square brackets to access the nested keys, which would be cumbersome for [TypeScript][typescript] users.
-
-```typescript copy
-//  type Bar = ReturnType<typeof builder.$use>['foo']['bar'];
-type Bar = typeof builder.$use.foo.bar; // number
 ```
 
 ## Builder prefix

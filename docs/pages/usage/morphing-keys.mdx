@@ -12,12 +12,14 @@ Since the key returned from calling the `$use` or `$get` method is an array of s
 The following code snippet is a continuation of the previous example:
 
 ```typescript copy
-const builder = createBuilder({
+const register = {
   foo: {
     baz: (id: number) => `/bazaar/${id}`,
     bar: 10,
   },
-}, ["root"]);
+};
+
+const builder = createBuilder(register, { prefix: ["root"] });
 ```
 
 ### The `slice` method

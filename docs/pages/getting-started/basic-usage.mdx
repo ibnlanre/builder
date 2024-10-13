@@ -33,7 +33,7 @@ The following steps outline how to quickly get started using the [@ibnlanre/buil
 3. Create a [builder][3] object using the [createBuilder][2] function:
 
     ```typescript
-    const builder = createBuilder(register, ["root", "node"]);
+    const builder = createBuilder(register, { prefix: ["root", "node"] });
     ```
 
 4. Access the [register][4] values using the [builder][3] object:
