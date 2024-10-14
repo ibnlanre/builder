@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/builder",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Creates a builder object for defining keys and values.",
   "homepage": "https://builder.root.i.ng",
   "type": "module",
@@ -21,14 +21,14 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/core/index.d.ts",
       "require": "./dist/core/index.cjs",
-      "import": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts"
+      "import": "./dist/core/index.js"
     },
     "./react": {
+      "types": "./dist/react/index.d.ts",
       "require": "./dist/react/index.cjs",
-      "import": "./dist/react/index.js",
-      "types": "./dist/react/index.d.ts"
+      "import": "./dist/react/index.js"
     }
   },
   "author": {
