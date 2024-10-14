@@ -5,3 +5,6 @@ export type { Intersect } from "./Intersect";
 export type { Join } from "./Join";
 export type { KeyBuilder } from "./KeyBuilder";
 export type { Paths } from "./Paths";
+export type { Primitives } from "./Primitives";
+export type { Serialize } from "./Serialize";
+export type { Values } from "./Values";

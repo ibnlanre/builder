@@ -1,7 +1,6 @@
-import type { Dictionary } from "@ibnlanre/types";
-import type { Builder } from "@/core";
+import type { Builder, Dictionary } from "@/core/types";
 
 export type BuilderRecord<
   Register extends Dictionary = {},
-  Prefix extends string[] = []
+  Prefix extends string[] = [],
 > = Record<string, Builder<Register, Prefix>>;

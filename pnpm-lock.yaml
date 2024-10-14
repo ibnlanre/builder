@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ibnlanre/types':
-        specifier: ^0.3.0
-        version: 0.3.0
       '@next/third-parties':
         specifier: ^14.2.3
         version: 14.2.14(next@14.2.14(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -372,9 +369,6 @@ packages:
     peerDependencies:
       react: ^16 || ^17 || ^18
       react-dom: ^16 || ^17 || ^18
-
-  '@ibnlanre/types@0.3.0':
-    resolution: {integrity: sha512-gkIwzM90GnchPT/bXzu11Ri8c07GxqERVnCW9pHpXhdf9PvKN9ArSgMMdWxH1BC1WrhYjMGbQiPjgCtbh7qmZQ==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -2860,8 +2854,6 @@ snapshots:
       client-only: 0.0.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  '@ibnlanre/types@0.3.0': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
