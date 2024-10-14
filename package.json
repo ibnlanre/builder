@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "bundle": "tsup",
-    "lint": "eslint --ext .ts,.tsx .",
     "test": "vitest --typecheck",
     "test:ui": "vitest --typecheck --ui",
     "tag": "git tag -a v$npm_package_version -m v$npm_package_version",
@@ -32,7 +31,10 @@
       "types": "./dist/react/index.d.ts"
     }
   },
-  "author": "Ridwan Olanrewaju <olaitanlanre28@gmail.com>",
+  "author": {
+    "email": "olaitanlanre28@gmail.com",
+    "name": "Ridwan Olanrewaju"
+  },
   "repository": {
     "url": "git+https://github.com/ibnlanre/builder.git",
     "type": "git",

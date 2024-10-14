@@ -64,10 +64,6 @@ importers:
         specifier: ^1.5.0
         version: 1.6.0(@types/node@18.19.3)(@vitest/ui@1.6.0)
 
-  docs/v0: {}
-
-  docs/v1: {}
-
 packages:
 
   '@alloc/quick-lru@5.2.0':
