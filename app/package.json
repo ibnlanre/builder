@@ -1,0 +1,54 @@
+{
+  "name": "@ibnlanre/builder",
+  "version": "1.0.0",
+  "description": "Creates a builder object for defining keys and values.",
+  "homepage": "https://builder.root.i.ng",
+  "type": "module",
+  "scripts": {
+    "bundle": "tsup",
+    "tag": "git tag -a v$npm_package_version -m v$npm_package_version",
+    "push": "git push origin v$npm_package_version",
+    "package": "npm publish --access public",
+    "release": "npm run package && npm run tag && npm run push"
+  },
+  "main": "dist/core/index.cjs",
+  "module": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "require": "./dist/core/index.cjs",
+      "import": "./dist/core/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "require": "./dist/react/index.cjs",
+      "import": "./dist/react/index.js"
+    }
+  },
+  "author": {
+    "email": "olaitanlanre28@gmail.com",
+    "name": "Ridwan Olanrewaju"
+  },
+  "repository": {
+    "url": "git+https://github.com/ibnlanre/builder.git",
+    "type": "git",
+    "publishConfig": {
+      "access": "public"
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/ibnlanre/builder/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "builder"
+  ],
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
