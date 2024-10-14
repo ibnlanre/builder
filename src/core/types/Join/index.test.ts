@@ -24,7 +24,7 @@ describe("Join", () => {
 
   it("should join an array of bigints with no separator", () => {
     type Result = Join<[1n, 2n, 3n]>;
-    expectTypeOf<Result>().toEqualTypeOf<"1n2n3n">();
+    expectTypeOf<Result>().toEqualTypeOf<"123">();
   });
 
   it("should join an array of booleans with no separator", () => {

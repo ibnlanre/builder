@@ -19,46 +19,100 @@ The `Dictionary` type represents a generic object type with string keys and unkn
 type Dictionary = Record<string, unknown>;
 ```
 
-### `RequiredKeys`
+### `Primitives`
 
-The `RequiredKeys` type represents the keys of a [register][4] object that have required values. This type is used to filter out keys with optional values from the [builder][3] object.
+The `Primitives` type represents the set of primitive types in TypeScript. This type is used to filter out primitive values from the [register][4] object.
 
 #### Signature
 
 ```typescript
-type RequiredKeys<Register extends Dictionary> = {
-  [Field in keyof Register]: Register[Field] extends (...args: any[]) => any
-    ? Field
-    : Register[Field] extends Dictionary
-    ? Field
-    : never;
-}[keyof Register];
+type Primitives = string | number | bigint | boolean | null | undefined;
 ```
 
-### `OmitOptionalValues`
+### `Join`
 
-The `OmitOptionalValues` type represents a [register][4] object with optional values removed. This type is used to filter out keys with optional values from the [builder][3] object.
+The `Join` type represents a function that joins a list of primitive values into a single string. This type is used to generate the keys and values of the [builder][3] object.
 
 #### Signature
 
 ```typescript
-type OmitOptionalValues<Register extends Dictionary> = {
-  [Field in RequiredKeys<Register>]: Register[Field];
-};
+type Serialize<Head extends Primitives> =
+  Head extends Exclude<Primitives, null | undefined>
+    ? Head extends bigint
+      ? `${Head}n`
+      : `${Head}`
+    : "";
+
+type JoinHelper<
+  Head,
+  Rest extends unknown[],
+  Separator extends string,
+> = Head extends Primitives
+  ? Rest extends []
+    ? `${Serialize<Head>}`
+    : Rest extends Primitives[]
+      ? `${Serialize<Head>}${Separator}${Join<Rest, Separator>}`
+      : ""
+  : "";
+
+type Join<
+  List extends ReadonlyArray<Primitives>,
+  Separator extends string = "",
+> = List extends [infer Head, ...infer Rest]
+  ? JoinHelper<Head, Rest, Separator>
+  : "";
 ```
 
-### `DeepRequired`
+### `Paths`
 
-The `DeepRequired` type represents a [register][4] object with all values deeply required. This type is used to ensure that all values in the [builder][3] object are required.
+The `Paths` type represents a union of all possible paths in a [register][4] object. This type is used to generate all possible paths in the [builder][3] object.
 
 #### Signature
 
 ```typescript
-type DeepRequired<Register extends Dictionary> = {
-  [Field in keyof Register]: Register[Field] extends Dictionary
-    ? DeepRequired<Register[Field]>
-    : Register[Field];
-};
+type PathsHelper<
+  Prefix extends readonly string[],
+  Key extends string,
+  Separator extends string = ".",
+> = Values<[...Prefix, Key], Separator>;
+
+type Paths<
+  Register extends Dictionary,
+  Prefix extends readonly string[] = [],
+  Separator extends string = ".",
+> = Register extends Dictionary
+  ? {
+      [Key in keyof Register]: Key extends string | number
+        ? Register[Key] extends Dictionary
+          ?
+              | PathsHelper<Prefix, `${Key}`, Separator>
+              | PathsHelper<
+                  Prefix,
+                  `${Key}${Separator}${Paths<Register[Key], [], Separator>}`,
+                  Separator
+                >
+          : PathsHelper<Prefix, `${Key}`, Separator>
+        : never;
+    }[keyof Register]
+  : never;
+```
+
+### `Values`
+
+The `Values` type represents a union of all possible values in a [register][4] object. This type is used to generate all possible values in the [builder][3] object.
+
+#### Signature
+
+```typescript
+type Values<
+  List extends readonly string[],
+  Separator extends string = ".",
+  Result extends string = "",
+> = List extends [infer Head extends string, ...infer Tail extends string[]]
+  ? Result extends ""
+    ? Values<Tail, Separator, `${Head}`>
+    : Result | Values<Tail, Separator, `${Result}${Separator}${Head}`>
+  : Result;
 ```
 
 [1]: /getting-started

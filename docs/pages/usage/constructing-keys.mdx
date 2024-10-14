@@ -9,12 +9,12 @@ import { Callout } from "components";
 
 # Constructing keys
 
-The [@ibnlanre/builder][1] package provides a mechanism for constructing keys using the [builder][3] object. This process is aided by the `$use` and `get` methods, which are available at every level of the [builder][3] object.
+The [@ibnlanre/builder][1] package provides a mechanism for constructing keys using the [builder][3] object. This process is aided by the `$use` and `$get` methods, which are available at every level of the [builder][3] object.
 
 These methods are designed to access the [register][4]'s values, as well as, generate keys from the [register][4]'s nodes. While they perform similar operations, there is a subtle difference. The `$use` method adheres to the pattern defined by the node's value, whereas the `$get` method does not.
 
 <Callout type="info">
-  The `$use` method invoked on the root node does not return a key, but the `get` method does.
+  The `$use` method invoked on the root node does not return a key, but the `$get` method does.
 </Callout>
 
 The following code snippet shows the sample [builder][3] that would be used in this guide:

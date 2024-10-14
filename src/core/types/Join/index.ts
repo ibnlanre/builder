@@ -1,11 +1,5 @@
 import type { Primitives } from "../Primitives";
-
-type Serialize<Head extends Primitives> =
-  Head extends Exclude<Primitives, null | undefined>
-    ? Head extends bigint
-      ? `${Head}n`
-      : `${Head}`
-    : "";
+import type { Serialize } from "../Serialize";
 
 type JoinHelper<
   Head,

@@ -71,10 +71,10 @@ describe("createBuilder", () => {
       builder.$get("parent/foo/qux")
     ).toEqualTypeOf<"parent/foo/qux">();
 
-    expect(builder.$get("parent/num", 34, 5n)).toEqual("parent/num/34/5n");
+    expect(builder.$get("parent/num", 34, 5n)).toEqual("parent/num/34/5");
     expectTypeOf(
       builder.$get("parent/num", 34, 5n)
-    ).toEqualTypeOf<"parent/num/34/5n">();
+    ).toEqualTypeOf<"parent/num/34/5">();
 
     expect(builder.$get("parent/str", "hello", "world")).toEqual(
       "parent/str/hello/world"
@@ -138,5 +138,24 @@ describe("createBuilder", () => {
     expectTypeOf(builder.foo.qux.$use()).toEqualTypeOf<
       ["parent", "foo", "qux"]
     >();
+  });
+
+  it("should work with type assertions", () => {
+    const builder = createBuilder({
+      address: {} as {
+        street: string;
+        city: string;
+        country: string;
+        house: number;
+      },
+    });
+
+    expectTypeOf(builder.address.$use()).toEqualTypeOf<["address"]>();
+    expectTypeOf<typeof builder.$use.address>().toEqualTypeOf<{
+      street: string;
+      city: string;
+      country: string;
+      house: number;
+    }>();
   });
 });

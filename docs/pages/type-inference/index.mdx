@@ -71,7 +71,7 @@ type Bar = typeof builder.$use.foo.bar;
 
 ## Addendum: Root node
 
-In summary, the [root node][5] uniquely returns the [register][4] when the `use` property is accessed. While the `get` method, in contrast, yields the prefixes used in the creation of the [builder][3] object when it is called without arguments, and returns a string when it is called with arguments. This behavior diverges from that of other nodes, which generate keys from the nested keys within the [register][4]. Given its distinct characteristics, comprehending how the [root node][5] works is crucial.
+In summary, the [root node][5] uniquely returns the [register][4] when the `$use` property is accessed. While the `$get` method, in contrast, yields the prefixes used in the creation of the [builder][3] object when it is called without arguments, and returns a string when it is called with arguments. This behavior diverges from that of other nodes, which generate keys from the nested keys within the [register][4]. Given its distinct characteristics, comprehending how the [root node][5] works is crucial.
 
 For a more detailed review of the **root node**, refer to the [usage][5] page.
 
