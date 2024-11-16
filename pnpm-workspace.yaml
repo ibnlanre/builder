@@ -1,4 +1,4 @@
 packages:
   - "!**/test/**"
-  - "docs/*"
-  - "app/*"
+  - "docs"
+  - "app"

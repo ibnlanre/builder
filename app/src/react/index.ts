@@ -1,2 +1,2 @@
-export type { BuilderRecord, BuilderProviderProps } from "./types";
 export { createBuilderProvider } from "./create-builder-provider";
+export type { BuilderProviderProps, BuilderRecord } from "./types";
