@@ -8,5 +8,5 @@ import { Dictionary } from "@/core/types";
  * @returns A boolean indicating whether the value is a dictionary.
  */
 export function isDictionary(value: any): value is Dictionary {
-  return typeof value === "object" && value !== null;
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

@@ -1,28 +1,29 @@
 {
+  "name": "builder-monorepo",
+  "private": true,
+  "workspaces": [
+    "app",
+    "docs"
+  ],
   "scripts": {
+    "build": "pnpm --filter @ibnlanre/builder build",
+    "dev:docs": "pnpm --filter @ibnlanre/docs dev",
     "test": "vitest --typecheck",
-    "test:ui": "vitest --typecheck --ui"
-  },
-  "dependencies": {
-    "clsx": "^2.1.0",
-    "next": "^14.2.2",
-    "nextra": "^2.13.4",
-    "nextra-theme-docs": "^2.13.4",
-    "tailwindcss": "^3.4.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "test:ui": "vitest --typecheck --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "pnpm --recursive lint"
   },
   "devDependencies": {
-    "@types/node": "18.19.3",
-    "@types/react": "^18.2.79",
-    "@types/react-dom": "^18.2.25",
-    "@vitest/ui": "^1.5.0",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32",
-    "@next/third-parties": "^14.2.3",
-    "@vercel/speed-insights": "^1.0.10",
-    "tsup": "^8.0.2",
-    "vitest": "^1.5.0",
-    "typescript": "^5.4.5"
-  }
+    "@types/node": "catalog:",
+    "@vitest/ui": "catalog:",
+    "jsdom": "catalog:",
+    "typescript": "catalog:",
+    "vite-tsconfig-paths": "catalog:",
+    "vitest": "catalog:"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@9.5.0"
 }

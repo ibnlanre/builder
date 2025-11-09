@@ -1,7 +1,0 @@
-{
-  "name": "@ibnlanre/examples",
-  "dependencies": {
-    "@ibnlanre/builder": "workspace:*",
-    "@tanstack/react-query": "^5.60.5"
-  }
-}

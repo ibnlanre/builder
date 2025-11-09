@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { createBuilder } from "./createBuilder";
+import { createBuilder } from "./index";
 
 const register = {
   dex: undefined,

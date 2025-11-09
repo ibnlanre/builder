@@ -2,11 +2,31 @@
   "name": "@ibnlanre/docs",
   "private": true,
   "version": "1.0.0",
-  "description": "Dynamic key generation library",
+  "description": "Dynamic key generation library documentation",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "clsx": "catalog:",
+    "next": "catalog:",
+    "nextra": "catalog:",
+    "nextra-theme-docs": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@next/third-parties": "catalog:",
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "^18.3.7",
+    "@vercel/speed-insights": "catalog:",
+    "autoprefixer": "catalog:",
+    "postcss": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:"
   },
   "license": "MIT"
 }

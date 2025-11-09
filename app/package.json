@@ -2,10 +2,11 @@
   "name": "@ibnlanre/builder",
   "version": "1.0.1",
   "description": "Creates a builder object for defining keys and values.",
-  "homepage": "https://builder.root.i.ng",
+  "homepage": "https://create-builder.vercel.app",
   "type": "module",
   "scripts": {
-    "bundle": "tsup",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
     "tag": "git tag -a v$npm_package_version -m v$npm_package_version",
     "push": "git push origin v$npm_package_version",
     "package": "npm publish --access public",
@@ -48,7 +49,13 @@
     "builder"
   ],
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": ">=16.8.0",
+    "@types/react-dom": ">=16.8.0",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
   }
 }

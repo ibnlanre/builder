@@ -1,10 +1,15 @@
-const withNextra = require("nextra")({
+const nextra = require("nextra");
+
+const withNextra = nextra({
   theme: "nextra-theme-docs",
   themeConfig: "./theme.config.tsx",
   latex: true,
 });
 
-module.exports = {
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   ...withNextra(),
 
   // https://nextjs.org/docs/pages/api-reference/next-config-js/distDir
@@ -19,3 +24,5 @@ module.exports = {
   // https://nextjs.org/docs/app/api-reference/next-config-js/basePath
   // basePath: "",
 };
+
+module.exports = nextConfig;

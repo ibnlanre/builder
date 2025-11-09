@@ -14,7 +14,7 @@ import type { Dictionary, KeyBuilder } from "../types";
  */
 export function createBranches<
   Register extends Dictionary,
-  const Prefix extends string[] = [],
+  const Prefix extends string[] = []
 >(register: Register, prefix: Prefix = [] as unknown as Prefix) {
   const entries = Object.entries(register);
 

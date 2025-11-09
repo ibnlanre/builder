@@ -7,7 +7,7 @@ import type { Primitives } from "./Primitives";
 export interface Get<
   Register extends Dictionary,
   Prefix extends readonly string[] = [],
-  Separator extends string = ".",
+  Separator extends string = "."
 > {
   /**
    * Returns the prefix array.
@@ -28,7 +28,7 @@ export interface Get<
    */
   <
     Path extends Paths<Register, Prefix, Separator>,
-    Key extends readonly [Path, ...Array<Primitives>],
+    Key extends readonly [Path, ...Array<Primitives>]
   >(
     ...path: Key
   ): Join<Key, Separator>;
@@ -44,7 +44,7 @@ export interface Get<
 export type Builder<
   Register extends Dictionary,
   Prefix extends readonly string[] = [],
-  Separator extends string = ".",
+  Separator extends string = "."
 > = {
   $use: Register;
   $get: Get<Register, Prefix, Separator>;

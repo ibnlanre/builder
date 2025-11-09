@@ -11,21 +11,25 @@
 
 ## FAQs
 
-### What is the purpose of the @ibnlanre/builder library?
+**What problem does `@ibnlanre/builder` solve?**
 
-The `@ibnlanre/builder` library is designed to streamline dynamic key generation, making it easier to manage cache keys in a nested object. By creating a builder object, developers can access and retrieve values from the register, without the need for manual key construction.
+It simplifies the management of deeply nested, dynamic keys, especially for caching libraries like SWR or TanStack Query. Instead of manually constructing keys like `['users', 'list', { page: 1 }]`, you can define a typed structure once and access keys with full type-safety and autocompletion, like `builder.users.list.$get({ page: 1 })`. This reduces errors and improves developer experience.
 
-### How does the @ibnlanre/builder library work?
+**How is it different from other solutions?**
 
-The `@ibnlanre/builder` library creates a builder object using the createBuilder function. This object contains methods for retrieving the value of a key, making it easier to locate and reuse keys. By chaining the nodes of a register into an array of keys, it streamlines the process of key generation and retrieval.
+`@ibnlanre/builder` focuses on a zero-dependency, lightweight, and type-safe approach. It generates a simple proxy-based object that translates nested property access into key arrays. It doesn't manage state or caching itself, making it a flexible utility that integrates with any data-fetching library.
 
-### What are the key features of the @ibnlanre/builder library?
+**What are the core features?**
 
-The key features of the `@ibnlanre/builder` library include the builder object, dynamic key generation, colocation of values, efficient value retrieval, flexible usage, and type safety. These features make it easier to manage cache keys in a nested object, improving code readability and maintainability.
+- **Dynamic Key Generation**: Effortlessly create complex keys from a nested object structure.
+- **Type Safety**: Leverages TypeScript for full autocompletion and compile-time checks.
+- **Prefix Customization**: Add global prefixes to all generated keys, useful for versioning or scoping.
+- **Zero Dependencies**: A tiny, dependency-free utility.
+- **Framework Agnostic**: Works with React, Vue, Svelte, or any JavaScript/TypeScript project.
 
-### How can I customize key generation with the @ibnlanre/builder library?
+**Where can I find the full documentation?**
 
-You can customize key generation with the `@ibnlanre/builder` library by providing an array of prefixes. These prefixes are used to generate the keys for the builder object, making it easier to access and retrieve values from a register.
+For comprehensive guides, API references, and live examples, visit the official documentation website: **[create-builder.vercel.app](https://create-builder.vercel.app/)**
 
 ## License
 
