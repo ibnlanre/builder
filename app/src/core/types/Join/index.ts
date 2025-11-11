@@ -1,18 +1,6 @@
 import type { Primitives } from "../Primitives";
 import type { Serialize } from "../Serialize";
 
-type JoinHelper<
-  Head,
-  Rest extends unknown[],
-  Separator extends string,
-> = Head extends Primitives
-  ? Rest extends []
-    ? `${Serialize<Head>}`
-    : Rest extends Primitives[]
-      ? `${Serialize<Head>}${Separator}${Join<Rest, Separator>}`
-      : ""
-  : "";
-
 /**
  * Represents a list of primitives joined by a separator.
  *
@@ -26,4 +14,16 @@ export type Join<
   Separator extends string = "",
 > = List extends [infer Head, ...infer Rest]
   ? JoinHelper<Head, Rest, Separator>
+  : "";
+
+type JoinHelper<
+  Head,
+  Rest extends unknown[],
+  Separator extends string,
+> = Head extends Primitives
+  ? Rest extends []
+    ? `${Serialize<Head>}`
+    : Rest extends Primitives[]
+      ? `${Serialize<Head>}${Separator}${Join<Rest, Separator>}`
+      : ""
   : "";

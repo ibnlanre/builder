@@ -7,18 +7,84 @@ description: Introduction to the @ibnlanre/builder package.
 
 # Welcome
 
-The `@ibnlanre/builder` package is a tool designed to streamline the management of keys within a code base. It provides a consistent and reliable method for generating keys dynamically, making it easier to work with key-based data structures.
+Have you ever struggled with managing cache keys in your application? String inconsistencies, verbose key construction, or manually building complex nested keys like `['users', 'list', { page: 1, filter: 'active' }]` for every query?
 
-The primary goal of this package is to shift the focus from key creation to key usage, allowing developers to concentrate on building features. Lightweight and user-friendly, `@ibnlanre/builder` can be seamlessly incorporated into any [JavaScript][pluralsight] or [TypeScript][typescript] project.
+**`@ibnlanre/builder`** solves this problem by letting you define your keys once in a structured way, then access them with full TypeScript autocomplete and type-safety.
 
-<blockquote className="nx-text-2xl nx-italic nx-leading-tight nx-mt-8 nx-border-gray-300 nx-text-justify nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">I like builder. It is really nice! It's <strong>lightweight</strong> and robust.<br />Builder is [0.4KB][bundlephobia] gzipped. That's very very light!<br /><small className="nx-not-italic nx-mt-3 nx-inline-block">— [Hemense Lan](https://linkedin.com/in/hemense-lan)</small></blockquote>
+## The Problem
 
-## Motivation
+Here's a typical scenario when working with data fetching libraries:
 
-The package was motivated by the need for an efficient, type-safe solution for constructing keys. It encapsulates keys and values in a structured manner, promoting code organization, reusability, and maintainability. Furthermore, it simplifies the process of defining and accessing values, reducing the cognitive load associated with key management and enhancing code readability.
+```typescript
+// ❌ Without builder: Error-prone and repetitive
+useQuery({ queryKey: ['users', 'detail', userId], ... }); // Manual string construction
 
-<blockquote className="nx-text-2xl nx-italic nx-leading-tight nx-mt-8 nx-border-gray-300 nx-text-justify nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">Builder has made <strong>sooo</strong> much sense, not just for its housekeeping, but for its simplicity of use, as well as, efficiency. Honestly can't have it any other way.<br /><small className="nx-not-italic nx-mt-3 nx-inline-block">— [Prosper Jaja](https://linkedin.com/in/prosper-jaja-3076aa264)</small></blockquote>
+useQuery({ queryKey: ['user', 'detail', userId], ... });  // Oops! Singular/plural mismatch
+
+// Different developers might format keys differently
+useQuery({ queryKey: ['userDetail', userId], ... });      // Inconsistent structure
+```
+
+## The Solution
+
+With `@ibnlanre/builder`, you define your key structure once:
+
+```typescript
+// ✅ With builder: Type-safe and consistent
+const api = createBuilder({
+  users: {
+    list: (params: { page: number }) => fetchUsers(params),
+    detail: (id: number) => fetchUser(id)
+  }
+});
+
+// Now use it anywhere with autocomplete
+useQuery({
+  queryKey: api.users.detail.$use(userId),  // ['users', 'detail', 123]
+  queryFn: () => api.$use.users.detail(userId)
+});
+```
+
+**Benefits you get immediately:**
+- ✨ **Autocomplete** - Your editor suggests available keys
+- 🛡️ **Type-safe** - Wrong parameters? TypeScript catches it
+- 🎯 **Single source of truth** - Change key structure in one place
+- 📦 **Tiny** - [0.4KB][bundlephobia] gzipped
+
+## What is Builder?
+
+The `@ibnlanre/builder` package is a lightweight tool that transforms a nested object (called a "register") into a smart builder object. This builder lets you:
+
+1. **Generate keys dynamically** with the `$use` or `$get` methods
+2. **Access your functions and values** through the `$use` property
+3. **Keep everything organized** in one central location
+
+It's [framework-agnostic][pluralsight]. It works with [React][react], [Vue][vue], [Svelte][svelte], or vanilla [JavaScript][pluralsight]/[TypeScript][typescript].
+
+<blockquote className="nx-text-2xl nx-italic nx-leading-tight nx-mt-8 nx-border-gray-300 nx-text-justify nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">I like builder. It is really nice! It's <strong>lightweight</strong> and robust.<br />Builder is [0.4KB][bundlephobia] gzipped. That's very very light!<br /><small className="nx-not-italic nx-mt-3 nx-inline-block">- [Hemense Lan](https://linkedin.com/in/hemense-lan)</small></blockquote>
+
+## Why Builder?
+
+Originally built to manage keys for [TanStack Query][tanstack] (formerly React Query), Builder proved useful for any scenario involving key-based data structures:
+
+- **Cache keys** (SWR, TanStack Query, Apollo)
+- **Route parameters** (React Router, Next.js)
+- **Form field names** (React Hook Form, Formik)
+- **Localization keys** (i18next, react-intl)
+- **Storage keys** (localStorage, IndexedDB)
+
+By encapsulating keys and values together, you get better organization, easier refactoring, and type-safe access throughout your codebase.
+
+<blockquote className="nx-text-2xl nx-italic nx-leading-tight nx-mt-8 nx-border-gray-300 nx-text-justify nx-text-gray-700 dark:nx-border-gray-700 dark:nx-text-gray-400 ltr:nx-border-l-2 ltr:nx-pl-6 rtl:nx-border-r-2 rtl:nx-pr-6">Builder has made <strong>sooo</strong> much sense, not just for its housekeeping, but for its simplicity of use, as well as, efficiency. Honestly can't have it any other way.<br /><small className="nx-not-italic nx-mt-3 nx-inline-block">- [Prosper Jaja](https://linkedin.com/in/prosper-jaja-3076aa264)</small></blockquote>
+
+## Next Steps
+
+Ready to get started? Check out the [installation guide](/getting-started) or jump straight to [basic usage](/getting-started/basic-usage) to see Builder in action.
 
 [typescript]: https://www.typescriptlang.org
 [pluralsight]: https://www.javascript.com/
 [bundlephobia]: https://bundlephobia.com/package/@ibnlanre/builder
+[tanstack]: https://tanstack.com/query/latest
+[react]: https://react.dev
+[vue]: https://vuejs.org
+[svelte]: https://svelte.dev

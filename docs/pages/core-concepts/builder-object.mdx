@@ -1,19 +1,204 @@
 ---
 
 title: Builder Object
-description: The builder object in the @ibnlanre/builder package.
+description: Understanding the Builder object and its $use and $get methods.
 
 ---
 
-# Builder
+import { Callout } from "@/components";
 
-The `builder` object is a tree-like graph that provides mechanisms for crafting complex key structures and accessing associated values within a given [register][4]. It is created from a [register][4] object using the [createBuilder][2] function, and serves as the main interface for querying the [register][4].
+# Builder Object
 
-The `builder` object is an enhanced version of the [register][4] object, augmented with the `$use` and `$get` property. These properties exist on every level of the `builder` object, facilitating the creation of dynamic keys at the point of access. To avoid conflicts with other keys within your register, the `$use` and `$get` methods are prefixed with a `$` sign.
+## What is a Builder Object?
 
-The following code snippet defines a typical [register][4] object:
+When you use `createBuilder(register)`, you get back a **builder object**: your original register with two special methods added, `$use` and `$get`.
 
-```typescript copy
+Think of it like this:
+
+```typescript
+// Before: Your register
+const register = {
+  users: {
+    list: () => fetch('/api/users')
+  }
+};
+
+// After: Your builder
+const api = createBuilder(register);
+// Now has: api.$use, api.$get, api.users.$use, api.users.$get, etc.
+```
+
+The builder object has the same structure as your register, but with superpowers.
+
+## The Two Core Methods
+
+### `$use` - The Dual-Purpose Method
+
+`$use` works differently depending on where you use it:
+
+#### At the Root Level (Access Values)
+
+```typescript
+const register = {
+  users: {
+    list: () => fetch('/api/users'),
+    detail: (id: number) => fetch(`/api/users/${id}`)
+  }
+};
+
+const api = createBuilder(register);
+
+// Access the original functions
+await api.$use.users.list();        // Calls fetch('/api/users')
+await api.$use.users.detail(42);    // Calls fetch('/api/users/42')
+```
+
+**Root `$use` = Access your original values**
+
+#### At Any Other Level (Generate Keys)
+
+```typescript
+// Generate keys for cache systems
+api.users.list.$use();       // ['users', 'list']
+api.users.detail.$use(42);   // ['users', 'detail', 42]
+```
+
+**Node `$use` = Generate array keys with arguments**
+
+### `$get` - The Flexible Key Generator
+
+`$get` creates keys by combining the path with optional extra segments:
+
+```typescript
+const api = createBuilder({
+  posts: {
+    detail: (id: number) => fetch(`/api/posts/${id}`)
+  }
+});
+
+// Basic usage - same as $use
+api.posts.detail.$get();              // ['posts', 'detail']
+
+// Add extra segments
+api.posts.detail.$get('comments');    // ['posts', 'detail', 'comments']
+api.posts.detail.$get('meta', 'tags'); // ['posts', 'detail', 'meta', 'tags']
+```
+
+**`$get` = Generate keys with flexible segments**
+
+## When to Use Each Method
+
+| Method | Purpose | Example |
+|--------|---------|---------|
+| **Root `$use`** | Call your original functions | `api.$use.users.list()` |
+| **Node `$use`** | Generate keys with function arguments | `api.users.detail.$use(42)` |
+| **`$get`** | Generate keys with custom segments | `api.users.$get('active')` |
+
+## Real-World Examples
+
+### Example 1: TanStack Query Integration
+
+```typescript
+import { useQuery, useMutation } from '@tanstack/react-query';
+
+const api = createBuilder({
+  posts: {
+    list: async () => {
+      return fetch('/api/posts').then(r => r.json());
+    },
+    detail: async (id: number) => {
+      return fetch(`/api/posts/${id}`).then(r => r.json());
+    },
+    create: async (data: Post) => {
+      return fetch('/api/posts', {
+        method: 'POST',
+        body: JSON.stringify(data)
+      }).then(r => r.json());
+    }
+  }
+});
+
+function PostList() {
+  // $use at nodes = keys, $use at root = values
+  const { data } = useQuery({
+    queryKey: api.posts.list.$use(),      // Generate key
+    queryFn: api.$use.posts.list          // Access function
+  });
+}
+
+function PostDetail({ id }: { id: number }) {
+  const { data } = useQuery({
+    queryKey: api.posts.detail.$use(id),  // ['posts', 'detail', 42]
+    queryFn: () => api.$use.posts.detail(id)
+  });
+}
+```
+
+### Example 2: Using `$get` for Related Data
+
+```typescript
+const api = createBuilder({
+  users: {
+    detail: (id: number) => fetch(`/api/users/${id}`).then(r => r.json()),
+    posts: (id: number) => fetch(`/api/users/${id}/posts`).then(r => r.json())
+  }
+});
+
+function UserProfile({ userId }: { userId: number }) {
+  // Main user data
+  const { data: user } = useQuery({
+    queryKey: api.users.detail.$use(userId),
+    queryFn: () => api.$use.users.detail(userId)
+  });
+
+  // Related posts - using $get to add 'posts' segment
+  const { data: posts } = useQuery({
+    queryKey: api.users.$get(userId, 'posts'),  // ['users', userId, 'posts']
+    queryFn: () => api.$use.users.posts(userId)
+  });
+}
+```
+
+### Example 3: Prefetching and Cache Manipulation
+
+```typescript
+import { queryClient } from './queryClient';
+
+const api = createBuilder({
+  products: {
+    list: () => fetch('/api/products').then(r => r.json()),
+    detail: (id: number) => fetch(`/api/products/${id}`).then(r => r.json())
+  }
+});
+
+async function prefetchProduct(id: number) {
+  // Use root $use to call the function
+  await queryClient.prefetchQuery({
+    queryKey: api.products.detail.$use(id),
+    queryFn: () => api.$use.products.detail(id)
+  });
+}
+
+function invalidateProductCache() {
+  // Use $get to target all product queries
+  queryClient.invalidateQueries({
+    queryKey: api.products.$get()  // ['products'] - invalidates all
+  });
+}
+
+function invalidateSpecificProduct(id: number) {
+  // Use $use to target specific product
+  queryClient.invalidateQueries({
+    queryKey: api.products.detail.$use(id)  // ['products', 'detail', 42]
+  });
+}
+```
+
+## Understanding the Structure
+
+Here's what the builder object actually looks like internally:
+
+```typescript
 const register = {
   location: (id: number) => `/location/${id}`,
   address: {
@@ -22,28 +207,183 @@ const register = {
 };
 
 const builder = createBuilder(register);
-```
 
-The following code snippet illustrates the similarities between a [register][4] and its `builder`. Note that the `$use` property is a function on every level except the root level, while the `$get` method is a function on every level:
-
-```typescript copy
+// The builder structure:
 {
+  // Root level - $use accesses original register
   $use: register,
   $get: () => [],
+
+  // Node level - $use generates keys
   location: {
     $use: (id: number) => ['location', id],
-    $get: () => ['location'],
+    $get: (...segments) => ['location', ...segments],
   },
+
   address: {
     $use: () => ['address'],
-    $get: () => ['address'],
+    $get: (...segments) => ['address', ...segments],
+
     country: {
       $use: () => ['address', 'country'],
-      $get: () => ['address', 'country'],
+      $get: (...segments) => ['address', 'country', ...segments],
     },
   },
-};
+}
 ```
+
+<Callout type="info">
+Every level of the builder has both `$use` and `$get` methods, making key generation available anywhere in your structure.
+</Callout>
+
+## Best Practices
+
+### 1. Use Consistent Patterns
+
+```typescript
+// ✅ Good - consistent pattern
+const { data } = useQuery({
+  queryKey: api.users.list.$use(),
+  queryFn: api.$use.users.list
+});
+
+// ❌ Confusing - mixing patterns
+const { data } = useQuery({
+  queryKey: ['users', 'list'],  // Manual key
+  queryFn: api.$use.users.list  // Builder value
+});
+```
+
+### 2. Leverage TypeScript
+
+```typescript
+// TypeScript knows the exact structure
+api.$use.users.list();      // ✅ TypeScript: Promise<User[]>
+api.users.list.$use();      // ✅ TypeScript: ['users', 'list']
+api.users.detail.$use(42);  // ✅ TypeScript: ['users', 'detail', number]
+```
+
+### 3. Use `$get` for Hierarchical Queries
+
+```typescript
+const api = createBuilder({
+  users: {
+    detail: (id: number) => fetchUser(id)
+  }
+});
+
+// Invalidate all user-related queries
+queryClient.invalidateQueries({
+  queryKey: api.users.$get()  // ['users']
+});
+
+// Invalidate specific user
+queryClient.invalidateQueries({
+  queryKey: api.users.detail.$use(42)  // ['users', 'detail', 42]
+});
+
+// Custom sub-queries
+queryClient.prefetchQuery({
+  queryKey: api.users.$get(42, 'settings'),  // ['users', 42, 'settings']
+  queryFn: () => fetch(`/api/users/42/settings`).then(r => r.json())
+});
+```
+
+## Common Patterns
+
+### Pattern 1: List and Detail Queries
+
+```typescript
+const api = createBuilder({
+  products: {
+    list: ({ category }: { category?: string } = {}) =>
+      fetch(`/api/products${category ? `?category=${category}` : ''}`).then(r => r.json()),
+    detail: (id: number) =>
+      fetch(`/api/products/${id}`).then(r => r.json())
+  }
+});
+
+// List all products
+useQuery({
+  queryKey: api.products.list.$use(),
+  queryFn: api.$use.products.list
+});
+
+// List filtered products
+useQuery({
+  queryKey: api.products.list.$use({ category: 'electronics' }),
+  queryFn: () => api.$use.products.list({ category: 'electronics' })
+});
+
+// Product detail
+useQuery({
+  queryKey: api.products.detail.$use(123),
+  queryFn: () => api.$use.products.detail(123)
+});
+```
+
+### Pattern 2: Mutations with Invalidation
+
+```typescript
+const api = createBuilder({
+  todos: {
+    list: () => fetch('/api/todos').then(r => r.json()),
+    create: (todo: Todo) =>
+      fetch('/api/todos', {
+        method: 'POST',
+        body: JSON.stringify(todo)
+      }).then(r => r.json())
+  }
+});
+
+const mutation = useMutation({
+  mutationFn: (todo: Todo) => api.$use.todos.create(todo),
+  onSuccess: () => {
+    // Invalidate all todos queries
+    queryClient.invalidateQueries({
+      queryKey: api.todos.$get()  // ['todos']
+    });
+  }
+});
+```
+
+### Pattern 3: Dependent Queries
+
+```typescript
+const api = createBuilder({
+  user: {
+    profile: (id: number) => fetch(`/api/users/${id}`).then(r => r.json()),
+    posts: (userId: number) => fetch(`/api/users/${userId}/posts`).then(r => r.json())
+  }
+});
+
+function UserDashboard({ userId }: { userId: number }) {
+  const { data: user } = useQuery({
+    queryKey: api.user.profile.$use(userId),
+    queryFn: () => api.$use.user.profile(userId)
+  });
+
+  const { data: posts } = useQuery({
+    queryKey: api.user.posts.$use(userId),
+    queryFn: () => api.$use.user.posts(userId),
+    enabled: !!user  // Only fetch posts after user loads
+  });
+}
+```
+
+## Summary
+
+- **Builder Object** = Your register + `$use` + `$get` methods at every level
+- **Root `$use`** = Access original values (`api.$use.users.list()`)
+- **Node `$use`** = Generate keys with arguments (`api.users.list.$use()`)
+- **`$get`** = Generate keys with custom segments (`api.users.$get('active')`)
+- Both methods are prefixed with `$` to avoid conflicts with your keys
+
+## Next Steps
+
+- **[Registers](/core-concepts/registers)** - Learn how to structure your register
+- **[createBuilder](/core-concepts/create-builder)** - Understand prefixes and options
+- **[Managing State](/usage/managing-state)** - See complete examples with TanStack Query
 
 [1]: /getting-started
 [2]: /core-concepts/create-builder

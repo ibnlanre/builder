@@ -1,5 +1,6 @@
-import { describe, expectTypeOf, it } from "vitest";
 import type { Join } from ".";
+
+import { describe, expectTypeOf, it } from "vitest";
 
 describe("Join", () => {
   it("should join an array of strings with no separator", () => {

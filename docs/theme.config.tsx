@@ -24,7 +24,7 @@ const config: DocsThemeConfig = {
   },
   logo: (
     <div className="nx-font-bold nx-flex nx-items-center nx-text-[1.45rem]">
-      <img height="25" width="25" src="/builder-logo.png" />
+      <img height="25" width="25" src="/builder-logo.png" alt="Builder Logo" />
       <span className="nextra-content xs:!nx-block nx-ml-2 nx-hidden">
         Builder
       </span>

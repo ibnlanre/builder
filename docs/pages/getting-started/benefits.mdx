@@ -6,13 +6,234 @@ description: The advantages of using the @ibnlanre/builder package.
 ---
 
 # Benefits
-`@ibnlanre/builder` is particularly beneficial for **large teams** working on complex projects. It ensures consistent key generation and easy access to values, automatically synchronizing changes to keys and values to minimize the risk of errors and inconsistencies. The package also encourages the collocation of related keys and values, facilitating code organization and maintenance. By allowing common functionality to be encapsulated into accessible values, it promotes code reuse and improves overall code quality.
 
-The package is also a valuable tool for **small teams** and **individual developers** working on smaller projects. It provides a type-safe and efficient way to work with keys, allowing developers to focus on building features in an organized manner, rather than managing keys. The numerous benefits it offers further enhance its value as a useful tool for developers. These benefits include:
+## Why Use Builder?
 
-- **Simplicity**: It simplifies the process of creating keys, making it easier to manage cache-based state in applications.
-- **Efficiency**: It streamlines key generation by eliminating the need for manual construction, improving code quality and efficiency.
-- **Ease of Use**: It can be easily integrated into existing code bases without requiring extensive refactoring, while gracefully handling errors.
-- **Type Safety**: It provides auto-completion support and ensures accurate value retrievals, thereby, reducing the risk of runtime errors.
-- **Performance**: It is lightweight and has minimal overhead, making it ideal for performance-critical applications.
-- **Maintainability**: It enhances code maintainability by promoting separation of concerns and improving code organization.
+`@ibnlanre/builder` transforms how you manage keys in your application. Instead of scattering string literals and manual key construction throughout your code, you define everything once and let Builder handle the rest.
+
+## Type Safety
+
+**Without Builder:**
+```typescript
+// String keys are prone to mistakes
+useQuery({
+  queryKey: ['users', userId],
+  queryFn: fetchUser
+});  // Missing 'detail' segment
+
+useQuery({
+  queryKey: ['user', 'detail', userId],
+  queryFn: fetchUser
+});  // Singular instead of plural
+
+useQuery({
+  queryKey: ['users', 'detail'],
+  queryFn: fetchUser
+});  // Forgot the userId parameter
+```
+
+**With Builder:**
+```typescript
+const api = createBuilder({
+  users: {
+    detail: (id: number) => fetchUser(id)
+  }
+});
+
+// TypeScript catches all of these:
+api.users.detail.$use();       // ❌ Error: Expected 1 argument
+api.users.detial.$use(userId); // ❌ Error: 'detial' doesn't exist
+api.users.detail.$use('abc');  // ❌ Error: Expected number, got string
+
+api.users.detail.$use(userId); // ✅ Type-safe and correct
+```
+
+## Simplicity & Efficiency
+
+**Without Builder:**
+```typescript
+// Repetitive and fragile code
+const userListKey = ['users', 'list', { page, filter }];
+const userDetailKey = ['users', 'detail', userId];
+const userCreateKey = ['users', 'create'];
+
+// Functions live in different files
+const fetchUsers = (page, filter) => fetch(...);  // users/api.ts
+const fetchUser = (id) => fetch(...);             // users/detail-api.ts
+```
+
+**With Builder:**
+```typescript
+// Everything in one place
+const api = createBuilder({
+  users: {
+    list: (page: number, filter: string) => fetch(`/users?page=${page}&filter=${filter}`),
+    detail: (id: number) => fetch(`/users/${id}`),
+    create: (data: User) => fetch('/users', { method: 'POST', body: JSON.stringify(data) })
+  }
+});
+
+// Use anywhere
+api.users.list.$use(1, 'active');  // Key generation
+api.$use.users.list(1, 'active');  // Function call
+```
+
+## Easy Refactoring
+
+**Without Builder:**
+```typescript
+// Changing 'users' to 'accounts' requires updating dozens of files:
+// File 1
+useQuery({
+  queryKey: ['users', 'list'],
+  queryFn: fetchUsers
+});
+// File 2
+useQuery({
+  queryKey: ['users', 'detail', id],
+  queryFn: () => fetchUser(id)
+});
+// File 3
+useMutation({
+  mutationKey: ['users', 'create'],
+  mutationFn: createUser
+});
+// ... 20 more files
+```
+
+**With Builder:**
+```typescript
+// Change once, update everywhere
+const api = createBuilder({
+  accounts: {  // Changed from 'users' to 'accounts'
+    list: ...,
+    detail: ...,
+    create: ...
+  }
+});
+
+// All usages automatically reflect the change
+api.accounts.list.$use();   // ['accounts', 'list']
+api.accounts.detail.$use(5); // ['accounts', 'detail', 5]
+```
+
+## Self-Documenting Code
+
+**Without Builder:**
+```typescript
+// What does this key do? Where's the function?
+useQuery({
+  queryKey: ['posts', 'feed', 'trending', 10],
+  queryFn: mysteryFunction
+});
+```
+
+**With Builder:**
+```typescript
+// Structure serves as documentation
+const api = createBuilder({
+  posts: {
+    feed: {
+      trending: (limit: number) => fetchTrendingPosts(limit),
+      recent: () => fetchRecentPosts(),
+      following: (userId: number) => fetchFollowingPosts(userId)
+    }
+  }
+});
+
+// Clear what each key represents
+api.posts.feed.trending.$use(10);  // ✅ Self-explanatory
+```
+
+## Consistency Across Teams
+
+**Without Builder:**
+```typescript
+// Different developers, different key patterns
+Developer A: ['user-list', page]
+Developer B: ['users', 'list', { page }]
+Developer C: ['userList', { page, limit }]
+```
+
+**With Builder:**
+```typescript
+// One source of truth for the whole team
+const api = createBuilder({
+  users: {
+    list: (params: { page: number; limit?: number }) => fetchUsers(params)
+  }
+});
+
+// Everyone uses the same keys
+api.users.list.$use({ page: 1 });  // ✅ Consistent everywhere
+```
+
+## Zero Runtime Overhead
+
+Builder is incredibly lightweight ([0.4KB gzipped](https://bundlephobia.com/package/@ibnlanre/builder)) and adds virtually no performance cost:
+
+```typescript
+// Builder just creates a proxy object
+// Key generation is a simple array operation
+api.users.detail.$use(123);  // ['users', 'detail', 123]
+
+// No heavy transformations or processing
+// Works great even in performance-critical applications
+```
+
+## Framework Agnostic
+
+Works seamlessly with any library or framework:
+
+```typescript
+// TanStack Query
+useQuery({
+  queryKey: api.posts.list.$use(),
+  queryFn: api.$use.posts.list
+});
+
+// SWR
+useSWR(api.$get('posts.list'), api.$use.posts.list);
+
+// Zustand
+const useStore = create((set) => ({
+  [api.$get('user.profile')]: null
+}));
+
+// Plain JavaScript
+const cacheKey = api.products.detail.$use(id).join('.');
+localStorage.setItem(cacheKey, data);
+```
+
+## Great for Teams of Any Size
+
+### Large Teams
+- Enforces consistent patterns across the codebase
+- Makes onboarding easier with self-documenting code
+- Reduces code review friction (no more debates about key formats)
+- Simplifies refactoring when requirements change
+
+### Small Teams & Solo Developers
+- Speeds up development with autocomplete
+- Catches bugs before runtime
+- Reduces mental overhead of remembering key patterns
+- Makes code easier to maintain long-term
+
+## Summary
+
+| Benefit | Without Builder | With Builder |
+|---------|----------------|--------------|
+| Type Safety | ❌ Manual checks | ✅ Compile-time validation |
+| Refactoring | ❌ Find & replace strings | ✅ Change once, update everywhere |
+| Consistency | ❌ Varies by developer | ✅ Enforced by structure |
+| Documentation | ❌ External docs needed | ✅ Self-documenting |
+| Autocomplete | ❌ None | ✅ Full IDE support |
+| Bundle Size | N/A | ✅ 0.4KB gzipped |
+
+## Next Steps
+
+Ready to experience these benefits in your project?
+
+- [Install Builder](/getting-started) and set up your first register
+- [Learn basic usage](/getting-started/basic-usage) to start building
+- [Explore real-world examples](/usage/managing-state) with data fetching libraries

@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint"
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "clsx": "catalog:",
@@ -24,6 +24,7 @@
     "@types/react-dom": "^18.3.7",
     "@vercel/speed-insights": "catalog:",
     "autoprefixer": "catalog:",
+    "eslint-config-next": "^16.0.1",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:"

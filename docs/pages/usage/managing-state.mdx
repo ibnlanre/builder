@@ -5,224 +5,515 @@ description: Managing asynchronous state using the @ibnlanre/builder package.
 
 ---
 
+import { Callout } from "@/components";
 import { Tabs } from "nextra/components";
 
-# External libraries
+# Working with Data Fetching Libraries
 
-The [builder][3] object is useful for generating keys for asynchronous state management libraries, such as [Tanstack Query](https://tanstack.com/query/latest) and SWR ([Stale-While-Revalidate](https://swr.vercel.app/)). This eliminates the need to manually construct keys for each query, and reduces the risk of inconsistencies and conflicts.
+Builder shines when used with data fetching and caching libraries like [TanStack Query](https://tanstack.com/query/latest) and [SWR](https://swr.vercel.app/). It eliminates manual key construction, ensures consistency, and makes your API structure self-documenting.
 
-The values of the nested keys in the [builder][3] object can be made function queries, making it a documentation for the various endpoints to any given API. This approach simplifies code maintenance, synchronizing values, generating keys, refactoring, and managing cache invalidation, as the [builder][3] object becomes the single source of truth for all queries.
+## The Problem Without Builder
 
-The following code snippet demonstrates how to define an **api** builder using [createBuilder][2]:
+Here's a typical scenario when managing cache keys manually:
 
-```typescript copy
-type List = {
-  data: {
-    id: number;
-    name: string;
-  }[];
-};
+```tsx
+// ❌ Manual key management - error-prone and scattered
+function UserProfile({ userId }: { userId: number }) {
+  const { data: user } = useQuery({
+    queryKey: ['users', 'detail', userId],  // Manually constructed
+    queryFn: () => fetchUser(userId)
+  });
 
-const register = {
-  retailers: {
-    list: async () => {
-      return axios.get<List>("/api/retailers");
-    },
-    delete: async (params: { id: number }) => {
-      return axios.delete<{ message: string }>({
-        url: `/api/retailers/${params.id}`,
-      });
-    },
-  },
-  products: {
-    list: async () => {
-      const resp = await fetch("/api/products");
-      return resp.json();
-    },
-    delete: async (params: { id: number }) => {
-      const resp = await fetch(`/api/products/${params.id}`, {
-        method: "DELETE",
-      });
-      return resp.json();
-    },
-  },
-};
+  const { data: posts } = useQuery({
+    queryKey: ['users', 'posts', userId],   // Another manual key
+    queryFn: () => fetchUserPosts(userId)
+  });
 
-const api = createBuilder(register);
+  // Issues:
+  // 1. Key definitions are spread across components
+  // 2. String errors won't be caught until runtime
+  // 3. Functions are defined separately from keys
+  // 4. Difficult to maintain when API changes
+}
 ```
 
-## Queries
+## The Builder Solution
 
-The `api` object above contains two endpoints, `retailers` and `products`, each with a `list` and `delete` function query. The `list` function query is used to retrieve a list of items, while the `delete` function query is used to delete an item.
+With Builder, you define your entire API structure in one place:
 
-### Using the `$use` method
+```tsx
+import { createBuilder } from '@ibnlanre/builder';
 
-The `$use` method is used to retrieve the query key because although the `list` function is defined as a function query, it does not accept any parameters.
+// ✅ Single source of truth for your API
+const api = createBuilder({
+  users: {
+    list: async (params?: { page?: number; limit?: number }) => {
+      const query = new URLSearchParams(params as any).toString();
+      return fetch(`/api/users?${query}`).then(r => r.json());
+    },
+    detail: async (id: number) => {
+      return fetch(`/api/users/${id}`).then(r => r.json());
+    },
+    posts: async (userId: number) => {
+      return fetch(`/api/users/${userId}/posts`).then(r => r.json());
+    },
+    update: async (id: number, data: Partial<User>) => {
+      return fetch(`/api/users/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(r => r.json());
+    }
+  }
+});
+```
 
-<Tabs items={['Tanstack Query', 'SWR']}>
+Now use it anywhere with full type-safety:
+
+```tsx
+function UserProfile({ userId }: { userId: number }) {
+  const { data: user } = useQuery({
+    queryKey: api.users.detail.$use(userId),    // ['users', 'detail', 123]
+    queryFn: () => api.$use.users.detail(userId)
+  });
+
+  const { data: posts } = useQuery({
+    queryKey: api.users.posts.$use(userId),     // ['users', 'posts', 123]
+    queryFn: () => api.$use.users.posts(userId)
+  });
+
+  // Benefits:
+  // ✅ Autocomplete for all API endpoints
+  // ✅ TypeScript ensures correct parameters
+  // ✅ Single place to update when API changes
+  // ✅ Keys are always consistent
+}
+```
+
+## Complete Example
+
+Let's build a real-world API structure:
+
+```tsx copy
+import { createBuilder } from '@ibnlanre/builder';
+import axios from 'axios';
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  category: string;
+};
+
+type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+const api = createBuilder({
+  products: {
+    list: async (category?: string) => {
+      const url = category
+        ? `/api/products?category=${category}`
+        : '/api/products';
+      return axios.get<Product[]>(url).then(r => r.data);
+    },
+    detail: async (id: number) => {
+      return axios.get<Product>(`/api/products/${id}`).then(r => r.data);
+    },
+    create: async (data: Omit<Product, 'id'>) => {
+      return axios.post<Product>('/api/products', data).then(r => r.data);
+    },
+    delete: async (id: number) => {
+      return axios.delete(`/api/products/${id}`).then(r => r.data);
+    }
+  },
+  users: {
+    current: async () => {
+      return axios.get<User>('/api/users/me').then(r => r.data);
+    },
+    update: async (data: Partial<User>) => {
+      return axios.patch<User>('/api/users/me', data).then(r => r.data);
+    }
+  }
+});
+```
+
+## Queries with TanStack Query
+
+### Basic Queries
+
+Use `$use()` to generate keys and access functions:
+
+<Tabs items={['TanStack Query', 'SWR']}>
   <Tabs.Tab>
-    ```typescript copy
-    const { data: retailers } = useQuery({
-      queryKey: api.retailers.list.$use(),
-      // ^? ["retailers", "list"]
-      queryFn: api.$use.retailers.list
-    });
-    ```
+```tsx copy
+import { useQuery } from '@tanstack/react-query';
+
+function ProductList({ category }: { category?: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: api.products.list.$use(category),
+    // ^? ['products', 'list', 'electronics'] or ['products', 'list', undefined]
+    queryFn: () => api.$use.products.list(category)
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {data?.map(product => (
+        <div key={product.id}>{product.name}</div>
+      ))}
+    </div>
+  );
+}
+```
   </Tabs.Tab>
 
   <Tabs.Tab>
-    ```typescript copy
-    const { data: retailers } = useSWR(
-      api.$get("retailers.list"),
-      //  ^? "retailers.list"
-      api.$use.retailers.list
-    );
-    ```
+```tsx copy
+import useSWR from 'swr';
+
+function ProductList({ category }: { category?: string }) {
+  const { data, isLoading } = useSWR(
+    api.$get('products.list', category),
+    // ^? "products.list.electronics" or "products.list"
+    () => api.$use.products.list(category)
+  );
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {data?.map(product => (
+        <div key={product.id}>{product.name}</div>
+      ))}
+    </div>
+  );
+}
+```
   </Tabs.Tab>
 </Tabs>
 
-### Using the `$get` method
+### Dependent Queries
 
-It is common to use the `$use` method to retrieve the query key, as it is the most common use case. However, the `$get` method can also be used to retrieve the query key. And in some cases, it is more suitable to use the `$get` method when we want to include arbitrary parameters in the query key.
+Builder makes dependent queries type-safe and clear:
 
-<Tabs items={['Tanstack Query', 'SWR']}>
+<Tabs items={['TanStack Query', 'SWR']}>
   <Tabs.Tab>
-  ```typescript copy
-  const { data: products } = useQuery({
-    queryKey: api.products.list.$get(4, ['my', 'shelf']),
-    // ^? ["products", "list", 4, ['my', 'shelf'] ]
-    queryFn: api.$use.products.list
+```tsx copy
+function ProductDetail({ id }: { id: number }) {
+  // First query
+  const { data: product } = useQuery({
+    queryKey: api.products.detail.$use(id),
+    queryFn: () => api.$use.products.detail(id)
   });
-  ```
+
+  // Dependent query - only runs when product exists
+  const { data: relatedProducts } = useQuery({
+    queryKey: api.products.list.$use(product?.category),
+    queryFn: () => api.$use.products.list(product!.category),
+    enabled: !!product  // Wait for product to load
+  });
+
+  return <div>{/* render product and related items */}</div>;
+}
+```
   </Tabs.Tab>
 
   <Tabs.Tab>
-  ```typescript copy
-  const { data: products } = useSWR(
-    api.$get("products.list", 4, "my", "shelf"),
-    //  ^? "products.list.4.my.shelf"
-    api.$use.products.list
+```tsx copy
+function ProductDetail({ id }: { id: number }) {
+  const { data: product } = useSWR(
+    api.$get('products.detail', id),
+    () => api.$use.products.detail(id)
   );
-  ```
+
+  const { data: relatedProducts } = useSWR(
+    product ? api.$get('products.list', product.category) : null,
+    product ? () => api.$use.products.list(product.category) : null
+  );
+
+  return <div>{/* render product and related items */}</div>;
+}
+```
+  </Tabs.Tab>
+</Tabs>
+
+### Flexible Keys with `$get`
+
+Sometimes you need to add extra parameters to your cache key:
+
+<Tabs items={['TanStack Query', 'SWR']}>
+  <Tabs.Tab>
+```tsx copy
+function ProductList({ sortBy, filters }: Props) {
+  const { data } = useQuery({
+    // Add arbitrary cache-busting parameters
+    queryKey: api.products.list.$get(filters.category, sortBy, filters),
+    // ^? ['products', 'list', 'electronics', 'price-asc', { category: '...', ... }]
+    queryFn: () => api.$use.products.list(filters.category)
+  });
+
+  return <div>{/* render */}</div>;
+}
+```
+  </Tabs.Tab>
+
+  <Tabs.Tab>
+```tsx copy
+function ProductList({ sortBy, filters }: Props) {
+  const { data } = useSWR(
+    api.$get('products.list', filters.category, sortBy),
+    // ^? "products.list.electronics.price-asc"
+    () => api.$use.products.list(filters.category)
+  );
+
+  return <div>{/* render */}</div>;
+}
+```
   </Tabs.Tab>
 </Tabs>
 
 ## Mutations
 
-Mutations are used to update or delete data on the server. The `delete` function query is used to delete an item from the server. The `api.retailers.delete` node is a function that expects an object with an `id` property, as an argument.
+### Create, Update, Delete
 
-### Using the `$use` method
+Builder makes mutations consistent with queries:
 
-In the following example, the `$use` method is used to retrieve the mutation key. The `$use` method expects the same number of arguments as the function query.
-
-<Tabs items={['Tanstack Query', 'SWR']}>
+<Tabs items={['TanStack Query', 'SWR']}>
   <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useMutation({
-    mutationKey: api.products.delete.$use({ id: 5 }),
-    // ^? ["products", "delete", { id: 5 }]
-    mutationFn: () => api.$use.products.delete({ id: 5 })
+```tsx copy
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+function CreateProduct() {
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: api.products.create.$use({ name: '', price: 0, category: '' }),
+    // ^? ['products', 'create', { name: '', price: 0, category: '' }]
+    mutationFn: (data: Omit<Product, 'id'>) => api.$use.products.create(data),
+    onSuccess: () => {
+      // Invalidate and refetch product list
+      queryClient.invalidateQueries({
+        queryKey: api.products.list.$get()  // ['products', 'list']
+      });
+    }
   });
-  ```
+
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      mutate({
+        name: formData.get('name') as string,
+        price: Number(formData.get('price')),
+        category: formData.get('category') as string
+      });
+    }}>
+      {/* form fields */}
+      <button disabled={isPending}>Create Product</button>
+    </form>
+  );
+}
+```
   </Tabs.Tab>
 
   <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useSWR(
-    api.$get("products.delete", "id", 5),
-    //  ^? "products.delete.id.5"
-    api.$use.products.delete
+```tsx copy
+import useSWRMutation from 'swr/mutation';
+
+function CreateProduct() {
+  const { trigger, isMutating } = useSWRMutation(
+    api.$get('products.create'),
+    async (key, { arg }: { arg: Omit<Product, 'id'> }) => {
+      return api.$use.products.create(arg);
+    }
   );
-  ```
+
+  return (
+    <form onSubmit={async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      await trigger({
+        name: formData.get('name') as string,
+        price: Number(formData.get('price')),
+        category: formData.get('category') as string
+      });
+    }}>
+      {/* form fields */}
+      <button disabled={isMutating}>Create Product</button>
+    </form>
+  );
+}
+```
   </Tabs.Tab>
 </Tabs>
 
-### Using the `$get` method
+### Optimistic Updates
 
-If, for some reason, you want to pass the argument in a different way, you can use the `$get` method to retrieve the mutation key.
+Builder's consistent keys make optimistic updates straightforward:
 
-<Tabs items={['Tanstack Query', 'SWR']}>
-  <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useMutation({
-    mutationKey: api.retailers.delete.$get(5, "alive"),
-    // ^? ["retailers", "delete", 5, "alive"]
-    mutationFn: () => api.$use.retailers.delete({ id: 5 })
-  });
-  ```
-  </Tabs.Tab>
+```tsx copy
+const { mutate } = useMutation({
+  mutationFn: (id: number) => api.$use.products.delete(id),
+  onMutate: async (deletedId) => {
+    // Cancel outgoing refetches
+    await queryClient.cancelQueries({
+      queryKey: api.products.list.$get()
+    });
 
-  <Tabs.Tab>
-  ```typescript copy
-  const { mutate } = useSWR(
-    api.$get("retailers.delete", 5, "alive"),
-    //  ^? "retailers.delete.5.alive"
-    api.$use.retailers.delete
-  );
-  ```
-  </Tabs.Tab>
-</Tabs>
+    // Snapshot previous value
+    const previousProducts = queryClient.getQueryData(
+      api.products.list.$get()
+    );
 
-## Missing dependencies
+    // Optimistically update
+    queryClient.setQueryData(
+      api.products.list.$get(),
+      (old: Product[]) => old.filter(p => p.id !== deletedId)
+    );
 
-Due to how the `$use` method is constructed, it is **impossible** to pass the wrong number of arguments to the function. Unless the function is not a [TypeScript][functions] function, within a strict [TypeScript][typescript] environment, or if the function is defined in such a way that allows it. For example, using optional parameters in the function query.
-
-```typescript copy
-type State = "active" | "completed" | "archived";
-type Sorting = "dateCreated" | "name";
-type Todos = {
-  data: {
-    title: string;
-    description: string;
-    created: string;
-    state: State;
-  }[];
-};
-
-const api = createBuilder({
-  todos: {
-    list: async (state: State, sorting?: Sorting) => {
-      const resp = await axios.get<Todos>(`todos/${state}?sorting=${sorting}`);
-      return resp.data;
-    },
+    return { previousProducts };
   },
+  onError: (err, deletedId, context) => {
+    // Rollback on error
+    queryClient.setQueryData(
+      api.products.list.$get(),
+      context?.previousProducts
+    );
+  }
 });
 ```
 
-## Error handling
+## Common Pitfalls Builder Prevents
 
-In the **api** [builder][3] above, the `api.todos.list` function query accepts two parameters, `state` and `sorting`. The `state` parameter is required, while the `sorting` parameter is optional. The `$use` method is used to retrieve the query key, and it expects the same number of required arguments as the function query. Not passing the required amount of arguments will result in a [type error][errors].
+### ❌ String Inconsistencies
 
-<Tabs items={['Tanstack Query', 'SWR']}>
-  <Tabs.Tab>
-  ```typescript copy
-  const [state, setState] = useState<State>('active');
+```tsx
+// Without Builder - manual strings are fragile
+useQuery({
+  queryKey: ['users', 'list'],
+  queryFn: fetchUsers
+});
+useQuery({
+  queryKey: ['user', 'list'],  // Singular/plural mismatch!
+  queryFn: fetchUsers
+});
+useQuery({
+  queryKey: ['userList'],  // Completely different structure!
+  queryFn: fetchUsers
+});
 
-  const { data: todos } = useQuery({
-    queryKey: api.todos.list.$use(state),
-    // ^? ["todos", "list", "active", undefined]
-    queryFn: () => api.$use.todos.list(state)
-  });
-  ```
-  </Tabs.Tab>
+// With Builder - guaranteed consistency
+api.users.list.$use();  // ✅ Always ['users', 'list']
+```
 
-  <Tabs.Tab>
-  ```typescript copy
-  const [state, setState] = useState<State>('active');
+### ❌ Wrong Parameters
 
-  const { data: todos } = useSWR(
-    api.$get("todos.list", state),
-    //  ^? "todos.list.active"
-    api.$use.todos.list
-  );
-  ```
-  </Tabs.Tab>
-</Tabs>
+```tsx
+// Without Builder - runtime error
+useQuery({
+  queryKey: ['users', 'detail'],
+  queryFn: fetchUser
+});  // Missing userId!
 
+// With Builder - TypeScript catches it
+api.users.detail.$use();     // ❌ Error: Expected 1 argument
+api.users.detail.$use(123);  // ✅ Correct
+```
 
-[2]: /core-concepts/create-builder
-[3]: /core-concepts/builder-object
+### ❌ Fragile Invalidation Logic
 
-[typescript]: https://www.typescriptlang.org/
-[functions]: https://www.typescriptlang.org/docs/handbook/2/functions.html
-[errors]: https://www.typescriptlang.org/docs/handbook/2/understanding-errors.html
+```tsx
+// Without Builder - must manually track key formats
+queryClient.invalidateQueries(['users', 'list']);
+queryClient.invalidateQueries(['user', 'list']);  // Wrong key!
+
+// With Builder - always correct
+queryClient.invalidateQueries({
+  queryKey: api.users.list.$get()
+});
+```
+
+## Advanced: Type-Safe Parameters
+
+Builder ensures parameters match between keys and functions:
+
+```tsx
+const api = createBuilder({
+  todos: {
+    list: async (
+      state: 'active' | 'completed' | 'archived',
+      sorting?: 'dateCreated' | 'name'
+    ) => {
+      return fetch(`/api/todos?state=${state}&sort=${sorting}`).then(r => r.json());
+    }
+  }
+});
+
+// TypeScript enforces correct usage
+api.todos.list.$use('active');              // ✅ Valid
+api.todos.list.$use('active', 'name');      // ✅ Valid
+api.todos.list.$use('invalid');             // ❌ Type error
+api.todos.list.$use();                      // ❌ Missing required 'state'
+```
+
+<Callout type="info">
+The `$use()` method mirrors your function signature, while `$get()` accepts arbitrary parameters for flexible cache keys.
+</Callout>
+
+## Best Practices
+
+1. **Organize by resource**: Group related endpoints together
+   ```tsx
+   const api = createBuilder({
+     users: { list, detail, create, update, delete },
+     posts: { list, detail, create, update, delete }
+   });
+   ```
+
+2. **Use prefixes for versioning**:
+   ```tsx
+   const api = createBuilder(register, { prefix: ['api', 'v2'] });
+   // All keys: ['api', 'v2', 'users', 'list', ...]
+   ```
+
+3. **Keep functions simple**: Let Builder handle keys, functions handle data
+   ```tsx
+   // ✅ Good
+   detail: (id: number) => fetch(`/users/${id}`).then(r => r.json())
+
+   // ❌ Avoid mixing concerns
+   detail: (id: number, cacheTime: number) => { /* cache logic */ }
+   ```
+
+4. **Leverage TypeScript**: Define types for better autocomplete
+   ```tsx
+   type UserAPI = {
+     list: (params?: FilterParams) => Promise<User[]>;
+     detail: (id: number) => Promise<User>;
+   };
+
+   const api = createBuilder<{ users: UserAPI }>({
+     users: { list, detail }
+   });
+   ```
+
+## Summary
+
+Builder transforms data fetching from error-prone manual key management into a type-safe, self-documenting system:
+
+- ✅ **Single source of truth** for all API endpoints
+- ✅ **Type-safe** keys and function calls
+- ✅ **Autocomplete** support in your IDE
+- ✅ **Consistent** key formatting across your app
+- ✅ **Easy refactoring** when APIs change
+
+## Next Steps
+
+- [Learn about constructing keys](/usage/constructing-keys) for more advanced patterns
+- [Explore type inference](/type-inference) to leverage TypeScript fully
+- [Check out the React adapter](/adapters) for context-based usage
+

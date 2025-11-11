@@ -1,5 +1,6 @@
-import { describe, expectTypeOf, it } from "vitest";
 import type { Values } from ".";
+
+import { describe, expectTypeOf, it } from "vitest";
 
 describe("Values type", () => {
   it("should return the correct union of values for a given list of strings", () => {

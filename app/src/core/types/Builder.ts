@@ -4,6 +4,22 @@ import type { KeyBuilder } from "./KeyBuilder";
 import type { Paths } from "./Paths";
 import type { Primitives } from "./Primitives";
 
+/**
+ * Represents the builder for a store.
+ *
+ * @template Register The type of the store.
+ * @template Prefix The type of the path.
+ * @template Separator The type of the separator.
+ */
+export type Builder<
+  Register extends Dictionary,
+  Prefix extends readonly string[] = [],
+  Separator extends string = "."
+> = KeyBuilder<Register, Prefix> & {
+  $get: Get<Register, Prefix, Separator>;
+  $use: Register;
+};
+
 export interface Get<
   Register extends Dictionary,
   Prefix extends readonly string[] = [],
@@ -33,19 +49,3 @@ export interface Get<
     ...path: Key
   ): Join<Key, Separator>;
 }
-
-/**
- * Represents the builder for a store.
- *
- * @template Register The type of the store.
- * @template Prefix The type of the path.
- * @template Separator The type of the separator.
- */
-export type Builder<
-  Register extends Dictionary,
-  Prefix extends readonly string[] = [],
-  Separator extends string = "."
-> = {
-  $use: Register;
-  $get: Get<Register, Prefix, Separator>;
-} & KeyBuilder<Register, Prefix>;

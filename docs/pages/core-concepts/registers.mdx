@@ -5,54 +5,290 @@ description: The register object in the @ibnlanre/builder package.
 
 ---
 
+import { Callout } from "@/components";
+
 # Registers
 
-A `register` is a plain object that contains the keys and values that you want to access. The `register` can contain nested objects, functions, or values. To effectively use the [@ibnlanre/builder][1] package, a register is passed as an argument to the [createBuilder][2] function, which returns a [builder][3] object. 
+## What is a Register?
 
-The [builder][3] object adds additional functionalities to the `register` that facilitates the dynamic generation of keys. The `register` is the **soul** of the [builder][3] object, as it is the source from which it derives its keys and values. This guide explains how to define a `register` and how to structure it effectively.
+A **register** is simply a plain JavaScript object that holds your keys and values. Think of it as a structured blueprint of your data. It can contain:
 
-The following code snippet displays a sample `register` object:
+- **Objects** (nested structures)
+- **Functions** (API calls, utilities)
+- **Primitives** (strings, numbers, booleans)
+
+The register is the **source of truth** that Builder uses to generate type-safe keys.
+
+## Simple Example
+
+Here's the most basic register:
 
 ```typescript copy
 const register = {
   user: {
     name: 'John Doe',
-    email: 'john.doe@jmail.com'
-  },
+    email: 'john.doe@example.com'
+  }
 };
+
+const builder = createBuilder(register);
+
+// Access values
+builder.$use.user.name;  // 'John Doe'
+
+// Generate keys
+builder.user.name.$use();  // ['user', 'name']
 ```
 
-## Nested registers
+<Callout type="info">
+**Key insight**: Whatever structure you define in the register, Builder mirrors it with smart key-generation methods.
+</Callout>
 
-Registers can be made to have complex structures by nesting objects within objects. This allows you to group related keys and values together. The recommended approach is to keep the `register` as flat as possible, to avoid unnecessary complexity. This can be achieved by creating multiple registers, each with a specific purpose, and nesting them within the main `register`.
+## Practical Example: API Endpoints
 
-The following code snippet demonstrates how to create a `register` with nested objects:
+The real power shows when you store functions, like API calls:
 
 ```typescript copy
-const create = (data: { email: string; password: string }) => {
-  return fetch("/account/create", {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+// Before: API calls defined in multiple places
+// File 1: users/api.ts
+export const fetchUser = (id: number) => fetch(`/api/users/${id}`);
+
+// File 2: users/list.tsx
+const key = ['users', 'detail', userId];  // Manual key
+const data = await fetchUser(userId);
+
+// After: Everything in one place
+const api = createBuilder({
+  users: {
+    list: async () => {
+      return fetch('/api/users').then(r => r.json());
     },
-    body: JSON.stringify(data),
-    method: "POST",
-  });
+    detail: async (id: number) => {
+      return fetch(`/api/users/${id}`).then(r => r.json());
+    },
+    create: async (data: { name: string; email: string }) => {
+      return fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(r => r.json());
+    }
+  }
+});
+
+// Now use anywhere:
+api.users.detail.$use(5);      // ['users', 'detail', 5]
+api.$use.users.detail(5);       // Calls the API
+```
+
+**Benefits:**
+- ✅ API structure is self-documenting
+- ✅ Keys and functions stay synchronized
+- ✅ Easy to refactor (change once, update everywhere)
+
+## Nested Structures
+
+You can nest objects as deeply as needed to organize related functionality:
+
+```typescript copy
+const register = {
+  products: {
+    electronics: {
+      list: () => fetch('/api/products/electronics').then(r => r.json()),
+      featured: () => fetch('/api/products/electronics/featured').then(r => r.json())
+    },
+    clothing: {
+      list: () => fetch('/api/products/clothing').then(r => r.json())
+    }
+  },
+  cart: {
+    items: () => fetch('/api/cart').then(r => r.json()),
+    add: (productId: number) => fetch('/api/cart', {
+      method: 'POST',
+      body: JSON.stringify({ productId })
+    }).then(r => r.json())
+  }
 };
 
-const delete_by_id = (id: number) => {
-  return fetch(`/account/${id}/delete`, {
-    method: "DELETE",
-  });
+const store = createBuilder(register);
+
+// Access nested endpoints
+store.products.electronics.featured.$use();  // ['products', 'electronics', 'featured']
+store.cart.add.$use(123);                     // ['cart', 'add', 123]
+```
+
+## Organizing Large Registers
+
+For larger applications, break your register into smaller, focused modules:
+
+```typescript copy
+// auth.register.ts
+export const authRegister = {
+  login: async (credentials: Credentials) => { /* ... */ },
+  logout: async () => { /* ... */ },
+  refresh: async () => { /* ... */ }
 };
+
+// products.register.ts
+export const productsRegister = {
+  list: async (category?: string) => { /* ... */ },
+  detail: async (id: number) => { /* ... */ },
+  search: async (query: string) => { /* ... */ }
+};
+
+// main.register.ts
+import { authRegister } from './auth.register';
+import { productsRegister } from './products.register';
 
 const register = {
-  account: {
-    delete_by_id,
-    create,
-  },
+  auth: authRegister,
+  products: productsRegister
+};
+
+export const api = createBuilder(register);
+```
+
+**Why this is better:**
+- Keeps code organized by domain
+- Easier to find and maintain
+- Multiple team members can work on different modules
+- Registers can be reused across projects
+
+## Best Practices
+
+### ✅ DO: Keep it Flat When Possible
+
+```typescript copy
+// Good: Easy to navigate
+const register = {
+  users: { list, detail, create },
+  posts: { list, detail, create }
 };
 ```
+
+### ❌ AVOID: Unnecessary Deep Nesting
+
+```typescript copy
+// Harder to work with
+const register = {
+  api: {
+    v1: {
+      resources: {
+        users: {
+          operations: {
+            list: () => { /* ... */ }
+          }
+        }
+      }
+    }
+  }
+};
+
+// Results in long chains:
+builder.api.v1.resources.users.operations.list.$use();  // Too verbose
+```
+
+### ✅ DO: Group Related Functions
+
+```typescript copy
+const register = {
+  users: {
+    // All user-related operations together
+    list: async () => { /* ... */ },
+    detail: async (id: number) => { /* ... */ },
+    create: async (data: User) => { /* ... */ },
+    update: async (id: number, data: Partial<User>) => { /* ... */ },
+    delete: async (id: number) => { /* ... */ }
+  }
+};
+```
+
+### ✅ DO: Mix Functions and Values
+
+```typescript copy
+const config = createBuilder({
+  api: {
+    baseUrl: 'https://api.example.com',
+    timeout: 5000,
+    fetchUser: async (id: number) => { /* ... */ }
+  }
+});
+
+// Access both
+config.$use.api.baseUrl;           // 'https://api.example.com'
+config.$use.api.fetchUser(5);      // Calls the function
+config.api.baseUrl.$use();         // ['api', 'baseUrl']
+```
+
+## Real-World Example
+
+Here's a complete register for a blog application:
+
+```typescript copy
+import { createBuilder } from '@ibnlanre/builder';
+
+type Post = { id: number; title: string; content: string; authorId: number };
+type Comment = { id: number; postId: number; text: string };
+
+const blog = createBuilder({
+  posts: {
+    list: async (page: number = 1) => {
+      return fetch(`/api/posts?page=${page}`).then(r => r.json());
+    },
+    detail: async (id: number) => {
+      return fetch(`/api/posts/${id}`).then(r => r.json());
+    },
+    create: async (data: Omit<Post, 'id'>) => {
+      return fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(r => r.json());
+    },
+    comments: {
+      list: async (postId: number) => {
+        return fetch(`/api/posts/${postId}/comments`).then(r => r.json());
+      },
+      create: async (postId: number, text: string) => {
+        return fetch(`/api/posts/${postId}/comments`, {
+          method: 'POST',
+          body: JSON.stringify({ text })
+        }).then(r => r.json());
+      }
+    }
+  },
+  authors: {
+    detail: async (id: number) => {
+      return fetch(`/api/authors/${id}`).then(r => r.json());
+    },
+    posts: async (authorId: number) => {
+      return fetch(`/api/authors/${authorId}/posts`).then(r => r.json());
+    }
+  }
+});
+
+// Usage in components:
+blog.posts.list.$use(1);                    // ['posts', 'list', 1]
+blog.posts.comments.list.$use(42);          // ['posts', 'comments', 'list', 42]
+blog.authors.posts.$use(7);                 // ['authors', 'posts', 7]
+```
+
+## Summary
+
+The register is your **single source of truth**:
+
+- Define your structure once
+- Builder generates consistent keys
+- Functions and values stay together
+- TypeScript ensures everything is type-safe
+
+**Think of it as:** A table of contents for your entire application's data layer.
+
+## Next Steps
+
+- Learn how to [create a builder](/core-concepts/create-builder) from your register
+- Understand the [builder object](/core-concepts/builder-object) and its special methods
+- See [real-world usage examples](/usage/managing-state) with data fetching libraries
 
 [1]: /getting-started
 [2]: /core-concepts/create-builder

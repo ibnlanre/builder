@@ -1,5 +1,6 @@
-import { describe, expectTypeOf, it } from "vitest";
 import type { Base } from ".";
+
+import { describe, expectTypeOf, it } from "vitest";
 
 describe("Base type", () => {
   type TestField = "testField";

@@ -5,35 +5,305 @@ description: Guide on how to create a builder object from a register.
 
 ---
 
+import { Callout } from "@/components";
+
 # createBuilder
 
-The `createBuilder` function is a factory function that facilitates the creation of a [builder][3] object. The `createBuilder` function is a named export from the [@ibnlanre/builder][1] package. This guide explains how to create a [builder][3] object using the `createBuilder` function.
+## What Does It Do?
 
-The following code snippet demonstrates how to import the `createBuilder` function:
+`createBuilder` is the function that transforms your plain register object into a smart **builder** object with superpowers. It adds special methods (`$use` and `$get`) at every level, making key generation automatic and type-safe.
 
 ```typescript copy
 import { createBuilder } from '@ibnlanre/builder';
 ```
 
-## Creating a builder
+Think of it as: **Regular object → Builder object = Regular object + Smart key generation**
 
-The `createBuilder` function takes a [register][4] object and an optional array of prefixes as arguments. Invoking it, returns a [builder][3] object that can be used to access the keys and values in the [register][4] object. The [builder][3] object adds a layer of abstraction to the [register][4] object, allowing you to dynamically generate keys.
+## Basic Usage
 
-The following code snippet demonstrates how to invoke the `createBuilder` function:
-
-```typescript copy
-const noPrefixBuilder = createBuilder(register);
-```
-
-## Builder with prefixes
-
-If the [builder][3] object is created with prefixes, the generated keys array would be prefixed with the prefixes, followed by the keys accessed in the [register][4]. The prefixes serve as an identifier for each [builder][3] object created. Although there is no limit to the number of prefixes that can be used, it is advised to use a maximum of three prefixes.
-
-The following code snippet demonstrates how to call the `createBuilder` function with prefixes:
+The simplest way to use `createBuilder`:
 
 ```typescript copy
-const prefixedBuilder = createBuilder(register, { prefix: ["user", "record"] });
+const register = {
+  users: {
+    list: () => fetch('/api/users').then(r => r.json()),
+    detail: (id: number) => fetch(`/api/users/${id}`).then(r => r.json())
+  }
+};
+
+// Transform it
+const api = createBuilder(register);
+
+// Now you have both:
+// 1. Original functions
+api.$use.users.detail(5);  // Calls fetch('/api/users/5')
+
+// 2. Automatic key generation
+api.users.detail.$use(5);  // ['users', 'detail', 5]
 ```
+
+<Callout type="info">
+**What changed?** The structure is identical, but now every node has `$use` and `$get` methods for generating keys.
+</Callout>
+
+## Without Prefixes
+
+By default, keys start from the root of your structure:
+
+```typescript copy
+const store = createBuilder({
+  products: {
+    list: () => { /* ... */ },
+    detail: (id: number) => { /* ... */ }
+  },
+  cart: {
+    items: () => { /* ... */ }
+  }
+});
+
+// Generated keys start from your structure
+store.products.list.$use();        // ['products', 'list']
+store.cart.items.$use();           // ['cart', 'items']
+store.$get();                      // [] - empty at root
+```
+
+## With Prefixes
+
+Prefixes add a namespace to **all** your keys. This is useful for:
+- **Versioning** your cache (`['v1', ...]` → `['v2', ...]`)
+- **Separating concerns** (`['api', ...]` vs `['ui', ...]`)
+- **Avoiding collisions** when using multiple builders
+
+```typescript copy
+const api = createBuilder(register, {
+  prefix: ['api', 'v2']
+});
+
+// Now all keys are prefixed
+api.users.list.$use();        // ['api', 'v2', 'users', 'list']
+api.users.detail.$use(5);     // ['api', 'v2', 'users', 'detail', 5]
+api.$get();                   // ['api', 'v2'] - just the prefix
+```
+
+## Real-World Examples
+
+### Example 1: API Client with Versioning
+
+```typescript copy
+// Version 2 of your API
+const apiV2 = createBuilder({
+  users: {
+    list: async (filter?: string) => {
+      const url = filter ? `/api/v2/users?filter=${filter}` : '/api/v2/users';
+      return fetch(url).then(r => r.json());
+    },
+    detail: async (id: number) => {
+      return fetch(`/api/v2/users/${id}`).then(r => r.json());
+    }
+  }
+}, { prefix: ['api', 'v2'] });
+
+// Usage
+apiV2.users.list.$use('active');  // ['api', 'v2', 'users', 'list', 'active']
+
+// When you upgrade to v3, just change the prefix
+const apiV3 = createBuilder(sameRegister, { prefix: ['api', 'v3'] });
+```
+
+### Example 2: Multiple Builders in One App
+
+```typescript copy
+// API calls
+const api = createBuilder({
+  posts: { list, detail, create },
+  comments: { list, create }
+}, { prefix: ['api'] });
+
+// UI state
+const ui = createBuilder({
+  modals: {
+    isLoginOpen: false,
+    isCartOpen: false
+  },
+  theme: 'dark'
+}, { prefix: ['ui'] });
+
+// Settings
+const settings = createBuilder({
+  notifications: true,
+  language: 'en'
+}, { prefix: ['settings'] });
+
+// All keys are namespaced:
+api.posts.list.$use();           // ['api', 'posts', 'list']
+ui.modals.isLoginOpen.$use();    // ['ui', 'modals', 'isLoginOpen']
+settings.language.$use();        // ['settings', 'language']
+```
+
+### Example 3: Feature Flags
+
+```typescript copy
+const features = createBuilder({
+  payments: {
+    stripe: true,
+    paypal: false
+  },
+  ui: {
+    darkMode: true,
+    betaFeatures: false
+  }
+}, { prefix: ['features'] });
+
+// Check feature flags
+features.$use.payments.stripe;           // true
+features.payments.stripe.$use();         // ['features', 'payments', 'stripe']
+```
+
+## How Prefixes Work
+
+Prefixes are prepended to every generated key:
+
+```typescript copy
+const builder = createBuilder(register, { prefix: ['app', 'cache'] });
+
+// Every key starts with the prefix
+builder.users.list.$use();        // ['app', 'cache', 'users', 'list']
+builder.products.detail.$use(5);  // ['app', 'cache', 'products', 'detail', 5]
+
+// The root $get returns just the prefix
+builder.$get();                   // ['app', 'cache']
+```
+
+### Prefix Guidelines
+
+<Callout type="warning">
+**Keep prefixes short**: Use 1-3 segments maximum. Long prefixes make keys harder to read and debug.
+</Callout>
+
+```typescript copy
+// ✅ Good prefixes
+{ prefix: ['api'] }
+{ prefix: ['v2'] }
+{ prefix: ['app', 'cache'] }
+
+// ❌ Too verbose
+{ prefix: ['my', 'application', 'production', 'api', 'version', '2'] }
+```
+
+## TypeScript Support
+
+`createBuilder` preserves your types automatically:
+
+```typescript copy
+const api = createBuilder({
+  users: {
+    detail: async (id: number) => {
+      return fetch(`/api/users/${id}`).then(r => r.json());
+    }
+  }
+});
+
+// TypeScript knows the structure
+api.users.detail.$use(123);    // ✅ Works
+api.users.detail.$use('abc');  // ❌ Error: Expected number
+
+// Autocomplete works too
+api.users.  // Your IDE suggests: detail, $use, $get
+```
+
+## Common Patterns
+
+### Pattern 1: Environment-Based Prefixes
+
+```typescript copy
+const isDev = process.env.NODE_ENV === 'development';
+
+const api = createBuilder(register, {
+  prefix: isDev ? ['dev', 'api'] : ['prod', 'api']
+});
+
+// Dev: ['dev', 'api', 'users', 'list']
+// Prod: ['prod', 'api', 'users', 'list']
+```
+
+### Pattern 2: User-Scoped Keys
+
+```typescript copy
+function createUserApi(userId: number) {
+  return createBuilder(register, {
+    prefix: ['user', userId]
+  });
+}
+
+const user123Api = createUserApi(123);
+user123Api.posts.list.$use();  // ['user', 123, 'posts', 'list']
+```
+
+### Pattern 3: Multi-Tenant Apps
+
+```typescript copy
+function createTenantApi(tenantId: string) {
+  return createBuilder(register, {
+    prefix: ['tenant', tenantId]
+  });
+}
+
+const acmeApi = createTenantApi('acme-corp');
+acmeApi.invoices.list.$use();  // ['tenant', 'acme-corp', 'invoices', 'list']
+```
+
+## When to Use Prefixes
+
+| Scenario | Use Prefix? | Example |
+|----------|-------------|---------|
+| Single app with one API | Optional | `{ prefix: ['api'] }` |
+| Multiple API versions | ✅ Yes | `{ prefix: ['v2'] }` |
+| Separate UI/API state | ✅ Yes | `{ prefix: ['ui'] }` or `{ prefix: ['api'] }` |
+| User-specific data | ✅ Yes | `{ prefix: ['user', userId] }` |
+| Simple key generation | ❌ Not needed | No prefix |
+
+## Comparison
+
+```typescript copy
+const register = {
+  posts: {
+    list: () => { /* ... */ }
+  }
+};
+
+// Without prefix
+const builder1 = createBuilder(register);
+builder1.posts.list.$use();  // ['posts', 'list']
+
+// With single prefix
+const builder2 = createBuilder(register, { prefix: ['api'] });
+builder2.posts.list.$use();  // ['api', 'posts', 'list']
+
+// With multiple prefixes
+const builder3 = createBuilder(register, { prefix: ['api', 'v2'] });
+builder3.posts.list.$use();  // ['api', 'v2', 'posts', 'list']
+```
+
+## Summary
+
+`createBuilder` is your gateway to Builder's features:
+
+- **Transforms** your register into a builder object
+- **Prefixes** (optional) namespace all your keys
+- **Type-safe** - preserves your TypeScript types
+- **Zero config** - works with just a register
+
+**The formula:**
+```
+Register + createBuilder = Builder with $use and $get methods
+Register + Prefix = Namespaced keys
+```
+
+## Next Steps
+
+- Learn about the [builder object](/core-concepts/builder-object) and how to use `$use` and `$get`
+- See [practical examples](/usage/managing-state) with data fetching libraries
+- Understand [registers](/core-concepts/registers) and how to structure them
 
 [1]: /getting-started
 [2]: /core-concepts/create-builder

@@ -1,4 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
+
 import { createBuilder } from "./index";
 
 const register = {
@@ -15,21 +16,21 @@ const register = {
 
 const $use = expect.any(Function);
 const $get = expect.any(Function);
-const $ = { $use, $get };
+const $ = { $get, $use };
 
 const match = {
-  $use: register,
   $get,
+  $use: register,
   dex: $,
   foo: {
+    $get,
+    $use,
     bar: {
-      baz: $,
-      $use,
       $get,
+      $use,
+      baz: $,
     },
     qux: $,
-    $use,
-    $get,
   },
   num: $,
   str: $,
@@ -143,19 +144,19 @@ describe("createBuilder", () => {
   it("should work with type assertions", () => {
     const builder = createBuilder({
       address: {} as {
-        street: string;
         city: string;
         country: string;
         house: number;
+        street: string;
       },
     });
 
     expectTypeOf(builder.address.$use()).toEqualTypeOf<["address"]>();
     expectTypeOf<typeof builder.$use.address>().toEqualTypeOf<{
-      street: string;
       city: string;
       country: string;
       house: number;
+      street: string;
     }>();
   });
 });

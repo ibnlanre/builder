@@ -1,5 +1,6 @@
-import { createContext, useContext } from "react";
 import type { BuilderProviderProps, BuilderRecord } from "../types";
+
+import { createContext, use } from "react";
 
 export function createBuilderProvider<Builders extends BuilderRecord>(
   builders: Builders
@@ -7,7 +8,7 @@ export function createBuilderProvider<Builders extends BuilderRecord>(
   const BuilderContext = createContext<Builders>({} as Builders);
 
   function useBuilder() {
-    const builders = useContext(BuilderContext);
+    const builders = use(BuilderContext);
 
     if (!builders) {
       const message = "useBuilder should be used within a BuilderProvider";
@@ -19,11 +20,11 @@ export function createBuilderProvider<Builders extends BuilderRecord>(
 
   function BuilderProvider({ children }: BuilderProviderProps<Builders>) {
     return (
-      <BuilderContext.Provider value={builders}>
+      <BuilderContext value={builders}>
         {children}
-      </BuilderContext.Provider>
+      </BuilderContext>
     );
   }
 
-  return { useBuilder, BuilderProvider };
+  return { BuilderProvider, useBuilder };
 }

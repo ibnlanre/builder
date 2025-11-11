@@ -7,60 +7,197 @@ description: Basic usage of the @ibnlanre/builder package.
 
 # Basic Usage
 
-To get started using the [@ibnlanre/builder][1] package, it is essential to understand the basic concepts and usage patterns involved in working with the library. This guide will walk you through the fundamental steps required to create a [builder][3] object, access values, and retrieve keys using the package.
+## The Problem: Manual Key Management
 
-The [@ibnlanre/builder][1] package provides a simple and efficient way to generate and manage keys within your application. It requires a [register][4] to be passed as an argument to the [createBuilder][2] function, which can be imported from the package. In turn, it generates a builder which serves as a bridge between the [register][4] object and the user, providing a convenient way to interact with the data structure.
+When working with cache-based state management or data fetching libraries, you typically need to create array-based keys to identify your data:
 
-The following steps outline how to quickly get started using the [@ibnlanre/builder][1] package:
+```typescript
+// ❌ The old way: Manually constructing keys everywhere
+useQuery({
+  queryKey: ['users', 'list', { page: 1 }],
+  queryFn: fetchUsers
+});
 
-1. Import the [createBuilder][2] function from the library:
+useQuery({
+  queryKey: ['users', 'detail', userId],
+  queryFn: () => fetchUser(userId)
+});
 
-    ```typescript
-    import { createBuilder } from '@ibnlanre/builder';
-    ```
+useMutation({
+  mutationKey: ['users', 'create'],
+  mutationFn: createUser
+});
 
-2. Create a [register][4] object with nested keys and values:
+// Problems:
+// 1. String literals are fragile and error-prone
+// 2. Inconsistent structure across your app
+// 3. Hard to refactor when you change key names
+// 4. No autocomplete or type-safety
+// 5. Function and key definitions are separated
+```
 
-    ```typescript
-    const register = {
-      foo: {
-        baz: (id: number) => `/bazaar/${id}`,
-        bar: 10,
-      },
-    }
-    ```
+## The Solution: Builder
 
-3. Create a [builder][3] object using the [createBuilder][2] function:
+With `@ibnlanre/builder`, you define your keys and functions together in a structured object (called a "register"), then let Builder handle key generation:
 
-    ```typescript
-    const builder = createBuilder(register, { prefix: ["root", "node"] });
-    ```
+```typescript
+import { createBuilder } from '@ibnlanre/builder';
 
-4. Access the [register][4] values using the [builder][3] object:
+// ✅ Define once
+const api = createBuilder({
+  users: {
+    list: (params: { page: number }) => fetchUsers(params),
+    detail: (id: number) => fetchUser(id),
+    create: (data: User) => createUser(data)
+  }
+});
 
-    ```typescript
-    // Accessing the register values
-    builder.$use; // { foo: { baz: [Function: baz], bar: 10 } }
+// ✅ Use anywhere with autocomplete
+useQuery({
+  queryKey: api.users.list.$use({ page: 1 }),  // ['users', 'list', { page: 1 }]
+  queryFn: () => api.$use.users.list({ page: 1 })
+});
+```
 
-    // Accessing a nested function value
-    builder.$use.foo.baz(12); // "/bazaar/12"
+## How It Works
 
-    // Accessing a nested primitive value
-    builder.$use.foo.bar; // 10
-    ```
+Builder transforms your register into a smart object with two special properties at every level:
 
-5. Generate keys using the [builder][3] object:
+### 1. `$use` - Dual Purpose Property
 
-    ```typescript
-    // Retrieving the root key
-    builder.$get(); // ["root", "node"]
+**On the root node**, `$use` gives you access to your original values:
 
-    // Accessing a nested function key
-    builder.foo.baz.$use(12); // ["root", "node", "foo", "baz", 12]
+```typescript
+const register = {
+  users: {
+    getName: (id: number) => `User ${id}`,
+    count: 42
+  }
+};
 
-    // Accessing a nested primitive key
-    builder.foo.bar.$use(); // ["root", "node", "foo", "bar"]
-    ```
+const builder = createBuilder(register);
+
+// Access values through the root $use
+builder.$use.users.getName(10);  // "User 10"
+builder.$use.users.count;         // 42
+```
+
+**On nested nodes**, `$use()` generates keys following the function signature:
+
+```typescript
+// If the value is a function with parameters
+builder.users.getName.$use(10);  // ['users', 'getName', 10]
+
+// If the value is a primitive or object
+builder.users.count.$use();      // ['users', 'count']
+```
+
+### 2. `$get()` - Flexible Key Generation
+
+The `$get()` method gives you more control, accepting arbitrary arguments:
+
+```typescript
+// Get the key without following function signature
+builder.users.getName.$get();              // ['users', 'getName']
+builder.users.getName.$get(10, 'active');  // ['users', 'getName', 10, 'active']
+```
+
+## Step-by-Step Example
+
+Let's build a complete example:
+
+### Step 1: Create Your Register
+
+Define your keys and values in a nested structure:
+
+```typescript
+const register = {
+  products: {
+    list: async (category?: string) => {
+      const url = category ? `/api/products?cat=${category}` : '/api/products';
+      return fetch(url).then(r => r.json());
+    },
+    detail: async (id: number) => fetch(`/api/products/${id}`).then(r => r.json()),
+    price: 29.99  // Can also store plain values
+  }
+};
+```
+
+### Step 2: Create the Builder
+
+```typescript
+const api = createBuilder(register, {
+  prefix: ['api', 'v1']  // Optional: add prefixes to all keys
+});
+```
+
+### Step 3: Generate Keys
+
+```typescript
+// Using $use - follows function signature
+api.products.list.$use();           // ['api', 'v1', 'products', 'list']
+api.products.list.$use('electronics');  // ['api', 'v1', 'products', 'list', 'electronics']
+api.products.detail.$use(42);       // ['api', 'v1', 'products', 'detail', 42]
+
+// Using $get - flexible arguments
+api.products.list.$get('sale', true);  // ['api', 'v1', 'products', 'list', 'sale', true]
+```
+
+### Step 4: Access Values
+
+```typescript
+// Call the actual functions
+await api.$use.products.list('electronics');  // Fetches electronics
+await api.$use.products.detail(42);           // Fetches product 42
+
+// Access plain values
+api.$use.products.price;  // 29.99
+```
+
+### Step 5: Use in Your Application
+
+```typescript
+import { useQuery } from '@tanstack/react-query';
+
+function ProductList({ category }: { category?: string }) {
+  const { data } = useQuery({
+    queryKey: api.products.list.$use(category),
+    queryFn: () => api.$use.products.list(category)
+  });
+
+  return <div>{/* render products */}</div>;
+}
+```
+
+## Understanding Prefixes
+
+Prefixes act as a namespace for your keys and appear at the beginning of every generated key:
+
+```typescript
+const api = createBuilder(register, { prefix: ['app', 'cache'] });
+
+api.products.list.$use();  // ['app', 'cache', 'products', 'list']
+api.$get();                 // ['app', 'cache'] - just the prefix
+```
+
+Use prefixes to:
+- Version your cache keys
+- Separate concerns (e.g., `['api']` vs `['ui']`)
+- Namespace multiple builders in the same app
+
+## Key Takeaways
+
+- **Register**: Your nested object containing keys and values
+- **Builder**: The enhanced object created by `createBuilder()`
+- **`$use`**: Property on root for values, method on nodes for keys (follows function signature)
+- **`$get()`**: Method for flexible key generation with arbitrary parameters
+- **Type-safe**: TypeScript enforces correct parameters throughout
+
+## Next Steps
+
+- [Learn about the builder object](/core-concepts/builder-object) in detail
+- [See advanced usage patterns](/usage) for real-world scenarios
+- [Understand registers](/core-concepts/registers) and how to structure them
 
 [1]: /getting-started
 [2]: /core-concepts/create-builder

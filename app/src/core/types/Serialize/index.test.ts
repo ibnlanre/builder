@@ -1,5 +1,6 @@
-import { describe, expectTypeOf, it } from "vitest";
 import type { Serialize } from ".";
+
+import { describe, expectTypeOf, it } from "vitest";
 
 describe("Serialize", () => {
   it("should return an empty string for nullish values", () => {

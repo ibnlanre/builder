@@ -1,5 +1,6 @@
-import { isDictionary, isFunction } from "@/utilities";
 import type { Dictionary, KeyBuilder } from "../types";
+
+import { isDictionary, isFunction } from "@/utilities";
 
 /**
  * Helper function to create branches that represent the nested keys of the provided object.
@@ -26,15 +27,15 @@ export function createBranches<
         return {
           ...acc,
           [key]: {
-            $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
             $get: (...args: unknown[]) => [...newPath, ...args],
+            $use: (...args: Parameters<typeof value>) => [...newPath, ...args],
           },
         };
       }
 
       const root = {
-        $use: () => newPath,
         $get: (...args: unknown[]) => [...newPath, ...args],
+        $use: () => newPath,
       };
 
       return {

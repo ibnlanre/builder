@@ -6,7 +6,7 @@ import { Warning, Information, Forbid, Lightbulb } from "@/icons";
 type CalloutType = "default" | "info" | "warning" | "error";
 
 interface CalloutProps extends ComponentProps<"div"> {
-  type?: CalloutType;
+  type: CalloutType;
 }
 
 export const Callout = ({ type = "default", children }: CalloutProps) => {

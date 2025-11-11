@@ -6,9 +6,11 @@ description: Installation guide for the @ibnlanre/builder package.
 ---
 import { Tabs } from 'nextra/components'
 
-# Installation
+# Getting Started
 
-To install the `@ibnlanre/builder` package, you can use either [npm][NPM], [yarn][Yarn] or [pnpm][PNPM]. The following code snippets demonstrate how to install the package using either of the package managers:
+## Quick Install
+
+Install `@ibnlanre/builder` using your preferred package manager:
 
 <Tabs items={['NPM', 'Yarn', 'PNPM']}>
   <Tabs.Tab>
@@ -30,15 +32,77 @@ To install the `@ibnlanre/builder` package, you can use either [npm][NPM], [yarn
   </Tabs.Tab>
 </Tabs>
 
-## CDN
+## 30-Second Example
 
-The `@ibnlanre/builder` package is also available on [unpkg](https://unpkg.com/browse/@ibnlanre/builder). You can include it in your HTML file using the following script tag:
+Here's how to get started in three simple steps:
 
-```html
-<script src="https://unpkg.com/@ibnlanre/builder" type="module"></script>
+```typescript
+// 1. Import the function
+import { createBuilder } from '@ibnlanre/builder';
+
+// 2. Define your keys and values in one place
+const api = createBuilder({
+  users: {
+    list: async () => fetch('/api/users').then(r => r.json()),
+    detail: async (id: number) => fetch(`/api/users/${id}`).then(r => r.json())
+  }
+});
+
+// 3. Use it anywhere with full type-safety
+// Get the key
+api.users.list.$use()  // → ['users', 'list']
+
+// Get the value (the actual function)
+await api.$use.users.list()  // → calls the API
 ```
 
-Alternatively, you can use the `importmap` attribute to import the package in your HTML file:
+That's it! You now have:
+- ✅ Type-safe keys
+- ✅ Centralized API definitions
+- ✅ Full autocomplete support
+
+## Real-World Use Case
+
+Let's see a practical example with [TanStack Query](https://tanstack.com/query/latest):
+
+```typescript
+import { useQuery } from '@tanstack/react-query';
+import { createBuilder } from '@ibnlanre/builder';
+
+// Define all your API endpoints in one place
+const api = createBuilder({
+  posts: {
+    list: async (filter?: string) => {
+      const url = filter ? `/api/posts?filter=${filter}` : '/api/posts';
+      return fetch(url).then(r => r.json());
+    },
+    detail: async (id: number) => fetch(`/api/posts/${id}`).then(r => r.json())
+  }
+});
+
+// In your React component
+function PostsList({ filter }: { filter?: string }) {
+  const { data } = useQuery({
+    // Builder generates the correct key based on parameters
+    queryKey: api.posts.list.$use(filter),  // ['posts', 'list', 'active']
+
+    // Access the actual API function
+    queryFn: () => api.$use.posts.list(filter)
+  });
+
+  return <div>{/* render posts */}</div>;
+}
+```
+
+**Benefits:**
+- No more manually typing `['posts', 'list', filter]` everywhere
+- TypeScript warns you if parameters don't match
+- Rename an endpoint? Change it once, update everywhere
+- Your API structure serves as living documentation
+
+## CDN Usage
+
+For quick prototyping or non-bundled projects, you can use the CDN version:
 
 ```html
 <!DOCTYPE html>
@@ -57,14 +121,14 @@ Alternatively, you can use the `importmap` attribute to import the package in yo
     <script type="module">
       import { createBuilder } from '@ibnlanre/builder';
 
-      const register = {
-        foo: {
-          baz: (id) => `/bazaar/${id}`,
-          bar: 10,
-        },
-      };
+      const api = createBuilder({
+        hello: {
+          world: () => 'Hello, World!'
+        }
+      });
 
-      const builder = createBuilder(register);
+      console.log(api.hello.world.$use());  // ['hello', 'world']
+      console.log(api.$use.hello.world());  // 'Hello, World!'
     </script>
   </head>
 
@@ -73,6 +137,13 @@ Alternatively, you can use the `importmap` attribute to import the package in yo
   </body>
 </html>
 ```
+
+## Next Steps
+
+Now that you have Builder installed:
+- Learn the [core concepts](/core-concepts) to understand how Builder works
+- See [more usage examples](/usage) for advanced patterns
+- Using React? Check out the [React adapter](/adapters) for context-based usage
 
 [NPM]: https://www.npmjs.com/package/@ibnlanre/builder
 [Yarn]: https://yarnpkg.com/package?name=%40ibnlanre%2Fbuilder

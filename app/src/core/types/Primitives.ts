@@ -1,1 +1,1 @@
-export type Primitives = string | number | bigint | boolean | null | undefined;
+export type Primitives = bigint | boolean | null | number | string | undefined;

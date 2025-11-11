@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
 import type { Paths } from ".";
+
+import { describe, expect, it } from "vitest";
 
 describe("Paths type utility", () => {
   it("should generate correct paths for a simple dictionary", () => {

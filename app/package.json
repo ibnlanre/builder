@@ -76,11 +76,25 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
+    "@eslint-react/eslint-plugin": "^2.3.4",
+    "@stylistic/eslint-plugin": "^5.5.0",
     "@types/react": ">=16.8.0",
     "@types/react-dom": ">=16.8.0",
+    "@typescript-eslint/parser": "^8.46.4",
+    "@vitest/eslint-plugin": "^1.4.2",
     "eslint": "catalog:",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-paths": "^1.1.0",
+    "eslint-plugin-perfectionist": "^4.15.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
+    "jiti": "^2.6.1",
     "standard-changelog": "catalog:",
     "tsup": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "typescript-eslint": "^8.46.4"
   }
 }

@@ -5,13 +5,218 @@ description: Overview of the @ibnlanre/builder package.
 
 ---
 
-# Overview
+import { Callout } from "@/components";
 
-At its core, `@ibnlanre/builder` is designed to be [framework-agnostic][agnostic], providing a consistent API regardless of the framework you choose to work with. This is facilitated by the provision of adapters, specifically designed to interact seamlessly with your chosen framework. You can find a comprehensive list of these adapters in the [Adapters][adapters] page.
+# Core Concepts
 
-Although the `@ibnlanre/builder` package is built using [TypeScript][typescript], its integration into your application is not mandatory. However, opting for [TypeScript][typescript] is a worthwhile consideration given the substantial enhancements it can offer to your codebase and development process. 
+Understanding how Builder works will help you use it effectively. Don't worry, it's simpler than it looks!
 
-By choosing [TypeScript][typescript], you stand to gain from improved type safety and editor autocomplete for all builder APIs and state, making your coding experience smoother and more efficient.
+## The Three Key Pieces
+
+Builder revolves around three main concepts:
+
+### 1. **Register** - Your Data Structure
+
+A plain JavaScript object containing your keys, values, and functions:
+
+```typescript
+const register = {
+  users: {
+    list: () => fetch('/api/users'),
+    detail: (id: number) => fetch(`/api/users/${id}`)
+  }
+};
+```
+
+**Think of it as:** Your table of contents or API map.
+
+### 2. **createBuilder** - The Transformer
+
+The function that transforms your register into a builder:
+
+```typescript
+import { createBuilder } from '@ibnlanre/builder';
+
+const api = createBuilder(register);
+```
+
+**Think of it as:** The magic spell that adds superpowers to your object.
+
+### 3. **Builder** - The Enhanced Object
+
+The result: your register with special `$use` and `$get` methods added:
+
+```typescript
+// Access values (same as before)
+api.$use.users.detail(5);
+
+// Generate keys (the superpower!)
+api.users.detail.$use(5);  // ['users', 'detail', 5]
+```
+
+**Think of it as:** Your register, but with automatic key generation.
+
+## How They Work Together
+
+```typescript
+// 1. Define your structure (Register)
+const register = {
+  products: {
+    list: () => fetch('/api/products')
+  }
+};
+
+// 2. Transform it (createBuilder)
+const store = createBuilder(register);
+
+// 3. Use it (Builder)
+store.products.list.$use();       // ['products', 'list'] - The key
+await store.$use.products.list(); // Calls the API - The value
+```
+
+## Framework Agnostic
+
+Builder works with **any** JavaScript framework or library:
+
+```typescript
+// React + TanStack Query
+import { useQuery } from '@tanstack/react-query';
+const { data } = useQuery({
+  queryKey: api.posts.list.$use(),
+  queryFn: api.$use.posts.list
+});
+
+// Vue + VueQuery
+import { useQuery } from '@tanstack/vue-query';
+const { data } = useQuery({
+  queryKey: api.posts.list.$use(),
+  queryFn: api.$use.posts.list
+});
+
+// Svelte + SWR
+import useSWR from 'swr';
+const { data } = useSWR(api.$get('posts.list'), api.$use.posts.list);
+
+// Vanilla JavaScript
+const cacheKey = api.products.detail.$use(123).join('.');
+localStorage.setItem(cacheKey, JSON.stringify(data));
+```
+
+<Callout type="info">
+Builder doesn't care what framework you use. It's just JavaScript objects and arrays.
+</Callout>
+
+## TypeScript: Optional but Recommended
+
+Builder is written in TypeScript, but you don't have to use it:
+
+### Without TypeScript (JavaScript)
+
+```javascript
+const api = createBuilder({
+  users: {
+    list: () => fetch('/api/users').then(r => r.json())
+  }
+});
+
+// Works fine, but no autocomplete
+api.users.list.$use();
+```
+
+### With TypeScript
+
+```typescript
+const api = createBuilder({
+  users: {
+    list: async (): Promise<User[]> => {
+      return fetch('/api/users').then(r => r.json());
+    },
+    detail: async (id: number): Promise<User> => {
+      return fetch(`/api/users/${id}`).then(r => r.json());
+    }
+  }
+});
+
+// ✅ Autocomplete suggests: users, $use, $get
+api.users.
+
+// ✅ TypeScript enforces correct parameters
+api.users.detail.$use(123);    // Works
+api.users.detail.$use('abc');  // Error!
+
+// ✅ Return types are inferred
+const user: User = await api.$use.users.detail(1);
+```
+
+**Benefits of TypeScript:**
+- Autocomplete for all keys
+- Compile-time error checking
+- Better IntelliSense documentation
+- Safer refactoring
+
+## Quick Reference
+
+| Concept | What It Is | Example |
+|---------|-----------|---------|
+| **Register** | Your plain object | `{ users: { list: () => {...} } }` |
+| **createBuilder** | Transformer function | `createBuilder(register)` |
+| **Builder** | Enhanced object | `api.users.list.$use()` |
+| **$use** | Access values (root)<br/>Generate keys (nodes) | `api.$use.users.list()`<br/>`api.users.list.$use()` |
+| **$get** | Flexible key generation | `api.users.list.$get('extra', 'params')` |
+| **Prefix** | Namespace for all keys | `createBuilder(register, { prefix: ['v2'] })` |
+
+## Practical Workflow
+
+Here's how you'd typically use Builder in a project:
+
+1. **Define your register** (one time, in one file)
+```typescript
+// api/index.ts
+const register = {
+  users: { /* ... */ },
+  posts: { /* ... */ },
+  comments: { /* ... */ }
+};
+
+export const api = createBuilder(register);
+```
+
+2. **Import where needed**
+```typescript
+// components/UserList.tsx
+import { api } from '../api';
+```
+
+3. **Use for keys and values**
+```typescript
+const { data } = useQuery({
+  queryKey: api.users.list.$use(),
+  queryFn: api.$use.users.list
+});
+```
+
+4. **Refactor easily**
+```typescript
+const register = {
+  accounts: { /* ... */ }, // Changed 'users' to 'accounts'?
+};
+
+// Update once in register, everywhere updates automatically
+
+```
+
+## Next Steps
+
+Ready to dive deeper? Learn about each piece:
+
+- **[Registers](/core-concepts/registers)** - How to structure your data
+- **[createBuilder](/core-concepts/create-builder)** - Using prefixes and options
+- **[Builder Object](/core-concepts/builder-object)** - Understanding $use and $get
+
+Or jump straight to practical examples:
+
+- **[Managing State](/usage/managing-state)** - Real-world TanStack Query examples
+- **[Constructing Keys](/usage/constructing-keys)** - Advanced key patterns
 
 [adapters]: /adapters
 [typescript]: https://www.typescriptlang.org/
