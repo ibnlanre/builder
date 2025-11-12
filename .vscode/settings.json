@@ -7,9 +7,8 @@
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
     "source.addMissingImports.ts": "always",
-    "source.removeUnusedImports": "always"
+    "source.removeUnusedImports": "always",
+    "source.fixAll.eslint": "always"
   },
-  "css.customData": [
-    ".vscode/tailwind.json"
-  ],
+  "css.customData": [".vscode/tailwind.json"]
 }

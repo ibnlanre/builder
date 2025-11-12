@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "bundle": "tsup --config tsup.config.ts",
-    "check-exports": "attw --pack .",
+    "check-exports": "attw --pack . --profile node16",
     "check-workspace": "git diff-index --quiet HEAD --",
     "commit": "git add .",
     "coverage": "vitest run --coverage --typecheck",
@@ -42,14 +42,24 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/core/index.d.ts",
-      "require": "./dist/core/index.cjs",
-      "import": "./dist/core/index.js"
+      "import": {
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
+      },
+      "require": {
+        "types": "./dist/core/index.d.cts",
+        "default": "./dist/core/index.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react/index.d.ts",
-      "require": "./dist/react/index.cjs",
-      "import": "./dist/react/index.js"
+      "import": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "require": {
+        "types": "./dist/react/index.d.cts",
+        "default": "./dist/react/index.cjs"
+      }
     }
   },
   "author": {
