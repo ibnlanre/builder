@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/builder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Creates a builder object for defining keys and values.",
   "homepage": "https://create-builder.vercel.app",
   "type": "module",
