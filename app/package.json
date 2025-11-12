@@ -10,24 +10,24 @@
     "check-workspace": "git diff-index --quiet HEAD --",
     "commit": "git add .",
     "coverage": "vitest run --coverage --typecheck",
-    "dry-run": "pnpm publish --dry-run --no-git-checks",
+    "dry-run": "npm pack --dry-run --json",
     "first-release": "standard-changelog --first-release",
     "lint": "eslint --fix .",
-    "major": "pnpm version major",
-    "minor": "pnpm version minor",
-    "package": "pnpm publish --access public",
-    "patch": "pnpm version patch",
-    "postbundle": "pnpm run check-exports",
+    "major": "npm version major",
+    "minor": "npm version minor",
+    "package": "npm publish --access public",
+    "patch": "npm version patch",
+    "postbundle": "npm run check-exports",
     "postpublish": "git push --follow-tags",
-    "posttest": "pnpm run lint",
-    "postversion": "pnpm run package",
-    "pre-major": "pnpm version premajor",
-    "pre-minor": "pnpm version preminor",
-    "pre-patch": "pnpm version prepatch",
+    "posttest": "npm run lint",
+    "postversion": "npm run package",
+    "pre-major": "npm version premajor",
+    "pre-minor": "npm version preminor",
+    "pre-patch": "npm version prepatch",
     "precommit": "standard-changelog --releaseCount 0",
-    "prepublishOnly": "pnpm run bundle",
-    "pretest": "pnpm run typecheck",
-    "preversion": "pnpm run check-workspace && pnpm run test",
+    "prepublishOnly": "npm run bundle",
+    "pretest": "npm run typecheck",
+    "preversion": "npm run check-workspace && npm run test",
     "test": "vitest run",
     "test:ci": "vitest run --coverage --typecheck",
     "typecheck": "tsc --pretty --noEmit",
@@ -37,7 +37,9 @@
   "module": "dist/core/index.js",
   "types": "dist/core/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "exports": {
     ".": {
@@ -75,9 +77,11 @@
   "bugs": {
     "url": "https://github.com/ibnlanre/builder/issues"
   },
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "keywords": [
-    "builder"
+    "dynamic-keys",
+    "cache-invalidation",
+    "react-query"
   ],
   "peerDependencies": {
     "react": ">=16.8.0",

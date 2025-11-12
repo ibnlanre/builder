@@ -1,4 +1,4 @@
-<h1 align="center">Builder ✨</h1>
+<h1 align="center">Builder Repository</h1>
 
 <div align="center">
 
@@ -9,31 +9,115 @@
 
 </div>
 
-## FAQs
+## 📦 About This Repository
 
-**What problem does `@ibnlanre/builder` solve?**
+This is the monorepo for the `@ibnlanre/builder` library and its documentation. It contains:
 
-It simplifies the management of deeply nested, dynamic keys, especially for caching libraries like SWR or TanStack Query. Instead of manually constructing keys like `['users', 'list', { page: 1 }]`, you can define a typed structure once and access keys with full type-safety and autocompletion, like `builder.users.list.$get({ page: 1 })`. This reduces errors and improves developer experience.
+- **[`app/`](./app)** - The core `@ibnlanre/builder` library package
+- **[`docs/`](./docs)** - Documentation website built with Nextra
 
-**How is it different from other solutions?**
+## 🚀 Quick Start
 
-`@ibnlanre/builder` focuses on a zero-dependency, lightweight, and type-safe approach. It generates a simple proxy-based object that translates nested property access into key arrays. It doesn't manage state or caching itself, making it a flexible utility that integrates with any data-fetching library.
+### Installation
 
-**What are the core features?**
+```bash
+# Install dependencies
+pnpm install
 
-- **Dynamic Key Generation**: Effortlessly create complex keys from a nested object structure.
-- **Type Safety**: Leverages TypeScript for full autocompletion and compile-time checks.
-- **Prefix Customization**: Add global prefixes to all generated keys, useful for versioning or scoping.
-- **Zero Dependencies**: A tiny, dependency-free utility.
-- **Framework Agnostic**: Works with React, Vue, Svelte, or any JavaScript/TypeScript project.
+# Run tests
+pnpm test
 
-**Where can I find the full documentation?**
+# Build the library
+cd app && pnpm run bundle
 
-For comprehensive guides, API references, and live examples, visit the official documentation website: **[create-builder.vercel.app](https://create-builder.vercel.app/)**
+# Start the docs dev server
+cd docs && pnpm run dev
+```
 
-## License
+### Development Workflow
 
-The `@ibnlanre/builder` library is licensed under the [MIT][mit] License. For more information, please refer to the [LICENSE][license] file.
+**Working on the library:**
 
-[license]: LICENSE.md
-[mit]: https://www.mit.edu/about
+```bash
+cd app
+pnpm run test        # Run tests
+pnpm run typecheck   # Type check
+pnpm run lint        # Lint code
+pnpm run bundle      # Build the library
+```
+
+**Working on documentation:**
+
+```bash
+cd docs
+pnpm run dev         # Start dev server
+pnpm run build       # Build for production
+```
+
+## 📚 Documentation
+
+For comprehensive guides, API references, and live examples, visit the official documentation:
+
+**[create-builder.vercel.app](https://create-builder.vercel.app/)**
+
+## 🧪 Testing
+
+The project uses [Vitest](https://vitest.dev/) for testing:
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests with coverage
+pnpm run coverage
+
+# Run tests in watch mode
+cd app && pnpm run test -- --watch
+```
+
+## 📝 Publishing
+
+The library is published to npm from the `app/` directory:
+
+```bash
+cd app
+
+# Patch version (1.0.0 → 1.0.1)
+pnpm run patch
+
+# Minor version (1.0.0 → 1.1.0)
+pnpm run minor
+
+# Major version (1.0.0 → 2.0.0)
+pnpm run major
+```
+
+The publish process automatically:
+1. Runs tests and type checking
+2. Builds the library
+3. Validates package exports with `@arethetypeswrong/cli`
+4. Publishes to npm
+5. Pushes git tags
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`pnpm test`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+## 📄 License
+
+The `@ibnlanre/builder` library is licensed under the [MIT](./LICENSE) License.
+
+---
+
+<div align="center">
+Built with ❤️ by <a href="https://github.com/ibnlanre">Ridwan Olanrewaju</a>
+</div>
+
