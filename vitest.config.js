@@ -7,5 +7,8 @@ export default defineConfig({
     exclude: ["**/node_modules/**", "**/dist/**", "docs/**"],
     include: ["**/src/**/*.{test,spec}.{js,ts,tsx}"],
     environment: "jsdom",
+    typecheck: {
+      tsconfig: "tsconfig.json",
+    },
   },
 });
