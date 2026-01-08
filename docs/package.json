@@ -11,23 +11,23 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
-    "clsx": "catalog:",
-    "next": "catalog:",
-    "nextra": "catalog:",
-    "nextra-theme-docs": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:"
+    "clsx": "^2.1.1",
+    "next": "^14.2.33",
+    "nextra": "^2.13.4",
+    "nextra-theme-docs": "^2.13.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@next/third-parties": "catalog:",
+    "@next/third-parties": "^14.2.33",
     "@types/react": "^18.3.26",
     "@types/react-dom": "^18.3.7",
-    "@vercel/speed-insights": "catalog:",
-    "autoprefixer": "catalog:",
+    "@vercel/speed-insights": "^1.0.10",
+    "autoprefixer": "^10.4.16",
     "eslint-config-next": "^16.0.1",
-    "postcss": "catalog:",
-    "tailwindcss": "catalog:",
-    "typescript": "catalog:"
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.3",
+    "typescript": "^5.9.3"
   },
   "license": "MIT"
 }

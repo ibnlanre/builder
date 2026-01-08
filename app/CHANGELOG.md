@@ -1,4 +1,4 @@
-## [1.0.4](https://github.com/ibnlanre/builder/compare/v1.0.1...v1.0.4) (2025-11-17)
+# [1.1.0](https://github.com/ibnlanre/builder/compare/v1.0.1...v1.1.0) (2026-01-08)
 
 
 ### Bug Fixes

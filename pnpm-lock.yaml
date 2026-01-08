@@ -4,45 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  default:
-    '@next/third-parties':
-      specifier: ^14.2.33
-      version: 14.2.33
-    '@vercel/speed-insights':
-      specifier: ^1.0.10
-      version: 1.2.0
-    autoprefixer:
-      specifier: ^10.4.16
-      version: 10.4.21
-    clsx:
-      specifier: ^2.1.1
-      version: 2.1.1
-    next:
-      specifier: ^14.2.33
-      version: 14.2.33
-    nextra:
-      specifier: ^2.13.4
-      version: 2.13.4
-    nextra-theme-docs:
-      specifier: ^2.13.4
-      version: 2.13.4
-    postcss:
-      specifier: ^8.4.32
-      version: 8.5.6
-    react:
-      specifier: ^18.3.1
-      version: 18.3.1
-    react-dom:
-      specifier: ^18.3.1
-      version: 18.3.1
-    tailwindcss:
-      specifier: ^3.4.3
-      version: 3.4.18
-    typescript:
-      specifier: ^5.9.3
-      version: 5.9.3
-
 importers:
 
   .:
@@ -145,26 +106,26 @@ importers:
   docs:
     dependencies:
       clsx:
-        specifier: 'catalog:'
+        specifier: ^2.1.1
         version: 2.1.1
       next:
-        specifier: 'catalog:'
+        specifier: ^14.2.33
         version: 14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nextra:
-        specifier: 'catalog:'
+        specifier: ^2.13.4
         version: 2.13.4(next@14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nextra-theme-docs:
-        specifier: 'catalog:'
+        specifier: ^2.13.4
         version: 2.13.4(next@14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nextra@2.13.4(next@14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react:
-        specifier: 'catalog:'
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: 'catalog:'
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@next/third-parties':
-        specifier: 'catalog:'
+        specifier: ^14.2.33
         version: 14.2.33(next@14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@types/react':
         specifier: ^18.3.26
@@ -173,22 +134,22 @@ importers:
         specifier: ^18.3.7
         version: 18.3.7(@types/react@18.3.26)
       '@vercel/speed-insights':
-        specifier: 'catalog:'
+        specifier: ^1.0.10
         version: 1.2.0(next@14.2.33(@babel/core@7.28.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       autoprefixer:
-        specifier: 'catalog:'
+        specifier: ^10.4.16
         version: 10.4.21(postcss@8.5.6)
       eslint-config-next:
         specifier: ^16.0.1
         version: 16.0.1(eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.4(eslint@9.39.1(jiti@1.21.7))(typescript@5.9.3))(eslint-import-resolver-node@0.3.9)(eslint@9.39.1(jiti@1.21.7)))(eslint@9.39.1(jiti@1.21.7))(typescript@5.9.3)
       postcss:
-        specifier: 'catalog:'
+        specifier: ^8.4.32
         version: 8.5.6
       tailwindcss:
-        specifier: 'catalog:'
+        specifier: ^3.4.3
         version: 3.4.18(yaml@2.8.1)
       typescript:
-        specifier: 'catalog:'
+        specifier: ^5.9.3
         version: 5.9.3
 
 packages:
