@@ -14,12 +14,12 @@
     "lint": "pnpm --recursive lint"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "@vitest/ui": "catalog:",
-    "jsdom": "catalog:",
-    "typescript": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
-    "vitest": "catalog:"
+    "@types/node": "^24.10.4",
+    "@vitest/ui": "^4.0.16",
+    "jsdom": "^27.4.0",
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=18.0.0",

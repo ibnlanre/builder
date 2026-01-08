@@ -6,7 +6,6 @@ import { createTypeScriptImportResolver } from "eslint-import-resolver-typescrip
 import { defineConfig } from "eslint/config";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
 
 import stylistic from "@stylistic/eslint-plugin";
 import typescript from "@typescript-eslint/parser";

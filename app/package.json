@@ -1,6 +1,6 @@
 {
   "name": "@ibnlanre/builder",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Creates a builder object for defining keys and values.",
   "homepage": "https://create-builder.vercel.app",
   "type": "module",
@@ -91,6 +91,7 @@
     "@arethetypeswrong/cli": "^0.18.2",
     "@eslint-react/eslint-plugin": "^2.3.4",
     "@stylistic/eslint-plugin": "^5.5.0",
+    "@types/eslint-plugin-jsx-a11y": "^6.10.1",
     "@types/react": ">=16.8.0",
     "@types/react-dom": ">=16.8.0",
     "@typescript-eslint/parser": "^8.46.4",
