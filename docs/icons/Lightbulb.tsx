@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
+import { SVGProps } from "react";
 
-export function Lightbulb(props: ComponentProps<"svg">) {
+export function Lightbulb(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"

@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
+import { SVGProps } from "react";
 
-export function Warning(props: ComponentProps<"svg">) {
+export function Warning(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"

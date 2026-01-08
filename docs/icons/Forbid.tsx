@@ -1,6 +1,6 @@
-import { ComponentProps } from "react";
+import { SVGProps } from "react";
 
-export function Forbid(props: ComponentProps<"svg">) {
+export function Forbid(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="24"
