@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export function Information(props: SVGProps<SVGSVGElement>) {
+export function Information(props: Omit<SVGProps<SVGSVGElement>, "ref">) {
   return (
     <svg
       width="24"

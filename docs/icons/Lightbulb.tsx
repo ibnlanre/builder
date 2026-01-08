@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export function Lightbulb(props: SVGProps<SVGSVGElement>) {
+export function Lightbulb(props: Omit<SVGProps<SVGSVGElement>, "ref">) {
   return (
     <svg
       width="24"

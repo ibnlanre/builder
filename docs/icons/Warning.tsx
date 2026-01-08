@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export function Warning(props: SVGProps<SVGSVGElement>) {
+export function Warning(props: Omit<SVGProps<SVGSVGElement>, "ref">) {
   return (
     <svg
       width="24"
